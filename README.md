@@ -14,7 +14,7 @@ pnpm dev
 bun dev
 ```
 
-// tailwind 의존성 설치
+// tailwind 의존성 설치 <br />
 npm install @headlessui/react @heroicons/react <br />
 npm install @next/font
 
