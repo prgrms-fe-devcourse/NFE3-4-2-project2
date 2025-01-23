@@ -14,12 +14,12 @@ pnpm dev
 bun dev
 ```
 
-// 설치
+// tailwind 의존성 설치
 npm install @headlessui/react @heroicons/react
 
 ## 폴더 구조 설명
 
-```├─public                          # 정적 파일 (이미지, 아이콘, 폰트 등)
+```├─public # 정적 파일 (이미지, 아이콘, 폰트 등)
 │  ├─fonts                        # 폰트 파일
 │  ├─icons                        # 아이콘 파일
 │  └─images                       # 이미지 파일 (사용자 프로필 사진, 배너 등)
