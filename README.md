@@ -14,12 +14,14 @@ pnpm dev
 bun dev
 ```
 
-// tailwind 의존성 설치 <br />
-npm install @headlessui/react @heroicons/react  <br />
-<!-- 부트스트랩 icons 설치 -->
-npm i bootstrap-icons
-<!-- Pretendard 폰트 설치 -->
-npm i pretendard
+## 의존성 설치
+
+- tailwind 관련 의존성 설치
+```npm install @headlessui/react @heroicons/react```
+- 부트스트랩 icons 설치
+```npm i bootstrap-icons```
+- Pretendard font 설치
+```npm i pretendard```
 
 ## 폴더 구조 설명
 
