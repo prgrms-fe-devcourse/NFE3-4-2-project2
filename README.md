@@ -105,7 +105,7 @@ npm install @headlessui/react @heroicons/react
     │
     ├─styles                       # 스타일 관련
     │      globals.css             # 전역 스타일
-    │      tailwind.config.ts      # Tailwind CSS 설정
+    │
     │
     ├─types                        # TypeScript 타입 정의
     │      auth.ts                 # 사용자 관련 타입 정의
