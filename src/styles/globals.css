@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  font-family: var(--font-pretendard), sans-serif;
+}
+
 a {
   text-decoration: none;
   border-bottom: none;
