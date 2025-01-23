@@ -15,7 +15,7 @@ bun dev
 ```
 
 // tailwind 의존성 설치
-npm install @headlessui/react @heroicons/react
+npm install @headlessui/react @heroicons/react <br />
 npm install @next/font
 
 ## 폴더 구조 설명
