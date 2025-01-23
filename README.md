@@ -15,8 +15,11 @@ bun dev
 ```
 
 // tailwind 의존성 설치 <br />
-npm install @headlessui/react @heroicons/react <br />
-npm install @next/font
+npm install @headlessui/react @heroicons/react  <br />
+<!-- 부트스트랩 icons 설치 -->
+npm i bootstrap-icons
+<!-- Pretendard 폰트 설치 -->
+npm i pretendard
 
 ## 폴더 구조 설명
 
