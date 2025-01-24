@@ -46,12 +46,11 @@ const SeasonBar: React.FC<SeasonBarProps> = ({
           key={season.season}
           className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md ${
             selectedSeason === season.season
-              ? "bg-sky-200 shadow-lg scale-105"
+              ? "bg-gradient-to-r from-sky-400 to-sky-200 shadow-lg scale-105"
               : "hover:bg-sky-100 hover:shadow-xl hover:scale-105 "
           }`}
           onClick={() => onSeasonSelect(season.season)}
         >
-          {/* 계절 이미지 */}
           <Image
             src={season.imageSrc}
             alt={season.season}

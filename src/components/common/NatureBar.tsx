@@ -14,22 +14,22 @@ const NatureBar: React.FC<NatureBarProps> = ({
 }) => {
   const natureData = [
     {
-      nature: "바다·해변",
+      nature: "바다 · 해변",
       imageSrc: "/images/nature/beach.png",
       description: "푸른 바다, 여유로운 해변",
     },
     {
-      nature: "산·등산로",
+      nature: "산 · 등산로",
       imageSrc: "/images/nature/mountain.png",
       description: "고요한 산, 자연을 오르다",
     },
     {
-      nature: "호수·강·계곡",
+      nature: "호수 · 강 · 계곡",
       imageSrc: "/images/nature/lake.png",
       description: "맑은 호수, 흐르는 강과 계곡",
     },
     {
-      nature: "숲·생태관광지",
+      nature: "숲 · 생태관광지",
       imageSrc: "/images/nature/forest.png",
       description: "자연을 품은 숲, 생명의 숨결",
     },
@@ -40,23 +40,24 @@ const NatureBar: React.FC<NatureBarProps> = ({
       {natureData.map((nature) => (
         <div
           key={nature.nature}
-          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-xl shadow-md w-[200px] h-[180px] ${
+          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md ${
             selectedNature === nature.nature
-              ? "bg-gradient-to-r from-sky-400 to-sky-200 text-white scale-105 shadow-lg"
+              ? "bg-gradient-to-r from-sky-400 to-sky-200 shadow-lg scale-105"
               : "hover:bg-sky-100 hover:shadow-xl hover:scale-105 "
           }`}
           onClick={() => onNatureSelect(nature.nature)}
         >
-          {/* 계절 이미지 */}
           <Image
             src={nature.imageSrc}
             alt={nature.nature}
-            width={80}
-            height={80}
-            className="object-cover rounded-xl"
+            width={72}
+            height={72}
+            className="object-cover rounded-md"
           />
-          <h3 className="text-xl font-bold mt-4">{nature.nature}</h3>
-          <span className="text-sm font-medium text-neutral-700 mt-2">
+          <span className="text-lg font-semi-bold text-neutral-800 mt-2">
+            {nature.nature}
+          </span>
+          <span className="text-base font-normal text-neutral-500 mt-2">
             {nature.description}
           </span>
         </div>
