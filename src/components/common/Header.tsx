@@ -12,12 +12,12 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white border-b border-b-neutral-800">
+    <header className="bg-white border-b border-b-neutral-800 w-[1920px] h-[107px]">
       <nav className="mx-auto max-w-7xl p-4">
         <div className="flex flex-col items-start">
           {/* 로고 */}
           <div className="w-full flex justify-between items-center">
-            <Link href="/" className="text-xl2 font-bold text-sky-500 no-underline mb-2">
+            <Link href="/" className="text-2xl font-bold text-sky-500 no-underline mb-2">
               Gangwon GO
             </Link>
             <Link href="/auth/login">
