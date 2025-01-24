@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import RegionList from "./RegionList";
-import SeasonBar from "./SeasonBar";
+import SeasonBar from "./SeasonTourBar";
 import NatureBar from "./NatureBar";
 import CultureBar from "./CultureBar";
 
