@@ -26,7 +26,7 @@ const LeisureSearchBar: React.FC = () => {
     <div className="bg-sky-50 w-full h-[392px] flex justify-start items-start p-4">
       <div className="w-full flex flex-col justify-start gap-4 px-8">
         <div className="flex w-full justify-center mt-8">
-          {/* 지역별 레저 및 체험, 계절별 레저 및 체험 버튼 */}
+
           <button
             className={`${
               selectedOption === "지역별 레저 및 체험"
