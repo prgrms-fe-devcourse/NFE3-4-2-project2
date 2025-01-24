@@ -11,14 +11,23 @@ const TravelPage: React.FC = () => {
     <div className="min-h-screen">
       <Header />
       <TourSearchBar />
-      <main className="container mx-auto px-4 py-8">
+      <main className="mx-auto max-w-screen-xl px-4 py-8">
         {/* 뒤로 가기 버튼 */}
         <div className="flex justify-start mb-4">
-          <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
-            <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
+          <button
+            className="flex items-center space-x-2"
+            onClick={() => window.history.back()}
+          >
+            <Image
+              src="/images/goback.png"
+              alt="뒤로 가기"
+              width={16}
+              height={16}
+            />
             <span className="text-sky-500 text-lg font-semibold">목록</span>
           </button>
         </div>
+
         {/* Title Section */}
         <div className="text-center mb-8">
           <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
@@ -32,13 +41,13 @@ const TravelPage: React.FC = () => {
         {/* Image and Info */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="w-[720px] h-[420px] mx-auto">
+            <div className="w-full h-auto">
               <Image
                 src="/images/lake.png"
                 alt="Lake"
                 width={720}
                 height={420}
-                className="rounded-lg"
+                className="rounded-lg object-cover mx-auto"
               />
             </div>
           </div>
