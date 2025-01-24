@@ -20,9 +20,9 @@ export default function Festival() {
           className="mr-2 w-full"  
         />
        </div>
-       <div className="bg-white mx-auto w-[600px] p-4 shadow-lg absolute">
+       <div className="bg-white mx-auto w-[600px] p-4 shadow-lg absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg">
         <div>
-          <ul>
+          <ul className="flex gap-3 text-lg font-bold text-neutral-800 cursor-pointer">
             <li>전체</li>
             <li>축제</li>
             <li>공연</li>
