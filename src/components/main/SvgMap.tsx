@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import APIConnect from "@/utils/api";
 
 const svgs = [
   {
@@ -142,11 +143,14 @@ export default function SvgMap() {
   };
   const handleMouseOver = () => {
     setShowAreaName(false);
+  };  
+  const handleClick = async (searchQuery: string) => {
+    try{
+      const data = await APIConnect.getTourAreaList(searchQuery);
+      console.log(data);
+    }catch{}
   };
-  const handleClick = (searchQuery: string) => {
-    alert(`searchQuery : ${searchQuery} \n검색(API) 페이지 이동`);
-    //주소 이동 + locatoinCode 파라미터 같이 보내기
-  };
+
   return (
     <section className="py-12 bg-[url(/images/main/mountain.jpg)] bg-cover bg-left-top transition-all duration-75">
       <div className="mx-auto max-w-screen-xl">
