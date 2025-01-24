@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import RegionList from "./RegionList";
-import SeasonBar from "./SeasonBar";
+import SeasonBar from "./SeasonTourBar";
 import NatureBar from "./NatureBar";
 import CultureBar from "./CultureBar";
 
@@ -40,7 +40,7 @@ const TourSearchBar: React.FC = () => {
 
   return (
     <div className="bg-sky-50 w-full h-[392px] flex justify-start items-start p-4">
-      <div className="w-full flex flex-col justify-start gap-4 px-8">
+      <div className="w-full max-w-[1280px] mx-auto flex flex-col justify-start gap-4 px-8 mt-6">
         <h2 className="text-neutral-800 text-4xl font-semibold">강원도의</h2>
 
         <div className="flex flex-row gap-6 items-center">
@@ -54,10 +54,10 @@ const TourSearchBar: React.FC = () => {
             value={selectedOption}
             onChange={handleSelectChange}
           >
-            <option>계절별 관광지</option>
-            <option>지역별 관광지</option>
-            <option>문화·역사별 관광지</option>
-            <option>자연별 관광지</option>
+            <option className="text-2xl py-2 px-4">계절별 관광지</option>
+            <option className="text-2xl py-2 px-4">지역별 관광지</option>
+            <option className="text-2xl py-2 px-4">문화·역사별 관광지</option>
+            <option className="text-2xl py-2 px-4">자연별 관광지</option>
           </select>
 
           <span className="text-neutral-600 text-2xl mt-2 font-semibold">
@@ -67,13 +67,13 @@ const TourSearchBar: React.FC = () => {
 
         {/* "인기 지역별 관광지 찾아보기" 텍스트 아래에 RegionList 조건부 렌더링 */}
         {selectedOption === "지역별 관광지" && (
-          <div className="mt-8 flex">
+          <div className="mt-6 flex">
             <RegionList />
           </div>
         )}
 
         {selectedOption === "계절별 관광지" && (
-          <div className="mt-4 flex justify-center items-center">
+          <div className="flex justify-center items-center">
             <SeasonBar
               selectedSeason={selectedSeason}
               onSeasonSelect={handleSeasonSelect}
@@ -82,7 +82,7 @@ const TourSearchBar: React.FC = () => {
         )}
 
         {selectedOption === "자연별 관광지" && (
-          <div className="mt-4 flex justify-center items-center">
+          <div className="flex justify-center items-center">
             <NatureBar
               selectedNature={selectedNature}
               onNatureSelect={handleNatureSelect}
@@ -91,7 +91,7 @@ const TourSearchBar: React.FC = () => {
         )}
 
         {selectedOption === "문화·역사별 관광지" && (
-          <div className="mt-4 flex justify-center items-center">
+          <div className="flex justify-center items-center">
             <CultureBar
               selectedCulture={selectedCulture}
               onCultureSelect={handleCultureSelect}
