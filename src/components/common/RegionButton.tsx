@@ -21,7 +21,7 @@ const RegionButton: React.FC<RegionButtonProps> = ({
       onClick={onClick}
       className={`flex flex-row items-center justify-center gap-2 w-[103px] h-[36px] border rounded-[4px] bg-white transition-all duration-200 ${
         isActive
-          ? "bg-sky-500 text-white border-blue-500 scale-105"
+          ? "bg-sky-100 border-blue-500 scale-105"
           : "hover:bg-gray-100 hover:scale-105 hover:shadow-md text-neutral-800"
       } mt-2`}
     >

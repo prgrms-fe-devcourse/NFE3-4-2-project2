@@ -4,8 +4,8 @@ import React from "react";
 import Image from "next/image";
 
 interface SeasonBarProps {
-  selectedSeason: string | null; // 선택된 계절이 없을 수 있으므로 null 가능
-  onSeasonSelect: (season: string) => void; // 계절을 선택하는 함수
+  selectedSeason: string | null;
+  onSeasonSelect: (season: string) => void;
 }
 
 const SeasonBar: React.FC<SeasonBarProps> = ({
@@ -44,10 +44,10 @@ const SeasonBar: React.FC<SeasonBarProps> = ({
       {seasonData.map((season) => (
         <div
           key={season.season}
-          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md ${
+          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
             selectedSeason === season.season
-              ? "bg-gradient-to-r from-sky-400 to-sky-200 shadow-lg scale-105"
-              : "hover:bg-sky-100 hover:shadow-xl hover:scale-105 "
+              ? "scale-105"
+              : "hover:scale-105 hover:shadow-xl"
           }`}
           onClick={() => onSeasonSelect(season.season)}
         >
@@ -64,6 +64,11 @@ const SeasonBar: React.FC<SeasonBarProps> = ({
           <span className="text-base font-normal text-neutral-500 mt-2">
             {season.description}
           </span>
+          <div
+            className={`absolute bottom-0 left-0 right-0 h-[2px] bg-sky-500 transition-all duration-200 transform ${
+              selectedSeason === season.season ? "scale-x-100" : "scale-x-0"
+            }`}
+          />
         </div>
       ))}
     </div>

@@ -40,10 +40,10 @@ const NatureBar: React.FC<NatureBarProps> = ({
       {natureData.map((nature) => (
         <div
           key={nature.nature}
-          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md ${
+          className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
             selectedNature === nature.nature
-              ? "bg-gradient-to-r from-sky-400 to-sky-200 shadow-lg scale-105"
-              : "hover:bg-sky-100 hover:shadow-xl hover:scale-105 "
+              ? "scale-105"
+              : "hover:scale-105 hover:shadow-xl"
           }`}
           onClick={() => onNatureSelect(nature.nature)}
         >
@@ -60,6 +60,11 @@ const NatureBar: React.FC<NatureBarProps> = ({
           <span className="text-base font-normal text-neutral-500 mt-2">
             {nature.description}
           </span>
+          <div
+            className={`absolute bottom-0 left-0 right-0 h-[2px] bg-sky-500 transition-all duration-200 transform ${
+              selectedNature === nature.nature ? "scale-x-100" : "scale-x-0"
+            }`}
+          />
         </div>
       ))}
     </div>

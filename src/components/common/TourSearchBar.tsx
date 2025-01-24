@@ -4,19 +4,25 @@ import React, { useState } from "react";
 import RegionList from "./RegionList";
 import SeasonBar from "./SeasonBar";
 import NatureBar from "./NatureBar";
+import CultureBar from "./CultureBar"; // CultureBar 임포트 추가
 
 const TourSearchBar: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string>("계절별 관광지");
   const [selectedSeason, setSelectedSeason] = useState<string | null>(null); // 선택된 계절을 상태로 관리
-  const [selectedNature, setSelectedNature] = useState<string | null>(null); // 선택된 계절을 상태로 관리
+  const [selectedNature, setSelectedNature] = useState<string | null>(null); // 선택된 자연을 상태로 관리
+  const [selectedCulture, setSelectedCulture] = useState<string | null>(null); // 선택된 문화·역사 상태로 관리
 
   const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const selected = event.target.value;
     setSelectedOption(selected);
 
-    // '계절별 관광지' 선택시 selectedSeason을 null로 설정
+    // 선택한 옵션에 따라 상태 초기화
     if (selected === "계절별 관광지") {
-      setSelectedSeason(null); // 계절을 선택하지 않았으므로 초기화
+      setSelectedSeason(null);
+    } else if (selected === "자연별 관광지") {
+      setSelectedNature(null);
+    } else if (selected === "문화·역사별 관광지") {
+      setSelectedCulture(null); // 문화·역사별 관광지 선택 시 초기화
     }
   };
 
@@ -26,6 +32,10 @@ const TourSearchBar: React.FC = () => {
 
   const handleNatureSelect = (nature: string) => {
     setSelectedNature(nature); // 자연 선택 처리
+  };
+
+  const handleCultureSelect = (culture: string) => {
+    setSelectedCulture(culture); // 문화·역사 선택 처리
   };
 
   return (
@@ -73,6 +83,15 @@ const TourSearchBar: React.FC = () => {
             <NatureBar
               selectedNature={selectedNature}
               onNatureSelect={handleNatureSelect}
+            />
+          </div>
+        )}
+
+        {selectedOption === "문화·역사별 관광지" && (
+          <div className="mt-6 flex justify-center items-center">
+            <CultureBar
+              selectedCulture={selectedCulture}
+              onCultureSelect={handleCultureSelect}
             />
           </div>
         )}
