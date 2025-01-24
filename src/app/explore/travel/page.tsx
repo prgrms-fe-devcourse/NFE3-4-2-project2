@@ -12,6 +12,13 @@ const TravelPage: React.FC = () => {
       <Header />
       <TourSearchBar />
       <main className="container mx-auto px-4 py-8">
+        {/* 뒤로 가기 버튼 */}
+        <div className="flex justify-start mb-4">
+          <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
+            <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
+            <span className="text-sky-500 text-lg font-semibold">목록</span>
+          </button>
+        </div>
         {/* Title Section */}
         <div className="text-center mb-8">
           <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
