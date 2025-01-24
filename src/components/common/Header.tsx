@@ -13,14 +13,16 @@ export default function Header() {
   ];
 
   return (
+    <header className="bg-white w-full h-[107px] border-b border-b-neutral-800">
 
-    <header className="bg-white border-b border-b-neutral-800 text-3xl font-bold">
-
-      <nav className="mx-auto max-w-7xl p-4">
-        <div className="flex flex-col items-start">
+      <nav className="mx-auto max-w-screen-xl p-4">
+        <div className="flex flex-col items-start w-full">
           {/* 로고 */}
           <div className="w-full flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-sky-500 no-underline mb-2">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-sky-500 no-underline mb-2"
+            >
               Gangwon GO
             </Link>
             <Link href="/auth/login">
@@ -38,7 +40,6 @@ export default function Header() {
             <ul className="flex gap-10 text-neutral-800 mt-3">
               {menus.map((menu) => (
                 <li key={menu.name}>
-
                   <Link href={menu.href} className="text-base font-medium hover:text-sky-500 active:text-sky-600">
                     {menu.name}
                   </Link>
