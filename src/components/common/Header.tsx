@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 export default function Header() {
+
   const menus = [
     { name: "주요 관광지", href: "/explore/travel" },
     { name: "축제·공연·행사", href: "/explore/festival" },
@@ -12,12 +13,16 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white border-b border-b-neutral-800 w-[1920px] h-[107px]">
-      <nav className="mx-auto max-w-7xl p-4">
-        <div className="flex flex-col items-start">
+    <header className="bg-white w-full h-[107px] border-b border-b-neutral-800">
+
+      <nav className="mx-auto max-w-screen-xl p-4">
+        <div className="flex flex-col items-start w-full">
           {/* 로고 */}
           <div className="w-full flex justify-between items-center">
-            <Link href="/" className="text-2xl font-bold text-sky-500 no-underline mb-2">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-sky-500 no-underline mb-2"
+            >
               Gangwon GO
             </Link>
             <Link href="/auth/login">
@@ -38,6 +43,7 @@ export default function Header() {
                   <Link href={menu.href} className="text-base font-medium hover:text-sky-500 active:text-sky-600">
                     {menu.name}
                   </Link>
+
                 </li>
               ))}
             </ul>

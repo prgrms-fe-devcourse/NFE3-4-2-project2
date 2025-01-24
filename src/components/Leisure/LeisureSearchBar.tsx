@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import RegionList from "./RegionList";
+import RegionList from "../common/RegionList";
 import SeasonLeisureBar from "./SeasonLeisureBar";
 
 const LeisureSearchBar: React.FC = () => {
@@ -23,15 +23,15 @@ const LeisureSearchBar: React.FC = () => {
   };
 
   return (
-    <div className="bg-sky-50 w-full h-[392px] flex justify-start items-start p-4">
-      <div className="w-full max-w-[1280px] mx-auto flex flex-col justify-start gap-4 px-8">
-        <div className="flex w-full justify-center mt-8">
+    <div className="bg-sky-50 w-full flex justify-center items-start p-6 h-[392px]">
+      <div className="w-full max-w-screen-xl mx-auto flex flex-col gap-6 px-6 mt-6">
+        <div className="flex w-full justify-center">
           <button
             className={`${
               selectedOption === "지역별 레저 및 체험"
                 ? "bg-sky-500 text-white border-b-2 border-sky-500"
                 : "bg-transparent text-sky-500 border-b-2 border-sky-500"
-            } text-[18px] font-semibold w-[640px] h-[40px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
+            } text-2xl font-semibold w-[50%] h-[48px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
             onClick={() => handleOptionChange("지역별 레저 및 체험")}
           >
             지역별 레저 및 체험
@@ -41,16 +41,16 @@ const LeisureSearchBar: React.FC = () => {
               selectedOption === "계절별 레저 및 체험"
                 ? "bg-sky-500 text-white border-b-2 border-sky-500"
                 : "bg-transparent text-sky-500 border-b-2 border-sky-500"
-            } text-[18px] font-semibold w-[640px] h-[40px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
+            } text-2xl font-semibold w-[50%] h-[48px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
             onClick={() => handleOptionChange("계절별 레저 및 체험")}
           >
             계절별 레저 및 체험
           </button>
         </div>
 
-        {/* 메뉴바 조건부 렌더링 */}
+        {/* 조건부 렌더링 */}
         {selectedOption === "지역별 레저 및 체험" && (
-          <div className="mt-8 flex justify-center items-center">
+          <div className="mt-6 flex justify-center items-center">
             <RegionList />
           </div>
         )}
