@@ -54,7 +54,7 @@ const CultureBar: React.FC<CultureBarProps> = ({
             height={72}
             className="object-cover rounded-md"
           />
-          <span className="text-lg font-semi-bold text-neutral-800 mt-2">
+          <span className="text-lg font-semibold text-neutral-800 mt-2">
             {culture.culture}
           </span>
           <span className="text-base font-normal text-neutral-500 mt-2">

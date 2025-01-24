@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import RegionList from "./RegionList";
 import SeasonBar from "./SeasonBar";
 import NatureBar from "./NatureBar";
-import CultureBar from "./CultureBar"; // CultureBar 임포트 추가
+import CultureBar from "./CultureBar";
 
 const TourSearchBar: React.FC = () => {
   const [selectedOption, setSelectedOption] = useState<string>("계절별 관광지");
@@ -22,34 +22,35 @@ const TourSearchBar: React.FC = () => {
     } else if (selected === "자연별 관광지") {
       setSelectedNature(null);
     } else if (selected === "문화·역사별 관광지") {
-      setSelectedCulture(null); // 문화·역사별 관광지 선택 시 초기화
+      setSelectedCulture(null);
     }
   };
 
   const handleSeasonSelect = (season: string) => {
-    setSelectedSeason(season); // 계절 선택 처리
+    setSelectedSeason(season);
   };
 
   const handleNatureSelect = (nature: string) => {
-    setSelectedNature(nature); // 자연 선택 처리
+    setSelectedNature(nature);
   };
 
   const handleCultureSelect = (culture: string) => {
-    setSelectedCulture(culture); // 문화·역사 선택 처리
+    setSelectedCulture(culture);
   };
 
   return (
     <div className="bg-sky-50 w-full h-[392px] flex justify-start items-start p-4">
-      {/* 텍스트 영역: 1000px 너비로 설정, 텍스트 왼쪽 정렬 */}
       <div className="w-full flex flex-col justify-start gap-4 px-8">
-        <h2 className="text-neutral-800 text-4xl font-semi-bold">강원도의</h2>
+        <h2 className="text-neutral-800 text-4xl font-semibold">강원도의</h2>
 
         <div className="flex flex-row gap-6 items-center">
-          <span className="text-neutral-600 text-2xl mt-2">인기</span>
+          <span className="text-neutral-600 text-2xl mt-2 font-semibold">
+            인기
+          </span>
 
           {/* 셀렉트 박스 */}
           <select
-            className="border-b-2 border-sky-500 text-sky-500 text-5xl bg-transparent focus:outline-none cursor-pointer"
+            className="border-b-2 border-sky-500 text-sky-500 text-5xl font-semibold bg-transparent focus:outline-none cursor-pointer"
             value={selectedOption}
             onChange={handleSelectChange}
           >
@@ -59,18 +60,20 @@ const TourSearchBar: React.FC = () => {
             <option>자연별 관광지</option>
           </select>
 
-          <span className="text-neutral-600 text-2xl mt-2">찾아보기</span>
+          <span className="text-neutral-600 text-2xl mt-2 font-semibold">
+            찾아보기
+          </span>
         </div>
 
         {/* "인기 지역별 관광지 찾아보기" 텍스트 아래에 RegionList 조건부 렌더링 */}
         {selectedOption === "지역별 관광지" && (
-          <div className="mt-6 flex">
+          <div className="mt-8 flex">
             <RegionList />
           </div>
         )}
 
         {selectedOption === "계절별 관광지" && (
-          <div className="mt-6 flex justify-center items-center">
+          <div className="mt-4 flex justify-center items-center">
             <SeasonBar
               selectedSeason={selectedSeason}
               onSeasonSelect={handleSeasonSelect}
@@ -79,7 +82,7 @@ const TourSearchBar: React.FC = () => {
         )}
 
         {selectedOption === "자연별 관광지" && (
-          <div className="mt-6 flex justify-center items-center">
+          <div className="mt-4 flex justify-center items-center">
             <NatureBar
               selectedNature={selectedNature}
               onNatureSelect={handleNatureSelect}
@@ -88,7 +91,7 @@ const TourSearchBar: React.FC = () => {
         )}
 
         {selectedOption === "문화·역사별 관광지" && (
-          <div className="mt-6 flex justify-center items-center">
+          <div className="mt-4 flex justify-center items-center">
             <CultureBar
               selectedCulture={selectedCulture}
               onCultureSelect={handleCultureSelect}
