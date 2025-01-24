@@ -17,11 +17,11 @@ export default function Footer() {
         
         <div className="flex justify-end pt-2">
           <Image
-          className="mr-2" 
           width={90}
           height={90}
           src="/images/dataLogo.webp"
           alt="dataLogo"
+          className="mr-2" 
           />
           <Image 
           width={90}

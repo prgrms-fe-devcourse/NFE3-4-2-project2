@@ -3,6 +3,7 @@
 import Link from "next/link";
 
 export default function Header() {
+
   const menus = [
     { name: "주요 관광지", href: "/explore/travel" },
     { name: "축제·공연·행사", href: "/explore/festival" },
@@ -12,7 +13,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="bg-white border-b border-b-neutral-800">
+    <header className="bg-white border-b border-b-neutral-800 text-3xl font-bold">
       <nav className="mx-auto max-w-7xl p-4">
         <div className="flex flex-col items-start">
           {/* 로고 */}
@@ -35,9 +36,11 @@ export default function Header() {
             <ul className="flex gap-10 text-neutral-800 mt-3">
               {menus.map((menu) => (
                 <li key={menu.name}>
+
                   <Link href={menu.href} className="text-base font-medium hover:text-sky-500 active:text-sky-600">
                     {menu.name}
                   </Link>
+
                 </li>
               ))}
             </ul>
