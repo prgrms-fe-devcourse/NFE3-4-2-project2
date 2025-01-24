@@ -16,12 +16,12 @@ bun dev
 
 ## 의존성 설치
 
-- tailwind 관련 의존성 설치
-```npm install @headlessui/react @heroicons/react```
-- 부트스트랩 icons 설치
-```npm i bootstrap-icons```
-- Pretendard font 설치
-```npm i pretendard```
+package.json, package-lock.json 최신으로 받은 후
+```bash
+npm i
+# or
+npm install
+```
 
 ## 폴더 구조 설명
 
