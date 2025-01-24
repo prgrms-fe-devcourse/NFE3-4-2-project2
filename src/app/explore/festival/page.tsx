@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Header from "@/components/common/Header";
+import CardList from "@/components/common/CardList";
+import Footer from "@/components/common/Footer";
 
 
 
@@ -15,8 +17,9 @@ export default function Festival() {
   return (
     <div className="min-h-screen">
       <Header />
-     
-       <div>
+
+      {/* 배너 + 검색창 */}
+      <div className="mb-[150px]">
         <Image
           width={0}
           height={0}
@@ -25,8 +28,8 @@ export default function Festival() {
           alt="banner"
           className="mr-2 w-full"  
         />
-       </div>
-       <div className="bg-white mx-auto w-[700px] p-7 shadow-lg absolute top-2/5 left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg">
+      </div>
+      <div className="bg-white mx-auto w-[700px] p-7 shadow-lg absolute top-[460px] left-1/2 transform -translate-x-1/2 -translate-y-1/2 rounded-lg z-10">
         <div className="flex justify-between">
           <ul className="flex gap-3 text-lg font-bold text-neutral-800 cursor-pointer">
             {selectedFestival.map((festival)=>(
@@ -41,7 +44,7 @@ export default function Festival() {
             <div className="relative">
               <input type="text" placeholder="검색어를 입력해 주세요." className="h-[32px] w-72 p-3 border border-sky-500 rounded-lg placeholder:text-sm focus:border-sky-500 focus:outline-none focus:outline-sky-50"/>
               <svg aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" className="w-4 h-4 absolute top-1/2 right-2 transform -translate-y-1/2 text-sky-500">
-                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd">
+                <path  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z">
                 </path>
               </svg>
             </div>
@@ -95,8 +98,11 @@ export default function Festival() {
             
           </div>
         </div>
-       </div>
-     
+      </div>
+      
+
+      <CardList/>
+      <Footer />     
     </div>
     
    

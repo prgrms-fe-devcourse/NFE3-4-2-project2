@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import RegionList from "./RegionList";
+import RegionList from "../common/RegionList";
 import SeasonTourBar from "./SeasonTourBar";
 import NatureBar from "./NatureBar";
 import CultureBar from "./CultureBar";
