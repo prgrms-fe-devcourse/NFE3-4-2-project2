@@ -1,12 +1,7 @@
 import Image from "next/image";
+import { ListProps } from "@/types/types";
 
-interface ListCardProps {
-  imageUrl: string;
-  title: string;
-  subtitle: string;
-}
-
-const ListCard: React.FC<ListCardProps> = ({ imageUrl, title, subtitle }) => {
+const ListCard: React.FC<ListProps> = ({ imageUrl, title, area }) => {
   return (
     <div className="relative bg-white rounded-lg overflow-hidden shadow-lg transition-all duration-300 hover:shadow-xl hover:transform hover:translate-y-[-5px] cursor-pointer">
       {" "}
@@ -14,8 +9,8 @@ const ListCard: React.FC<ListCardProps> = ({ imageUrl, title, subtitle }) => {
         <Image src={imageUrl} alt={title} layout="fill" objectFit="cover" />
       </div>
       <div className="px-4 py-2 h-[100px]">
-        <div className="text-base text-neutral-600">{title}</div>
-        <div className="text-lg font-semibold text-neutral-800">{subtitle}</div>
+        <div className="text-base text-neutral-600">{area}</div>
+        <div className="text-lg font-semibold text-neutral-800">{title}</div>
       </div>
     </div>
   );

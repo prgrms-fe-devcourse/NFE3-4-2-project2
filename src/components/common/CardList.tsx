@@ -1,33 +1,22 @@
+import { ListProps } from "@/types/types";
 import ListCard from "./ListCard";
 
-const CardList = () => {
-  const items = [
-    {
-      imageUrl: "/images/lake.png",
-      title: "횡성군",
-      subtitle: "횡성자연휴양림",
-    },
-    { imageUrl: "/images/lake.png", title: "춘천", subtitle: "춘천호수" },
-    { imageUrl: "/images/lake.png", title: "속초", subtitle: "속초해변" },
-    { imageUrl: "/images/lake.png", title: "강릉", subtitle: "경포대" },
-    { imageUrl: "/images/lake.png", title: "평창", subtitle: "평창올림픽" },
-    { imageUrl: "/images/lake.png", title: "정선", subtitle: "정선아리랑" },
-    {
-      imageUrl: "/images/lake.png",
-      title: "원주",
-      subtitle: "원주 레일바이크",
-    },
-    { imageUrl: "/images/lake.png", title: "영월", subtitle: "영월 동강" },
-    { imageUrl: "/images/lake.png", title: "고성", subtitle: "고성 해수욕장" },
-    {
-      imageUrl: "/images/lake.png",
-      title: "홍천",
-      subtitle: "홍천 자작나무숲",
-    },
-    { imageUrl: "/images/lake.png", title: "태백", subtitle: "태백산" },
-    { imageUrl: "/images/lake.png", title: "동해", subtitle: "동해안" },
-  ];
+const dummyItems = [
+  { imageUrl: "/images/lake.png", area: "횡성군", title: "횡성자연휴양림", contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "춘천", title: "춘천호수" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "속초", title: "속초해변" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "강릉", title: "경포대" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "평창", title: "평창올림픽" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "정선", title: "정선아리랑" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "원주", title: "원주 레일바이크", contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "영월", title: "영월 동강" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "고성", title: "고성 해수욕장" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "홍천", title: "홍천 자작나무숲", contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "태백", title: "태백산" , contentId:"127565", contentTypeId:"12"},
+  { imageUrl: "/images/lake.png", area: "동해", title: "동해안" , contentId:"127565", contentTypeId:"12"},
+];
 
+const CardList = (items: ListProps[] = dummyItems) => {
   return (
     <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
       <div className="grid grid-cols-3 gap-8">
@@ -35,8 +24,10 @@ const CardList = () => {
           <ListCard
             key={index}
             imageUrl={item.imageUrl}
+            area={item.area}
             title={item.title}
-            subtitle={item.subtitle}
+            contentId={item.contentId}
+            contentTypeId={item.contentTypeId}
           />
         ))}
       </div>
