@@ -3,18 +3,16 @@
 import Link from "next/link";
 
 export default function Header() {
-
   const menus = [
     { name: "주요 관광지", href: "/explore/travel" },
     { name: "축제·공연·행사", href: "/explore/festival" },
     { name: "레저 및 체험", href: "/explore/leisure" },
-    { name: "예약", href: "/explore/reservation" },
+    { name: "식당 및 숙소", href: "/explore/places" },
     { name: "커뮤니티", href: "/explore/community" },
   ];
 
   return (
     <header className="bg-white w-full h-[107px] border-b border-b-neutral-800">
-
       <nav className="mx-auto max-w-screen-xl p-4">
         <div className="flex flex-col items-start w-full">
           {/* 로고 */}
@@ -40,10 +38,12 @@ export default function Header() {
             <ul className="flex gap-10 text-neutral-800 mt-3">
               {menus.map((menu) => (
                 <li key={menu.name}>
-                  <Link href={menu.href} className="text-base font-medium hover:text-sky-500 active:text-sky-600">
+                  <Link
+                    href={menu.href}
+                    className="text-base font-medium hover:text-sky-500 active:text-sky-600"
+                  >
                     {menu.name}
                   </Link>
-
                 </li>
               ))}
             </ul>
