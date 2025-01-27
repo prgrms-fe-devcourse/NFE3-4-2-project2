@@ -50,7 +50,7 @@ const LeisureSearchBar: React.FC = () => {
 
         {/* 조건부 렌더링 */}
         {selectedOption === "지역별 레저 및 체험" && (
-          <div className="mt-6 flex justify-center items-center">
+          <div className="mt-4 flex justify-center items-center">
             <RegionList />
           </div>
         )}
