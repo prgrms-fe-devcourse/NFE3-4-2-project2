@@ -15,7 +15,7 @@ const TravelPage: React.FC = () => {
       {/* 검색창 */}
       <div className="flex justify-center">
         <div className="w-full max-w-[1279px]">
-          <div className="flex items-center justify-end mt-6 mx-6">
+          <div className="flex items-center justify-end mt-8 mx-6">
             <div className="relative flex items-center">
               <input
                 type="text"

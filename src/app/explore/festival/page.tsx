@@ -27,7 +27,7 @@ export default function Festival() {
           sizes="100vw"
           src="/images/festival/festivalBanner.png"
           alt="banner"
-          className="w-full h-[462px] object-cover"
+          className="w-full h-[392px] object-cover"
         />
         {/* 배너 텍스트 */}
         <div className="absolute top-1/2 right-0 left-auto transform -translate-x-1/4 -translate-y-1/2 text-white">
