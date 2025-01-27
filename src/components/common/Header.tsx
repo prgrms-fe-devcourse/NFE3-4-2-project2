@@ -1,100 +1,55 @@
 "use client";
 
-import { useState } from "react";
-import { Dialog, DialogPanel } from "@headlessui/react";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
 
 export default function Header() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const menus = [
-    { name: "주요 관광지", href: "#" },
-    { name: "축제·공연·행사", href: "#" },
-    { name: "레저 및 체험", href: "#" },
-    { name: "예약", href: "#" },
-    { name: "커뮤니티", href: "#" },
+    { name: "주요 관광지", href: "/explore/travel" },
+    { name: "축제·공연·행사", href: "/explore/festival" },
+    { name: "레저 및 체험", href: "/explore/leisure" },
+    { name: "예약", href: "/explore/reservation" },
+    { name: "커뮤니티", href: "/explore/community" },
   ];
 
   return (
-    <header className="bg-white shadow-md">
-      <nav className="mx-auto max-w-7xl p-4 lg:px-8">
-        <div className="flex lg:flex-col items-start justify-between lg:justify-start">
+    <header className="bg-white w-full h-[107px] border-b border-b-neutral-800">
+
+      <nav className="mx-auto max-w-screen-xl p-4">
+        <div className="flex flex-col items-start w-full">
           {/* 로고 */}
-          <a
-            href="#"
-            className="text-xl font-bold text-orange-500 no-underline mb-2"
-          >
-            LOGO
-          </a>
+          <div className="w-full flex justify-between items-center">
+            <Link
+              href="/"
+              className="text-2xl font-bold text-sky-500 no-underline mb-2"
+            >
+              Gangwon GO
+            </Link>
+            <Link href="/auth/login">
+              <button
+                className="h-[32px] px-4 text-neutral-800 text-sm font-medium border-2 border-solid border-neutral-800 rounded-md 
+                                hover:text-white hover:bg-sky-500 hover:border-sky-500 active:bg-sky-600 active:border-sky-600"
+              >
+                로그인
+              </button>
+            </Link>
+          </div>
 
           {/* 데스크탑 메뉴 */}
-          <div className="hidden lg:flex lg:flex-col lg:items-start">
-            <ul className="flex gap-8 text-gray-700 justify-start">
+          <div>
+            <ul className="flex gap-10 text-neutral-800 mt-3">
               {menus.map((menu) => (
                 <li key={menu.name}>
-                  <a
-                    href={menu.href}
-                    className="text-lg font-semibold no-underline hover:text-orange-500"
-                  >
+                  <Link href={menu.href} className="text-base font-medium hover:text-sky-500 active:text-sky-600">
                     {menu.name}
-                  </a>
+                  </Link>
+
                 </li>
               ))}
             </ul>
-          </div>
-
-          {/* 모바일 메뉴 버튼 */}
-          <div className="lg:hidden ml-auto">
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(true)}
-              className="inline-flex items-center justify-center rounded-md p-2 text-gray-700"
-            >
-              <Bars3Icon className="w-6 h-6" aria-hidden="true" />
-            </button>
           </div>
         </div>
       </nav>
-
-      {/* 모바일 메뉴 */}
-      <Dialog
-        open={mobileMenuOpen}
-        onClose={() => setMobileMenuOpen(false)}
-        className="lg:hidden"
-      >
-        <div className="fixed inset-0 z-10 bg-gray-800 bg-opacity-25" />
-        <DialogPanel className="fixed inset-y-0 right-0 z-20 w-4/5 max-w-xs bg-white p-6 shadow-lg">
-          <div className="flex items-center justify-between">
-            <a
-              href="#"
-              className="text-2xl font-bold text-orange-500 no-underline"
-            >
-              LOGO
-            </a>
-            <button
-              type="button"
-              onClick={() => setMobileMenuOpen(false)}
-              className="rounded-md p-2 text-gray-700"
-            >
-              <XMarkIcon className="w-6 h-6" aria-hidden="true" />
-            </button>
-          </div>
-          <div className="mt-6">
-            <ul className="space-y-4">
-              {menus.map((menu) => (
-                <li key={menu.name}>
-                  <a
-                    href={menu.href}
-                    className="block text-lg font-semibold text-gray-700 no-underline hover:text-orange-500"
-                  >
-                    {menu.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </DialogPanel>
-      </Dialog>
     </header>
   );
 }

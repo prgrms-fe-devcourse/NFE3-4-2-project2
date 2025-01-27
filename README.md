@@ -8,6 +8,7 @@ npm run dev
 
 ## 의존성 설치
 
+<<<<<<< HEAD
 - tailwind 관련 의존성 설치
 ```bash
 npm install @headlessui/react @heroicons/react
@@ -37,6 +38,14 @@ npm i pretendard
 - Remove : 파일을 삭제하는 작업만 수행한 경우
 - !BREAKING CHANGE : 커다란 API 변경의 경우
 - !HOTFIX : 급하게 치명적인 버그를 고쳐야 하는 경우
+=======
+package.json, package-lock.json 최신으로 받은 후
+```bash
+npm i
+# or
+npm install
+```
+>>>>>>> 353fa2cac644193f71a41e749f9795b6eb8ced91
 
 ## 폴더 구조 설명
 
