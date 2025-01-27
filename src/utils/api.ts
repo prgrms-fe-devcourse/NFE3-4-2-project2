@@ -82,10 +82,10 @@ export default class APIConnect {
           throw new Error(`HTTP Error: ${responseCommon.status || responseIntro.status || responseInfo.status} - 데이터를 불러오지 못했습니다.`);
         }
         
-        const commonData = responseCommon?.data?.response?.body?.items?.item?.[0] || {};
-        const introData = responseIntro?.data?.response?.body?.items?.item?.[0] || {};
-        const infoData1 = responseInfo?.data?.response?.body?.items?.item?.[0] || {};
-        const infoData2 = responseInfo?.data?.response?.body?.items?.item?.[1] || {};
+        const commonData = responseCommon.data.response.body.items.item[0] || {};
+        const introData = responseIntro.data.response.body.items.item[0] || {};
+        const infoData1 = responseInfo.data.response.body.items.item[0] || {};
+        const infoData2 = responseInfo.data.response.body.items.item[1] || {};
         
         const merged = {
           ...commonData,
