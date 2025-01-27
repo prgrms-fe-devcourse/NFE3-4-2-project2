@@ -5,7 +5,7 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
 
-const TravelListPage: React.FC = () => {
+const TravelPage: React.FC = () => {
   return (
     <div className="min-h-screen">
       <Header />
@@ -29,10 +29,10 @@ const TravelListPage: React.FC = () => {
         {/* Title Section */}
         <div className="text-center mb-8">
           <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
-            영랑호
+            횡성루지체험장
           </h2>
           <p className="text-xl font-normal text-neutral-800">
-            자연경관지 · 호수
+            레저 및 체험
           </p>
         </div>
 
@@ -41,7 +41,7 @@ const TravelListPage: React.FC = () => {
           <div className="lg:col-span-2">
             <div className="w-full h-auto">
               <Image
-                src="/images/lake.png"
+                src="/images/detail/ruge.png"
                 alt="Lake"
                 width={720}
                 height={420}
@@ -54,19 +54,24 @@ const TravelListPage: React.FC = () => {
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Image
-                  src="/images/address.png"
+                  src="/images/detail/address.png"
                   alt="주소"
                   width={20}
                   height={20}
                 />
-                <h3 className="text-xl font-semibold text-neutral-800">주소</h3>
-                <p className="text-xl font-normal text-neutral-800">
-                  강원특별자치도 속초시 영랑호반길 140
-                </p>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
+                    주소
+                  </span>
+                  <span className="text-xl font-normal text-neutral-800">
+                  강원특별자치도 횡성군 우천면 전재로
+                  </span>
+                </div>
+              
               </div>
               <div className="flex items-center space-x-2">
                 <Image
-                  src="/images/tel.png"
+                  src="/images/detail/tel.png"
                   alt="문의처"
                   width={20}
                   height={20}
@@ -75,74 +80,61 @@ const TravelListPage: React.FC = () => {
                   문의처
                 </h3>
                 <p className="text-xl font-normal text-neutral-800">
-                  033-639-2690
+                033-342-5503, 5504
                 </p>
               </div>
               <div className="flex items-center space-x-2">
                 <Image
-                  src="/images/homepage.png"
+                  src="/images/detail/homepage.png"
                   alt="홈페이지"
                   width={20}
                   height={20}
                 />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  홈페이지
-                </h3>
-                <a
-                  href="https://yeongrang-lake.co.kr"
-                  className="text-xl font-normal text-neutral-800 underline hover:no-underline"
-                >
-                  www.sokctour.com
-                </a>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/Facility.png"
-                  alt="편의시설"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  편의시설
-                </h3>
-
-                <Image
-                  src="/images/parking.png"
-                  alt="주차"
-                  width={20}
-                  height={20}
-                />
-                <p className="text-xl font-normal text-neutral-800">주차</p>
-
-                <Image
-                  src="/images/rest_man.png"
-                  alt="남자 화장실"
-                  width={16}
-                  height={16}
-                />
-                <Image
-                  src="/images/rest_wo.png"
-                  alt="여자 화장실"
-                  width={16}
-                  height={16}
-                />
-                <p className="text-xl font-normal text-neutral-800">화장실</p>
+                <div className="flex items-center space-x-2">
+                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
+                    홈페이지:
+                  </span>
+                  <a
+                    href="http://luge.hsg.go.kr/kor/main/index.html"
+                    className="text-xl font-normal text-neutral-800 underline hover:no-underline"
+                  >
+                    http://luge.hsg.go.kr/kor/main/index.html
+                  </a>
+                </div>
               </div>
             </div>
 
             {/* Buttons */}
             <div className="flex items-center space-x-4">
+              {/* 예매하기 버튼 */}
               <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
                 <span className="font-semibold text-lg leading-7 tracking-normal">
-                  다녀온 관광지 추가
+                  예매하기
                 </span>
               </button>
+
+              {/* 리뷰 작성 버튼 */}
               <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
                 <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">
                   리뷰 작성
                 </span>
               </button>
+
+              {/* 찜하기 버튼 */}
+              <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
+                <Image
+                  src="/images/heart.png"
+                  alt="찜하기"
+                  width={24}
+                  height={24}
+                />
+                <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">
+                  찜
+                </span>
+              </button>
             </div>
+
+
           </div>
         </div>
 
@@ -152,30 +144,45 @@ const TravelListPage: React.FC = () => {
           <ul className="space-y-2 text-gray-600">
             <li className="flex items-center space-x-2">
               <Image
-                src="/images/break.png"
+                src="/images/detail/break.png"
                 alt="휴일"
                 width={20}
                 height={20}
               />
-              <span>휴일: 연중무휴</span>
+              <span><span className="font-semibold" >휴일 : </span> 매월 마지막주 화요일(성수기 제외), 동계휴장(12월-2월)</span>
             </li>
             <li className="flex items-center space-x-2">
               <Image
-                src="/images/time.png"
+                src="/images/detail/time.png"
                 alt="운영시간"
                 width={20}
                 height={20}
               />
-              <span>운영시간: 07:00-20:00</span>
+              <span><span className="font-semibold">운영시간 : </span> 비수기 09:30-17:30 성수기 09:30-18:30</span>
             </li>
-            <li className="flex items-center space-x-2">
+            <li className="flex items-start space-x-2">
               <Image
-                src="/images/cost.png"
+                src="/images/detail/cost.png"
                 alt="입장료"
                 width={20}
                 height={20}
               />
-              <span>입장료: 무료</span>
+              <span>
+                <span className="font-semibold">입장료 : </span> [ 비수기 ] 1회권 12,000원 2회권 21,000원<br />
+                [ 성수기 (7/15~8/31) 및 주말, 공휴일 ] 1회권 15,000원, 2회권 24,000원<br />
+                관내학생단체 - 50% 할인, 관외학생단체 - 30% 할인, 횡성군민, 군인, 단체, 숙박, 제휴 할인, 영월, 평창, 홍천, 원주 지역민, 주요 관광시설(횡성호수길, 풍수원유물전시관, 안흥찐빵모락모락마을, 횡성한우체험관) 이용객, 청소년(9세-24세) - 20% 할인<br />
+                별도 입장료는 없음
+              </span>
+            </li>
+
+            <li className="flex items-center space-x-2">
+              <Image
+                src="/images/detail/cost.png"
+                alt="입장료"
+                width={20}
+                height={20}
+              />
+              <span><span className="font-semibold">추가정보 : </span>만 10세 이상이며 키120cm이상 단독탑승(만 10세 미만, 키 95-120cm, 총 몸무게 120kg 미만 시, 보호자(만 18세 이상)와 동반탑승)</span>
             </li>
           </ul>
         </section>
@@ -184,21 +191,7 @@ const TravelListPage: React.FC = () => {
         <section className="my-8">
           <h3 className="text-2xl font-bold mb-4">소개</h3>
           <p className="text-gray-600 leading-relaxed">
-            영랑호는 해안 사구가 발달해 형성된 자연 석호로 둘레가 7.8㎞, 면적이
-            약 1.2㎢에 이르며 수심이 8m를 훌쩍 넘길 만큼 넓고 깊다. 장천천에서
-            흘러든 물이 영랑교 밑의 수로를 통해 동해와 연결된다. 속초시 장사동과
-            영랑동, 동명동, 금호동에 둘러싸여 있으며 호숫가 둘레로 걷기 좋은
-            산책로가 조성되어 있다. 산책로를 따라 맑고 잔잔한 호수와 벚꽃,
-            영산홍, 갈대 등이 어우러진 서정적이고 아름다운 풍경이 이어진다.
-            삼국유사에 따르면 영랑호는 신라의 화랑인 ‘영랑’의 이름에서 따온
-            것으로 전해진다. 금강산에서 수련을 마친 영랑이 무술대회장을 가던 중
-            이 호수를 지나게 되었는데 그만 수려한 경관에 반해 무술대회 출전도
-            잊고 이곳에 오래 머물렀다고 한다. 옛 기록에도 남아 있을 만큼
-            영랑호는 뛰어난 경치를 자랑한다. 특히 속초 8경 중 하나인 범바위는
-            보는 이들마다 감탄을 자아낸다. 호랑이가 가만히 웅크리고 앉아 있는 것
-            같은 신비로운 기운이 흐른다. 기암괴석이 여러 개 모여 있는 관음암과
-            보광사도 놓쳐선 안 될 볼거리다. 호숫가 서쪽에는 있는 습지생태공원도
-            가볼만하다.
+          육상 썰매로도 불리는 루지는 동계올림픽 썰매종목 중 하나인 루지 썰매에 바퀴를 달아 사계절용으로 변신한 무동력 레저스포츠이다. 별도의 조작없이 중력에 몸을 맡긴 채 스스로 속도를 제어하며 시원한 바람과 풍격을 만끽할 수 있다. 국도 42호선 전재-우천면 오원리 구간의 기존 도로와 숲, 자연 그대로에 다양한 테마구간을 더하여 다이나믹한 코스가 완성되었고 단일코스로는 길이 2.4km로 세계 최장 길이와 인위적으로 S자 코스를 꼬아 놓은 것이 아니라 실제 도로를 이용하여 조성된 코스이다.
           </p>
         </section>
 
@@ -206,7 +199,7 @@ const TravelListPage: React.FC = () => {
         <section className="my-8">
           <h3 className="text-2xl font-bold mb-4">위치</h3>
           <Image
-            src="/images/map.png"
+            src="/images/detail/map.png"
             alt="위치"
             width={720}
             height={420}
@@ -219,4 +212,4 @@ const TravelListPage: React.FC = () => {
   );
 };
 
-export default TravelListPage;
+export default TravelPage;

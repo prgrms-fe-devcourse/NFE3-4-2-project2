@@ -1,9 +1,11 @@
+
 import { ListProps } from "@/types/types";
 import ListCard from "./ListCard";
 
 // dummyItems 데이터를 외부에서 정의
 const dummyItems: ListProps[] = [
-  { imageUrl: "/images/lake.png", area: "횡성군", title: "횡성자연휴양림", contentId:"127565", contentTypeId:"12" },
+  
+  { imageUrl: "/images/lake.png", area: "횡성군", title: "횡성자연휴양림", contentId:"127565", contentTypeId:"12"},
   { imageUrl: "/images/lake.png", area: "춘천", title: "춘천호수", contentId:"127565", contentTypeId:"12" },
   { imageUrl: "/images/lake.png", area: "속초", title: "속초해변", contentId:"127565", contentTypeId:"12" },
   { imageUrl: "/images/lake.png", area: "강릉", title: "경포대", contentId:"127565", contentTypeId:"12" },
@@ -23,6 +25,7 @@ const CardList = ({ items = dummyItems }: { items?: ListProps[] }) => {
     <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
       <div className="grid grid-cols-3 gap-8">
         {items.map((item, index) => (
+          
           <ListCard
             key={index}
             imageUrl={item.imageUrl}
@@ -31,6 +34,7 @@ const CardList = ({ items = dummyItems }: { items?: ListProps[] }) => {
             contentId={item.contentId}
             contentTypeId={item.contentTypeId}
           />
+          
         ))}
       </div>
     </div>
