@@ -43,8 +43,55 @@ export default class APIConnect {
             throw new Error(`Axios 요청이 실패했습니다: ${err}`);
           }
     }
-    static getTourAreaInfo(){
-
+    /**
+     * TourAPI에서 지역별 상세정보를 가지고오는 메서드입니다.
+     * @param {string} contentId - 콘텐츠 고유 ID
+     * @param {number} contentTypeId - 콘텐츠의 Type ID
+     * @returns {Array} detailCommon, detailIntro, detailInfo 세 가지 오퍼레이션에서 가지고 온 정보를 묶어 반환합니다.
+     */
+    static async getTourAreaInfo(contentId:number, contentTypeId:number):Promise<string>{
+      try{
+        const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1",{
+          params:{
+            ...this._tourDefaultOption,
+            contentId : contentId,
+            defaultYN : 'Y',
+            firstImageYN : 'Y',
+            areacodeYN : 'Y',
+            catcodeYN : 'Y',
+            addrinfoYN : 'Y',
+            mapinfoYN : 'Y',
+            overviewYN : 'Y',
+          }
+        })
+        const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1",{
+          params:{
+            ...this._tourDefaultOption,
+            contentId : contentId,
+            contentTypeId : contentTypeId
+          }
+        })
+        const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1",{
+          params:{
+            ...this._tourDefaultOption,
+            contentId : contentId,
+            contentTypeId : contentTypeId
+          }
+        })
+        if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+          throw new Error(`HTTP Error: ${responseCommon.status || responseIntro.status || responseInfo.status} - 데이터를 불러오지 못했습니다.`);
+        }
+        const merged = {
+          ...responseCommon.data.response.body.items.item[0],
+          ...responseIntro.data.response.body.items.item[0],
+          ...responseInfo.data.response.body.items.item[0],
+          ...responseInfo.data.response.body.items.item[1] || '',
+        }
+      return merged;
+     }
+      catch(err){
+        throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
     }
     static getTourNatureList(){
 

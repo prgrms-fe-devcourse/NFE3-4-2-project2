@@ -1,11 +1,20 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
+import APIConnect from "@/utils/api";
 
 const TravelListPage: React.FC = () => {
+  useEffect(()=>{
+    const loadData = async()=>{
+      const info = await APIConnect.getTourAreaInfo(127565, 12);
+      console.log(info)
+    };
+    loadData();
+  },[]);
+
   return (
     <div className="min-h-screen">
       <Header />
