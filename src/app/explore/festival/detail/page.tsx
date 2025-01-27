@@ -32,7 +32,7 @@ const TravelPage: React.FC = () => {
           얼음나라화천 산천어축제
           </h2>
           <p className="text-xl font-normal text-neutral-800">
-            축제
+          축제
           </p>
         </div>
 
@@ -42,7 +42,7 @@ const TravelPage: React.FC = () => {
             <div className="w-full h-auto">
               <Image
                 src="/images/detail/sancheon.png"
-                alt="Lake"
+                alt="concert"
                 width={720}
                 height={420}
                 className="rounded-lg object-cover mx-auto"
@@ -51,7 +51,7 @@ const TravelPage: React.FC = () => {
           </div>
           <div className="flex flex-col justify-between space-y-4">
             {/* Info Section */}
-            <div className="space-y-4">
+            <div className="space-y-2">
               <div className="flex items-center space-x-2">
                 <Image
                   src="/images/detail/address.png"
@@ -59,30 +59,34 @@ const TravelPage: React.FC = () => {
                   width={20}
                   height={20}
                 />
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
-                    주소
-                  </span>
-                  <span className="text-xl font-normal text-neutral-800">
-                  강원특별자치도 화천군 화천읍 산천어길 137
-                  </span>
-                </div>
-              
+
+                <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
+                  주소
+                </span>
               </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/detail/tel.png"
-                  alt="문의처"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  문의처
-                </h3>
+              <span className="text-xl font-normal text-neutral-800">
+              강원특별자치도 화천군 화천읍 산천어길 137
+              </span>
+            </div>
+              
+              
+              <div className="space-y-2">
+                <div className="flex items-center space-x-2">
+                  <Image
+                    src="/images/detail/tel.png"
+                    alt="문의처"
+                    width={20}
+                    height={20}
+                  />
+                  <h3 className="text-xl font-semibold text-neutral-800">
+                    문의처
+                  </h3>
+                </div>
                 <p className="text-xl font-normal text-neutral-800">
                 033-342-5503, 5504
                 </p>
               </div>
+              
               <div className="space-y-2">
                 <div className="flex items-center space-x-2">
                   <Image
@@ -105,11 +109,11 @@ const TravelPage: React.FC = () => {
                   href="www.narafestival.com"
                   className="text-xl font-normal text-neutral-800 underline hover:no-underline block"
                 >
-                  www.narafestival.com
+                  https://www.narafestival.com
                 </a>
               </div>
 
-            </div>
+            
 
             {/* Buttons */}
             <div className="flex items-center space-x-4">
@@ -162,7 +166,7 @@ const TravelPage: React.FC = () => {
             <div>
               <span className="font-semibold">행사 내용</span>
               <div className="mt-2 text-neutral-800">
-                산천어 체험: 얼음낚시(현장/예약), 맨손잡기, 루어낚시<br />
+              산천어 체험: 얼음낚시(현장/예약), 맨손잡기, 루어낚시<br />
                 눈/얼음 체험: 눈썰매, 얼음썰매, 하늘가르기, 얼곰이성 미끄럼틀, 얼음축구, 컬링, 피겨 스케이트, 빙판 버블슈트<br />
                 문화/이벤트: 축제 여는 마당, 화천 복불복 이벤트, 얼음나라 방송국, 호국이 체험존, 화천 관광 홍보관 등<br />
                 편의/안전: 종합안내센터, 낚시 가이드, 몸녹임/유아쉼터, 이동 도우미, 의료 센터, 재난구조대, 화천소방서 등<br />
@@ -179,7 +183,7 @@ const TravelPage: React.FC = () => {
                 width={20}
                 height={20}
               />
-              <span><span className="font-semibold">운영시간 : </span> 9:00 ~ 18:00 (밤낚시 18:00 ~ 21:00)</span>
+              <span><span className="font-semibold">운영시간 : </span> 9:00 ~ 18:00 (밤낚시 18:00 ~ 21:00) </span>
             </li>
             <li className="flex items-start space-x-2">
               <Image
