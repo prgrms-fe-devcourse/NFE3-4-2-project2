@@ -6,252 +6,245 @@ import Header from "../components/common/Header";
 import Image from "next/image";
 import CommunityCard from "@/components/travel/CommunityCard";
 
+// Swiper 관련 import
+import "swiper/css";
+import "swiper/css/free-mode";
+import "swiper/css/pagination";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { FreeMode, Pagination } from "swiper/modules";
+import SwiperCard from "@/components/main/SwiperCard";
+
 export default function Home() {
-    return (
-        <div className="min-h-screen">
-            {/* Header 컴포넌트 추가 */}
-            <Header />
-            {/* ////////////////////////////////// */}
-            <SvgMap />
-            {/* 메인페이지 */}
-            <div className="bg-white mx-auto max-w-screen-xl">
-                {/* 검색창 */}
-                <div className="mb-24 mt-8 flex items-center justify-center w-full">
-                    <div className="flex">
-                        <div className="relative w-[992px]">
-                            {/* 검색 입력창 */}
-                            <input
-                                type="text"
-                                placeholder="가을 캠핑 관광지"
-                                className="w-full h-[68px] border-2 text-2xl font-semibold border-sky-500 rounded-full placeholder:text-2xl placeholder:font-semibold focus:border-sky-500 focus:outline-none focus:outline-sky-50 pl-8 pr-12"
-                            />
-                            {/* 검색 버튼 */}
-                            <button
-                                className="absolute right-7 top-1/2 transform -translate-y-1/2"
-                                onClick={() => alert("검색 버튼 클릭됨")}
-                            >
-                                <Image
-                                    src="/icons/main_search.svg"
-                                    alt="search 아이콘"
-                                    width={18}
-                                    height={18}
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 주요 관광지 소개 섹션 */}
-                <div className="flex w-full mb-[55px]">
-                    <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
-                        각각의 매력이 살아있는{" "}
-                    </div>
-                    <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">
-                        강원도 주요 관광지{" "}
-                    </div>
-                    <div className="flex items-center">
-                        <Image
-                            src="/icons/main_bluePin.svg"
-                            alt="bluePin 아이콘"
-                            width={30}
-                            height={30}
-                        />
-                    </div>
-
-                    {/* 더보기 버튼 */}
-                    <div className="ml-auto flex items-center">
-                        <button
-                            type="button"
-                            className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                            onClick={() => alert("더보기 버튼 클릭됨")}
-                        >
-                            더보기
-                            <Image
-                                src="/icons/main_arrow.svg"
-                                alt="arrow 아이콘"
-                                width={6}
-                                height={12}
-                                className="ml-2"
-                            />
-                        </button>
-                    </div>
-                </div>
-
-                {/* 이미지 버튼 */}
-                <div className="flex justify-between mb-[145px]">
-                    <button
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={() => alert("춘천 버튼 클릭됨")}
-                    >
-                        <Image
-                            src="/images/main/circle_Chuncheon.png"
-                            alt="춘천"
-                            fill
-                            className="object-cover"
-                        />
-                    </button>
-                    <button
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={() => alert("강릉 버튼 클릭됨")}
-                    >
-                        <Image
-                            src="/images/main/circle_Gangneung.png"
-                            alt="강릉"
-                            fill
-                            className="object-cover"
-                        />
-                    </button>
-                    <button
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={() => alert("속초 버튼 클릭됨")}
-                    >
-                        <Image
-                            src="/images/main/circle_Sokcho.png"
-                            alt="속초"
-                            fill
-                            className="object-cover"
-                        />
-                    </button>
-                    <button
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={() => alert("양양 버튼 클릭됨")}
-                    >
-                        <Image
-                            src="/images/main/circle_Yangyang.png"
-                            alt="양양"
-                            fill
-                            className="object-cover"
-                        />
-                    </button>
-                    <button
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={() => alert("정선 버튼 클릭됨")}
-                    >
-                        <Image
-                            src="/images/main/circle_Jeongseon.png"
-                            alt="정선"
-                            fill
-                            className="object-cover"
-                        />
-                    </button>
-                </div>
-
-                {/* 강원도 Hot한 식당 섹션 */}
-                <div className="bg-neutral-50">
-                    <div className="flex w-full mb-[55px]">
-                        <div className="flex items-center text-4xl font-bold text-neutral-800 mr-2">
-                            강원도 Hot한 식당{" "}
-                        </div>
-                        <div className="flex items-center">
-                            <Image
-                                src="/icons/main_yellowPin.svg"
-                                alt="bluePin 아이콘"
-                                width={30}
-                                height={30}
-                            />
-                        </div>
-
-                        {/* 더보기 버튼 */}
-                        <div className="ml-auto flex items-center">
-                            <button
-                                type="button"
-                                className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                                onClick={() => alert("더보기 버튼 클릭됨")}
-                            >
-                                더보기
-                                <Image
-                                    src="/icons/main_arrow.svg"
-                                    alt="arrow 아이콘"
-                                    width={6}
-                                    height={12}
-                                    className="ml-2"
-                                />
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* 스와이퍼 */}
-                    <div className="h-[474px] mb-[65px] text-center outline-dashed">
-                        스와이퍼
-                    </div>
-                </div>
-
-                {/* '강원도 같이 갈 사람' 섹션 */}
-                <div className="flex w-full mb-[55px] flex-col">
-                    <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
-                        같이 떠나면 두 배로 즐거운 여행{" "}
-                    </div>
-
-                    <div className="flex items-center justify-center w-full">
-                        <div className="text-4xl font-bold text-neutral-800">
-                            강원도 같이 갈 사람!{" "}
-                        </div>
-
-                        {/* 더보기 버튼 */}
-                        <div className="ml-auto flex items-center justify-between">
-                            <button
-                                type="button"
-                                className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                                onClick={() => alert("더보기 버튼 클릭됨")}
-                            >
-                                더보기
-                                <Image
-                                    src="/icons/main_arrow.svg"
-                                    alt="arrow 아이콘"
-                                    width={6}
-                                    height={12}
-                                    className="ml-2"
-                                />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 모집 카드 */}
-                <div className="flex justify-center items-center mb-44">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                        <CommunityCard
-                            imageUrl="/images/community/surfing.png"
-                            title="3기 양양 서핑 동호회 모집"
-                            location="양양"
-                            buttonText="참가"
-                        />
-                        <CommunityCard
-                            imageUrl="/images/community/galaxy.png"
-                            title="포토그래퍼와 함께 떠나는 강원도 밤하늘 여행"
-                            location="영월"
-                            buttonText="마감"
-                        />
-                        <CommunityCard
-                            imageUrl="/images/community/climbing.png"
-                            title="인천에서 출발하는 설악산 당일치기"
-                            location="속초"
-                            buttonText="참가"
-                        />
-                        <CommunityCard
-                            imageUrl="/images/community/dog.png"
-                            title="강릉 댕댕클럽카페 정기 모임 (누구나 환영!)"
-                            location="강릉"
-                            buttonText="참가"
-                        />
-                        <CommunityCard
-                            imageUrl="/images/community/snow.png"
-                            title="2025 제32회 태백산 눈축제"
-                            location="태백"
-                            buttonText="참가"
-                        />
-                        <CommunityCard
-                            imageUrl="/images/community/coffee.png"
-                            title="커피 투어 참가자 모집 (무료)"
-                            location="강릉"
-                            buttonText="마감"
-                        />
-                    </div>
-                </div>
+   return (
+      <div className="min-h-screen">
+         {/* Header 컴포넌트 추가 */}
+         <Header />
+         {/* ////////////////////////////////// */}
+         <SvgMap />
+         {/* 메인페이지 */}
+         <div className="bg-white mx-auto max-w-screen-xl">
+            {/* 검색창 */}
+            <div className="mb-24 mt-8 flex items-center justify-center w-full">
+               <div className="flex">
+                  <div className="relative w-[992px]">
+                     {/* 검색 입력창 */}
+                     <input
+                        type="text"
+                        placeholder="가을 캠핑 관광지"
+                        className="w-full h-[68px] border-2 text-2xl font-semibold border-sky-500 rounded-full placeholder:text-2xl placeholder:font-semibold focus:border-sky-500 focus:outline-none focus:outline-sky-50 pl-8 pr-12"
+                     />
+                     {/* 검색 버튼 */}
+                     <button
+                        className="absolute right-7 top-1/2 transform -translate-y-1/2"
+                        onClick={() => alert("검색 버튼 클릭됨")}>
+                        <Image src="/icons/main_search.svg" alt="search 아이콘" width={18} height={18} />
+                     </button>
+                  </div>
+               </div>
             </div>
-            {/* ////////////////////////////////// */}
-            {/* Footer 컴포넌트 추가 */}
-            <Footer />
-        </div>
-    );
+
+            {/* 주요 관광지 소개 섹션 */}
+            <div className="flex w-full mb-[55px]">
+               <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
+                  각각의 매력이 살아있는{" "}
+               </div>
+               <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">강원도 주요 관광지 </div>
+               <div className="flex items-center">
+                  <Image src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
+               </div>
+
+               {/* 더보기 버튼 */}
+               <div className="ml-auto flex items-center">
+                  <button
+                     type="button"
+                     className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
+                     onClick={() => alert("더보기 버튼 클릭됨")}>
+                     더보기
+                     <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                  </button>
+               </div>
+            </div>
+
+            {/* 이미지 버튼 */}
+            <div className="flex justify-between mb-[145px]">
+               <button
+                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                  onClick={() => alert("춘천 버튼 클릭됨")}>
+                  <Image src="/images/main/circle_Chuncheon.png" alt="춘천" fill className="object-cover" />
+               </button>
+               <button
+                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                  onClick={() => alert("강릉 버튼 클릭됨")}>
+                  <Image src="/images/main/circle_Gangneung.png" alt="강릉" fill className="object-cover" />
+               </button>
+               <button
+                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                  onClick={() => alert("속초 버튼 클릭됨")}>
+                  <Image src="/images/main/circle_Sokcho.png" alt="속초" fill className="object-cover" />
+               </button>
+               <button
+                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                  onClick={() => alert("양양 버튼 클릭됨")}>
+                  <Image src="/images/main/circle_Yangyang.png" alt="양양" fill className="object-cover" />
+               </button>
+               <button
+                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                  onClick={() => alert("정선 버튼 클릭됨")}>
+                  <Image src="/images/main/circle_Jeongseon.png" alt="정선" fill className="object-cover" />
+               </button>
+            </div>
+
+            {/* 강원도 Hot한 식당 섹션 */}
+            <div className="bg-neutral-50">
+               <div className="flex w-full mb-[55px]">
+                  <div className="flex items-center text-4xl font-bold text-neutral-800 mr-2">강원도 Hot한 식당 </div>
+                  <div className="flex items-center">
+                     <Image src="/icons/main_yellowPin.svg" alt="bluePin 아이콘" width={30} height={30} />
+                  </div>
+
+                  {/* 더보기 버튼 */}
+                  <div className="ml-auto flex items-center">
+                     <button
+                        type="button"
+                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
+                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        더보기
+                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                     </button>
+                  </div>
+               </div>
+
+               {/* 스와이퍼 */}
+               <div className="h-[474px] mb-[65px] text-center w-screen max-w-full mx-auto outline-dashed">
+                  <Swiper
+                     slidesPerView={5} // 1920px에서 5개 슬라이드 보이도록 설정
+                     spaceBetween={30} // 슬라이드 간격 설정
+                     freeMode={true}
+                     pagination={{
+                        clickable: true,
+                     }}
+                     modules={[FreeMode, Pagination]}
+                     className="w-full overflow-hidden" // Swiper 전체에 overflow-hidden 추가
+                     breakpoints={{
+                        1920: {
+                           slidesPerView: 5, // 1920px에서 보여줄 슬라이드 개수
+                           spaceBetween: 30, // 간격 설정
+                        },
+                        1024: {
+                           slidesPerView: 3, // 화면 크기에 맞춰 보여줄 슬라이드 수
+                           spaceBetween: 20,
+                        },
+                        768: {
+                           slidesPerView: 2,
+                           spaceBetween: 15,
+                        },
+                        640: {
+                           slidesPerView: 2,
+                           spaceBetween: 15,
+                        },
+                        480: {
+                           slidesPerView: 1,
+                           spaceBetween: 10,
+                        },
+                        320: {
+                           slidesPerView: 1,
+                           spaceBetween: 10,
+                        },
+                     }}>
+                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
+                        <SwiperSlide key={index}>
+                           <div
+                              className={`outline-dashed relative w-[400px] h-[474px] rounded-lg overflow-hidden transition-opacity duration-300 ${
+                                 index === 1 || index === 9
+                                    ? "opacity-50 absolute left-[-120px]" // 왼쪽 끝 카드
+                                    : index === 8
+                                    ? "opacity-50 absolute right-[-120px]" // 오른쪽 끝 카드
+                                    : "opacity-100"
+                              }`}>
+                              <SwiperCard
+                                 imageUrl="/images/main/test.png"
+                                 title="P.E.I coffee"
+                                 name="양양군"
+                                 imageSrc="/images/region/양양군.png"
+                                 isActive={true}
+                                 onClick={() => alert(`버튼 클릭됨: 카드 ${index}`)}
+                                 hashtags={["분위기", "전망좋은카페"]}
+                                 scale={0.7}
+                              />
+                           </div>
+                        </SwiperSlide>
+                     ))}
+                  </Swiper>
+               </div>
+            </div>
+
+            {/* '강원도 같이 갈 사람' 섹션 */}
+            <div className="flex w-full mb-[55px] flex-col">
+               <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
+                  같이 떠나면 두 배로 즐거운 여행{" "}
+               </div>
+
+               <div className="flex items-center justify-center w-full">
+                  <div className="text-4xl font-bold text-neutral-800">강원도 같이 갈 사람! </div>
+
+                  {/* 더보기 버튼 */}
+                  <div className="ml-auto flex items-center justify-between">
+                     <button
+                        type="button"
+                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
+                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        더보기
+                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            {/* 모집 카드 */}
+            <div className="flex justify-center items-center mb-44">
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+                  <CommunityCard
+                     imageUrl="/images/community/surfing.png"
+                     title="3기 양양 서핑 동호회 모집"
+                     location="양양"
+                     buttonText="참가"
+                  />
+                  <CommunityCard
+                     imageUrl="/images/community/galaxy.png"
+                     title="포토그래퍼와 함께 떠나는 강원도 밤하늘 여행"
+                     location="영월"
+                     buttonText="마감"
+                  />
+                  <CommunityCard
+                     imageUrl="/images/community/climbing.png"
+                     title="인천에서 출발하는 설악산 당일치기"
+                     location="속초"
+                     buttonText="참가"
+                  />
+                  <CommunityCard
+                     imageUrl="/images/community/dog.png"
+                     title="강릉 댕댕클럽카페 정기 모임 (누구나 환영!)"
+                     location="강릉"
+                     buttonText="참가"
+                  />
+                  <CommunityCard
+                     imageUrl="/images/community/snow.png"
+                     title="2025 제32회 태백산 눈축제"
+                     location="태백"
+                     buttonText="참가"
+                  />
+                  <CommunityCard
+                     imageUrl="/images/community/coffee.png"
+                     title="커피 투어 참가자 모집 (무료)"
+                     location="강릉"
+                     buttonText="마감"
+                  />
+               </div>
+            </div>
+         </div>
+         {/* ////////////////////////////////// */}
+         {/* Footer 컴포넌트 추가 */}
+         <Footer />
+      </div>
+   );
 }
