@@ -1,27 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+## 서버 돌리기
 
-## Getting Started
-
-First, run the development server:
+개발 서버 돌리기:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 ## 의존성 설치
 
+<<<<<<< HEAD
+- tailwind 관련 의존성 설치
+```bash
+npm install @headlessui/react @heroicons/react
+```
+  
+- 부트스트랩 icons 설치
+```bash
+npm i bootstrap-icons
+```
+    
+- Pretendard font 설치
+```bash
+npm i pretendard
+```
+  
+## Git 컨벤션
+- Feat : 새로운 기능 추가
+- Fix : 버그 수정
+- Docs : 문서 수정
+- Style : 코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우
+- Refactor : 코드 리팩토링
+- Test : 테스트 코드, 리팩토링 테스트 코드 추가
+- Chore : 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore
+- Design : CSS 등 사용자 UI 디자인 변경
+- Comment : 필요한 주석 추가 및 변경
+- Rename : 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우
+- Remove : 파일을 삭제하는 작업만 수행한 경우
+- !BREAKING CHANGE : 커다란 API 변경의 경우
+- !HOTFIX : 급하게 치명적인 버그를 고쳐야 하는 경우
+=======
 package.json, package-lock.json 최신으로 받은 후
 ```bash
 npm i
 # or
 npm install
 ```
+>>>>>>> 353fa2cac644193f71a41e749f9795b6eb8ced91
 
 ## 폴더 구조 설명
 
@@ -123,3 +147,6 @@ npm install
             storage.ts            # 로컬 스토리지 관련 함수
             validation.ts         # 입력 값 검증 함수
 ```
+
+
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`] (https://nextjs.org/docs/app/api-reference/cli/create-next-app).
