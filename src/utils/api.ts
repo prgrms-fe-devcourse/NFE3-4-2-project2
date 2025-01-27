@@ -51,7 +51,6 @@ export default class APIConnect {
       throw new Error(`Axios 요청이 실패했습니다: ${err}`);
     }
   }
-
   /**
    * TourAPI에서 지역별 상세정보를 가지고오는 메서드입니다.
    * @param {string} contentId - 콘텐츠 고유 ID
@@ -110,69 +109,111 @@ export default class APIConnect {
           } - 데이터를 불러오지 못했습니다.`
         );
       }
+
+      const commonData = responseCommon.data.response.body.items.item[0] || {};
+      const introData = responseIntro.data.response.body.items.item[0] || {};
+      const infoData1 = responseInfo.data.response.body.items.item[0] || {};
+      const infoData2 = responseInfo.data.response.body.items.item[1] || {};
+
       const merged = {
-        ...responseCommon.data.response.body.items.item[0],
-        ...responseIntro.data.response.body.items.item[0],
-        ...responseInfo.data.response.body.items.item[0],
-        ...(responseInfo.data.response.body.items.item[1] || ""),
+        ...commonData,
+        ...introData,
+        ...infoData1,
+        extraInfo: infoData2, // 추가 정보로 분리
       };
       return merged;
     } catch (err) {
       throw new Error(`Axios 요청이 실패했습니다: ${err}`);
     }
   }
-
+  static getTourNatureList() {}
   /**
-   * TourAPI에서 역사 관광지 리스트를 가져오는 메서드입니다.
-   * @param {string} areaCode - 지역 코드, 강원도는 '32'
-   * @param {number} page - 불러올 페이지. 기본값은 1입니다.
-   * @returns {Array} 역사 관광지 리스트
+   * TourAPI에서 축제 정보를 가져오는 메서드입니다.
+   * @param {string} eventStartDate - 축제 시작일 (YYYYMMDD 형식, 기본값: '20240101').
+   * @param {string} eventEndDate - 축제 종료일 (YYYYMMDD 형식, 기본값: 없음).
+   * @param {number} page - 불러올 페이지 (기본값: 1).
+   * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
+   * @returns {Promise<object[]>} 축제 정보 리스트를 반환합니다.
    */
-  static async getTourHistoryList(
-    areaCode: string = "32",
-    page: number = 1
-  ): Promise<string> {
+  static async getFestivalList(
+    eventStartDate: string = "20240101",
+    eventEndDate?: string,
+    page: number = 1,
+    sigunguCode: string = ""
+  ): Promise<object[]> {
     try {
-      const historyTourList: unknown[] = []; // unknown 타입 사용
+      // 요청 보내기
+      const response = await axios.get(
+        this._tourDefaultURL + "searchFestival1",
+        {
+          params: {
+            ...this._tourDefaultOption, // 기본 옵션
+            eventStartDate,
+            eventEndDate,
+            pageNo: page,
+            areaCode: 32, // 강원도 지역 코드
+            sigunguCode,
+            listYN: "Y", // 목록 구분
+          },
+        }
+      );
 
-      for (let cat3Code = 10100; cat3Code <= 11000; cat3Code += 100) {
-        const response = await axios.get(
-          this._tourDefaultURL + "areaBasedList1",
-          {
-            params: {
-              ...this._tourDefaultOption,
-              pageNo: page,
-              areaCode: areaCode,
-              contentTypeId: 12,
-              cat1: "A02",
-              cat2: "A0201",
-              cat3: `A0201${cat3Code}`,
-              listYN: "Y",
-              arrange: "A",
-            },
-          }
+      // 응답 상태 확인
+      if (response.status !== 200) {
+        throw new Error(
+          `HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`
         );
-
-        if (response.status !== 200) {
-          throw new Error(`HTTP Error: ${response.status}`);
-        }
-
-        const items = response.data?.response?.body?.items?.item;
-        if (Array.isArray(items)) {
-          historyTourList.push(...items);
-        }
       }
 
-      // unknown 타입을 사용하므로 타입을 체크한 후 사용해야 합니다
-      const titles = historyTourList
-        .filter(
-          (item): item is { title: string } =>
-            typeof item === "object" && item !== null && "title" in item
-        )
-        .map((item) => item.title)
-        .join(", ");
+      // 축제 데이터 반환
+      return response.data.response.body.items.item || [];
+    } catch (err) {
+      // 에러 처리
+      console.error("getFestivalList 요청 실패:", err);
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+    }
+  }
 
-      return titles;
+  /**
+   * 문화관광지 정보를 가져오는 메서드입니다.
+   * @param {string} areaCode - 지역 코드 (예: 32는 강원도)
+   * @param {string} contentTypeId - 콘텐츠 타입 ID (예: 12는 문화관광지)
+   * @param {string} cat1 - 카테고리 1 코드 (예: A02)
+   * @param {string} cat2 - 카테고리 2 코드 (예: A0201)
+   * @param {string} cat3 - 카테고리 3 코드 (예: A02010100)
+   * @param {number} page - 불러올 페이지 번호 (기본값: 1)
+   * @returns {Promise<any[]>} 문화관광지 정보 리스트
+   */
+  static async getCulturalTourList(
+    areaCode: string = "32", // 기본값: 강원도
+    contentTypeId: string = "12", // 기본값: 문화관광지
+    cat1: string = "A02", // 기본값: 카테고리 1
+    cat2: string = "A0201", // 기본값: 카테고리 2
+    cat3: string = "A02010100", // 기본값: 카테고리 3
+    page: number = 1
+  ): Promise<object[]> {
+    try {
+      const response = await axios.get(
+        this._tourDefaultURL + "areaBasedList1",
+        {
+          params: {
+            ...this._tourDefaultOption,
+            areaCode: areaCode, // areaCode 값 확인
+            contentTypeId: contentTypeId,
+            cat1: cat1,
+            cat2: cat2,
+            cat3: cat3,
+            pageNo: page,
+          },
+        }
+      );
+
+      if (response.status !== 200) {
+        throw new Error(
+          `HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`
+        );
+      }
+      return response.data.response.body.items.item || []; // 문화관광지 리스트 반환
     } catch (err) {
       throw new Error(`Axios 요청이 실패했습니다: ${err}`);
     }
