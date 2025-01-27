@@ -22,7 +22,7 @@ export default function Home() {
          {/* ////////////////////////////////// */}
          <SvgMap />
          {/* 메인페이지 */}
-         <div className="bg-white mx-auto max-w-screen-xl">
+         <div className="bg-white mx-auto">
             {/* 검색창 */}
             <div className="mb-24 mt-8 flex items-center justify-center w-full">
                <div className="flex">
@@ -44,59 +44,60 @@ export default function Home() {
             </div>
 
             {/* 주요 관광지 소개 섹션 */}
-            <div className="flex w-full mb-[55px]">
-               <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
-                  각각의 매력이 살아있는{" "}
-               </div>
-               <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">강원도 주요 관광지 </div>
-               <div className="flex items-center">
-                  <Image src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
-               </div>
+            <div className="max-w-screen-xl mx-auto">
+               <div className="flex w-full mb-[55px] ">
+                  <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
+                     각각의 매력이 살아있는{" "}
+                  </div>
+                  <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">강원도 주요 관광지 </div>
+                  <div className="flex items-center">
+                     <Image src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
+                  </div>
 
-               {/* 더보기 버튼 */}
-               <div className="ml-auto flex items-center">
+                  {/* 더보기 버튼 */}
+                  <div className="ml-auto flex items-center">
+                     <button
+                        type="button"
+                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
+                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        더보기
+                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                     </button>
+                  </div>
+               </div>
+               {/* 이미지 버튼 */}
+               <div className="flex justify-between mb-[145px]">
                   <button
-                     type="button"
-                     className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                     onClick={() => alert("더보기 버튼 클릭됨")}>
-                     더보기
-                     <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                     className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                     onClick={() => alert("춘천 버튼 클릭됨")}>
+                     <Image src="/images/main/circle_Chuncheon.png" alt="춘천" fill className="object-cover" />
+                  </button>
+                  <button
+                     className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                     onClick={() => alert("강릉 버튼 클릭됨")}>
+                     <Image src="/images/main/circle_Gangneung.png" alt="강릉" fill className="object-cover" />
+                  </button>
+                  <button
+                     className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                     onClick={() => alert("속초 버튼 클릭됨")}>
+                     <Image src="/images/main/circle_Sokcho.png" alt="속초" fill className="object-cover" />
+                  </button>
+                  <button
+                     className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                     onClick={() => alert("양양 버튼 클릭됨")}>
+                     <Image src="/images/main/circle_Yangyang.png" alt="양양" fill className="object-cover" />
+                  </button>
+                  <button
+                     className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
+                     onClick={() => alert("정선 버튼 클릭됨")}>
+                     <Image src="/images/main/circle_Jeongseon.png" alt="정선" fill className="object-cover" />
                   </button>
                </div>
             </div>
 
-            {/* 이미지 버튼 */}
-            <div className="flex justify-between mb-[145px]">
-               <button
-                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                  onClick={() => alert("춘천 버튼 클릭됨")}>
-                  <Image src="/images/main/circle_Chuncheon.png" alt="춘천" fill className="object-cover" />
-               </button>
-               <button
-                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                  onClick={() => alert("강릉 버튼 클릭됨")}>
-                  <Image src="/images/main/circle_Gangneung.png" alt="강릉" fill className="object-cover" />
-               </button>
-               <button
-                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                  onClick={() => alert("속초 버튼 클릭됨")}>
-                  <Image src="/images/main/circle_Sokcho.png" alt="속초" fill className="object-cover" />
-               </button>
-               <button
-                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                  onClick={() => alert("양양 버튼 클릭됨")}>
-                  <Image src="/images/main/circle_Yangyang.png" alt="양양" fill className="object-cover" />
-               </button>
-               <button
-                  className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                  onClick={() => alert("정선 버튼 클릭됨")}>
-                  <Image src="/images/main/circle_Jeongseon.png" alt="정선" fill className="object-cover" />
-               </button>
-            </div>
-
             {/* 강원도 Hot한 식당 섹션 */}
-            <div className="bg-neutral-50">
-               <div className="flex w-full mb-[55px]">
+            <div className="bg-neutral-50 py-12 mb-12">
+               <div className="flex w-full mb-[55px] max-w-screen-xl mx-auto">
                   <div className="flex items-center text-4xl font-bold text-neutral-800 mr-2">강원도 Hot한 식당 </div>
                   <div className="flex items-center">
                      <Image src="/icons/main_yellowPin.svg" alt="bluePin 아이콘" width={30} height={30} />
@@ -115,52 +116,30 @@ export default function Home() {
                </div>
 
                {/* 스와이퍼 */}
-               <div className="h-[474px] mb-[65px] text-center w-screen max-w-full mx-auto outline-dashed">
+               <div className="text-center w-screen max-w-full mx-auto">
                   <Swiper
-                     slidesPerView={5} // 1920px에서 5개 슬라이드 보이도록 설정
-                     spaceBetween={30} // 슬라이드 간격 설정
-                     freeMode={true}
-                     pagination={{
-                        clickable: true,
-                     }}
-                     modules={[FreeMode, Pagination]}
-                     className="w-full overflow-hidden" // Swiper 전체에 overflow-hidden 추가
+                     slidesPerView={4} // 1920px에서 5개 슬라이드 보이도록 설정
+                     centeredSlides={true}
+                     spaceBetween={24} // 슬라이드 간격 설정
+                     loop={true}
+                     className="w-full" // Swiper 전체에 overflow-hidden 추가
                      breakpoints={{
-                        1920: {
-                           slidesPerView: 5, // 1920px에서 보여줄 슬라이드 개수
-                           spaceBetween: 30, // 간격 설정
-                        },
-                        1024: {
-                           slidesPerView: 3, // 화면 크기에 맞춰 보여줄 슬라이드 수
-                           spaceBetween: 20,
-                        },
-                        768: {
-                           slidesPerView: 2,
-                           spaceBetween: 15,
+                        1920 : {
+                           slidesPerView: 6,
                         },
                         640: {
-                           slidesPerView: 2,
+                           slidesPerView: 4,
                            spaceBetween: 15,
                         },
-                        480: {
-                           slidesPerView: 1,
-                           spaceBetween: 10,
-                        },
                         320: {
-                           slidesPerView: 1,
+                           slidesPerView: 1.5,
                            spaceBetween: 10,
                         },
                      }}>
                      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
                         <SwiperSlide key={index}>
                            <div
-                              className={`outline-dashed relative w-[400px] h-[474px] rounded-lg overflow-hidden transition-opacity duration-300 ${
-                                 index === 1 || index === 9
-                                    ? "opacity-50 absolute left-[-120px]" // 왼쪽 끝 카드
-                                    : index === 8
-                                    ? "opacity-50 absolute right-[-120px]" // 오른쪽 끝 카드
-                                    : "opacity-100"
-                              }`}>
+                              className={`relative aspect-[3/4] rounded-lg overflow-hidden transition-opacity duration-300`}>
                               <SwiperCard
                                  imageUrl="/images/main/test.png"
                                  title="P.E.I coffee"
@@ -169,7 +148,6 @@ export default function Home() {
                                  isActive={true}
                                  onClick={() => alert(`버튼 클릭됨: 카드 ${index}`)}
                                  hashtags={["분위기", "전망좋은카페"]}
-                                 scale={0.7}
                               />
                            </div>
                         </SwiperSlide>
@@ -179,7 +157,7 @@ export default function Home() {
             </div>
 
             {/* '강원도 같이 갈 사람' 섹션 */}
-            <div className="flex w-full mb-[55px] flex-col">
+            <div className="flex max-w-screen-xl mx-auto mb-[55px] flex-col">
                <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
                   같이 떠나면 두 배로 즐거운 여행{" "}
                </div>

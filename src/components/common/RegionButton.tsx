@@ -11,7 +11,7 @@ interface RegionButtonProps {
    scale?: number; // scale 비율을 받기 위한 optional prop
 }
 
-const RegionButton: React.FC<RegionButtonProps> = ({ name, imageSrc, isActive, onClick }) => {
+const RegionButton: React.FC<RegionButtonProps> = ({ name, imageSrc, isActive, onClick, scale=1 }) => {
    return (
       <button
          onClick={onClick}
@@ -19,7 +19,9 @@ const RegionButton: React.FC<RegionButtonProps> = ({ name, imageSrc, isActive, o
             isActive
                ? "bg-sky-100 border-blue-500 scale-105"
                : "hover:bg-gray-100 hover:scale-105 hover:shadow-md text-neutral-800"
-         } mt-2`}>
+         } mt-2`}
+         style={{scale:`${scale}`}}
+         >
          <Image src={imageSrc} alt={`${name} 로고`} width={20} height={20} className="w-5 h-5" />
          <span className="text-lg font-semibold">{name}</span>
       </button>
