@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/common/Header";
-import CardList from "@/components/common/CardList";
 import Footer from "@/components/common/Footer";
 
 export default function Festival() {
@@ -127,8 +126,6 @@ export default function Festival() {
           </div>
         </div>
       </div>
-
-      <CardList />
       <Footer />
     </div>
   );

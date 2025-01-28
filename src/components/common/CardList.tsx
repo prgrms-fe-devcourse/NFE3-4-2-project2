@@ -1,71 +1,103 @@
-import React, { useState, useEffect } from "react";
-import { ListProps, HistoricalTourItem } from "@/types/types";
+import React, { useEffect, useState } from "react";
+import { ListProps } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
 
-const CardList = () => {
-   const [tourData, setTourData] = useState<ListProps[]>([]);
+// HistoricalTourItem 타입
+interface HistoricalTourItem {
+   title: string;
+   addr1: string;
+   firstimage?: string;
+   mapx?: number;
+   mapy?: number;
+   contentid: number;
+   contenttypeid: number;
+}
+
+const CardList: React.FC<{ selectedOption: string }> = ({ selectedOption }) => {
+   const [tourData, setTourData] = useState<ListProps[] | undefined>(undefined);
    const [loading, setLoading] = useState<boolean>(true);
    const [currentPage, setCurrentPage] = useState<number>(1); // 현재 페이지 상태
-   const [totalPages, setTotalPages] = useState<number>(5); // 총 페이지 수
-   const [pageRange, setPageRange] = useState<number[]>([]); // 표시할 페이지 번호 범위
+   const [totalCount, setTotalCount] = useState<number>(0); // 전체 관광지 개수 상태
+   const [totalPages, setTotalPages] = useState<number>(0); // 전체 페이지 수 상태
 
-   // 페이지네이션을 위해 데이터를 불러오는 함수
-   const loadData = async (page: number) => {
+   // HistoricalTourItem을 ListProps로 변환하는 함수
+   const transformToListProps = (data: HistoricalTourItem[]): ListProps[] => {
+      return data.map((item) => ({
+         imageUrl: item.firstimage || "/images/ready.png",
+         area: item.addr1 || "",
+         title: item.title || "",
+         contentId: item.contentid || 0,
+         contentTypeId: item.contenttypeid || 0,
+      }));
+   };
+
+   const fetchData = async (page: number) => {
       setLoading(true);
       try {
-         const response = await APIConnect.getHistoricalTourList(page); // `response` 그대로 사용
+         let response: HistoricalTourItem[] = [];
+         let fetchedTotalCount = 0; // totalCount 값을 저장할 변수
 
-         // 받아온 data가 HistoricalTourItem[] 형식이라면, 그 자체로 사용
-         const formattedData: ListProps[] = response.map((item: HistoricalTourItem) => ({
-            imageUrl: item.firstimage || item.firstimage2 || "/images/ready.png",
-            area: item.addr1 || "지역 정보 없음",
-            title: item.title || "제목 없음",
-            contentId: item.contentid,
-            contentTypeId: item.contenttypeid,
-         }));
+         switch (selectedOption) {
+            case "계절별 관광지":
+               // response = await APIConnect.getSeasonalTourList(page);
+               break;
+            case "자연별 관광지":
+               // response = await APIConnect.getNatureTourList(page);
+               break;
+            case "문화·역사별 관광지":
+               response = (await APIConnect.getHistoricalTourList(page)) || [];
+               fetchedTotalCount = 285; // 예시로 전체 데이터 개수를 넣음, 실제 API에서 totalCount 받기
+               break;
+            default:
+               response = [];
+         }
 
-         setTourData(formattedData);
-         setCurrentPage(page); // 현재 페이지 갱신
+         setTourData(transformToListProps(response));
 
-         // totalCount가 별도로 포함된 경우, 해당 값으로 totalPages 설정
-         const totalCount = 100; // 실제 API 응답에 맞게 변경 필요
-         const numOfRows = 10;
-         setTotalPages(Math.ceil(totalCount / numOfRows)); // 전체 페이지 수 계산
+         // totalCount를 사용하여 totalPages 계산
+         setTotalCount(fetchedTotalCount);
+         setTotalPages(Math.ceil(fetchedTotalCount / 12)); // 1페이지당 12개 항목을 기준으로 totalPages 계산
 
          setLoading(false);
-
-         // 페이지 범위 계산 (5개씩 보여주기)
-         const startPage = Math.floor((page - 1) / 5) * 5 + 1;
-         const endPage = Math.min(startPage + 4, totalPages); // 최대 5개의 페이지 번호
-         const range = [];
-         for (let i = startPage; i <= endPage; i++) {
-            range.push(i);
-         }
-         setPageRange(range);
       } catch (err) {
          console.error("API 요청 실패:", err);
          setLoading(false);
       }
    };
 
-   // 컴포넌트가 마운트될 때 첫 번째 페이지 데이터 불러오기
    useEffect(() => {
-      loadData(1);
-   }, []); // loadData를 의존성 배열에 추가
+      fetchData(currentPage); // currentPage가 변경될 때마다 fetchData 호출
+   }, [selectedOption, currentPage]); // selectedOption과 currentPage가 변경될 때마다 데이터를 다시 불러옴
 
-   // 페이지 변경 시 호출되는 함수
-   const handlePageChange = (page: number) => {
-      if (page >= 1 && page <= totalPages) {
-         loadData(page);
-      }
-   };
-
+   // 로딩 중일 때
    if (loading) {
       return <div>Loading...</div>;
    }
 
+   // 데이터가 없을 때
+   if (!tourData || tourData.length === 0) {
+      return <div>No data available</div>;
+   }
+
+   // 페이지 범위 계산
+   let pageRange: number[] = [];
+   if (totalPages <= 5) {
+      // 총 페이지 수가 5개 이하일 경우, 모든 페이지 표시
+      pageRange = Array.from({ length: totalPages }, (_, index) => index + 1);
+   } else {
+      // 총 페이지 수가 5개 이상일 경우, 최대 5페이지까지만 표시
+      if (currentPage <= 3) {
+         pageRange = [1, 2, 3, 4, 5]; // 현재 페이지가 3 이하일 경우 1, 2, 3, 4, 5를 표시
+      } else if (currentPage >= totalPages - 2) {
+         pageRange = [totalPages - 4, totalPages - 3, totalPages - 2, totalPages - 1, totalPages]; // 마지막 5페이지를 표시
+      } else {
+         pageRange = [currentPage - 2, currentPage - 1, currentPage, currentPage + 1, currentPage + 2]; // 현재 페이지를 기준으로 5페이지 범위
+      }
+   }
+
+   // 데이터를 모두 불러왔을 때
    return (
       <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
          <div className="grid grid-cols-3 gap-8">
@@ -81,11 +113,12 @@ const CardList = () => {
             ))}
          </div>
 
+         {/* 페이지네이션 컴포넌트 */}
          <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
             pageRange={pageRange}
-            onPageChange={handlePageChange}
+            onPageChange={setCurrentPage} // 페이지 변경 시 currentPage 상태 업데이트
          />
       </div>
    );
