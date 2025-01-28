@@ -2,6 +2,18 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
+
+// 인터페이스 정의
+interface HistoricalTourItem {
+   title: string; // 관광지 이름
+   addr1: string; // 주소
+   firstimage?: string; // 대표 이미지 URL
+   mapx?: number; // X 좌표 (경도)
+   mapy?: number; // Y 좌표 (위도)
+   contentid: number; // 콘텐츠 ID
+   contenttypeid: number; // 콘텐츠 타입 ID
+}
+
 export default class APIConnect {
    static serviceName: string = "GangwonGo";
    private static _tourDefaultURL: string = "http://apis.data.go.kr/B551011/KorService1/";
@@ -170,29 +182,45 @@ export default class APIConnect {
     * TourAPI에서 역사 관광지 리스트를 가져오는 메서드입니다.
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1입니다.
-    * @returns {Promise<any[]>} - API에서 반환한 역사 관광지 리스트를 반환합니다.
-    *                             반환되는 데이터는 관광지 정보가 포함된 배열입니다.
+    * @returns {Promise<HistoricalTourItem[]>} - API에서 반환한 역사 관광지 리스트를 반환합니다.
     */
-   static async getHistoricalTourList(page: number = 1): Promise<string[]> {
-      try {
-         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-            params: {
-               ...this._tourDefaultOption,
-               pageNo: page,
-               listYN: "Y",
-               cat1: "A02",
-               cat2: "A0201",
-            },
-         });
-
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
-         }
-
-         // 받은 데이터를 처리하여 관광지 리스트 반환
-         return response.data.response.body.items.item;
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
-      }
-   }
+   static async getHistoricalTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+    try {
+       const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+          params: {
+             ...this._tourDefaultOption,
+             pageNo: page,
+             areaCode: 32,
+             listYN: "Y",
+             cat1: "A02", // 대분류: 문화관광
+             cat2: "A0201", // 중분류: 역사관광
+          },
+       });
+ 
+       // 응답 상태 체크
+       if (response.status !== 200) {
+          throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+       }
+ 
+       // 응답 데이터가 예상대로 구성되어 있는지 확인
+       const items: HistoricalTourItem[] = response.data?.response?.body?.items?.item || [];
+ 
+       // 만약 items가 없으면 경고를 출력하고 빈 배열을 반환
+       if (!items.length) {
+          console.warn("API 응답에 데이터가 없습니다.");
+       }
+ 
+       return items;
+    } catch (err: unknown) {
+       // 에러 처리
+       if (axios.isAxiosError(err)) {
+          throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+       } else if (err instanceof Error) {
+          throw new Error(`오류가 발생했습니다: ${err.message}`);
+       } else {
+          throw new Error(`알 수 없는 오류가 발생했습니다.`);
+       }
+    }
+ }
+ 
 }
