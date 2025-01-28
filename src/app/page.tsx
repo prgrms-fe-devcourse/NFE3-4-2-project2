@@ -124,7 +124,7 @@ export default function Home() {
                      loop={true}
                      className="w-full" // Swiper 전체에 overflow-hidden 추가
                      breakpoints={{
-                        1920 : {
+                        1920: {
                            slidesPerView: 6,
                         },
                         640: {

@@ -168,20 +168,20 @@ export default class APIConnect {
 
    /**
     * TourAPI에서 역사 관광지 리스트를 가져오는 메서드입니다.
-    * @param {number} page - 불러올 페이지. 기본값은 1입니다.
-    * @returns {Array} 역사 관광지 리스트를 반환합니다.
+    *
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1입니다.
+    * @returns {Promise<any[]>} - API에서 반환한 역사 관광지 리스트를 반환합니다.
+    *                             반환되는 데이터는 관광지 정보가 포함된 배열입니다.
     */
-   static async getHistoricalTourList(code: string, page: number = 1): Promise<string> {
+   static async getHistoricalTourList(page: number = 1): Promise<string[]> {
       try {
          const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
             params: {
                ...this._tourDefaultOption,
                pageNo: page,
-               areaCode: 32,
                listYN: "Y",
-               cat1: "A02", // 대분류
-               cat2: "A0201", // 중분류: 역사 관광지
-               _type: "json",
+               cat1: "A02",
+               cat2: "A0201",
             },
          });
 
@@ -189,7 +189,7 @@ export default class APIConnect {
             throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
          }
 
-         // 받은 데이터를 처리
+         // 받은 데이터를 처리하여 관광지 리스트 반환
          return response.data.response.body.items.item;
       } catch (err) {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
