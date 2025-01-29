@@ -1,3 +1,4 @@
+import { TourImg, TourDetailInfo } from "@/types/types";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
@@ -59,7 +60,7 @@ export default class APIConnect {
     * @param {number} contentTypeId - 콘텐츠의 Type ID
     * @returns {object} detailCommon, detailIntro, detailInfo 세 가지 오퍼레이션에서 가지고 온 정보를 객체로 묶어 반환합니다.
     */
-   static async getTourAreaInfo(contentId: number, contentTypeId: number): Promise<string> {
+   static async getTourAreaInfo(contentId: number, contentTypeId: number): Promise<TourDetailInfo> {
       try {
          const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
             params: {
@@ -96,18 +97,32 @@ export default class APIConnect {
             );
          }
 
-         const commonData = responseCommon.data.response.body.items.item[0] || {};
-         const introData = responseIntro.data.response.body.items.item[0] || {};
-         const infoData1 = responseInfo.data.response.body.items.item[0] || {};
-         const infoData2 = responseInfo.data.response.body.items.item[1] || {};
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0];
+         const infoData = responseInfo.data.response.body.items.item || {};
 
-         const merged = {
-            ...commonData,
-            ...introData,
-            ...infoData1,
-            ...infoData2,
+         return {
+            contentid : commonData.contentid,
+            cat3 : commonData.cat3, 
+            title : commonData.title,
+            overview : commonData.overview,
+            homepage:commonData.homepage || '',
+            firstimage:commonData.firstimage || '',
+            firstimage2:commonData.firstimage2 || '',
+            infocenter:introData.infocenter || '',
+            entranceFee:infoData.infotext || '',
+            restdate:introData.restdate || '',
+            useseason:introData.useseason || '',
+            usetime:introData.usetime || '',
+            //편의시설
+            chkbabycarriage:introData.chkbabycarriage || '', 
+            parking:introData.parking,
+            extraInfo:infoData,
+            //위치
+            addr: commonData.addr1,
+            mapx:commonData.mapx,
+            mapy:commonData.mapy,
          };
-         return merged;
       } catch (err) {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
@@ -159,7 +174,7 @@ export default class APIConnect {
     * @param {string} contentId - 콘텐츠 고유 ID
     * @returns {Array} 이미지 정보가 담긴 배열을 반환합니다.
     */
-   static async getTourImg(contentId: number): Promise<string> {
+   static async getTourImg(contentId: number): Promise<TourImg[]> {
       try {
          const response = await axios.get(this._tourDefaultURL + "detailImage1", {
             params: {
