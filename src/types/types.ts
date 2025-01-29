@@ -34,12 +34,19 @@ export interface TourDetailInfo{
    //편의시설
    chkbabycarriage? : string,
    parking?:string,
-   extraInfo? : Array<string>
+   extraInfo : Array<TourExtraInfo>
    //위치
    mapx:string,
    mapy:string,
    addr:string,
-}  
+}
+export interface TourExtraInfo{
+   contentid:string,
+   contenttypeid:string,
+   serialnum:string,
+   infoname:string,
+   infotext:string,
+}
 
 export interface TourImg {
    contentid:string,
@@ -48,4 +55,12 @@ export interface TourImg {
    originimgurl:string,
    serialnum:string,
    smallimageurl:string,
+}
+
+export interface CatList {
+   [key:string] : {
+      cat1:string,
+      cat2:string,
+      cat3:string
+   }
 }

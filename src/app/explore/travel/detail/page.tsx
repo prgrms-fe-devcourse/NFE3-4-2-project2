@@ -1,243 +1,213 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect,  useState } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import Image from "next/image";
+import DetailList from "@/components/travel/DetailList";
 import APIConnect from "@/utils/api";
+import { TourImg, TourDetailInfo, CatList } from "@/types/types";
+import catListJson from "@/utils/catList.json";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+
+const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
-  useEffect(()=>{
-    const loadData = async()=>{
-      const info = await APIConnect.getTourAreaInfo(127565, 12);
-      console.log(info)
-    };
-    loadData();
-  },[]);
+   // const router = useRouter();
+   // const {contentId, contetnTypeId} = router.query;
 
-  return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="mx-auto max-w-screen-xl px-4 py-8">
-        {/* 뒤로 가기 버튼 */}
-        <div className="flex justify-start mb-4">
-          <button
-            className="flex items-center space-x-2"
-            onClick={() => window.history.back()}
-          >
-            <Image
-              src="/images/goback.png"
-              alt="뒤로 가기"
-              width={16}
-              height={16}
-            />
-            <span className="text-sky-500 text-lg font-semibold">목록</span>
-          </button>
-        </div>
+   const blankbox = (
+      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+   );
+   const [infoList, setInfoList] = useState<TourDetailInfo>();
+   const [imgList, setImgList] = useState<TourImg[]>([]);
 
-        {/* Title Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
-            영랑호
-          </h2>
-          <p className="text-xl font-normal text-neutral-800">
-            자연경관지 · 호수
-          </p>
-        </div>
+   useEffect(() => {
+      const loadData = async () => {
+         // 기본적인 느낌
+         const key = 127565;
 
-        {/* Image and Info */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="w-full h-auto">
-              <Image
-                src="/images/lake.png"
-                alt="Lake"
-                width={720}
-                height={420}
-                className="rounded-lg object-cover mx-auto"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col justify-between space-y-4">
-            {/* Info Section */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/address.png"
-                  alt="주소"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">주소</h3>
-                <p className="text-xl font-normal text-neutral-800">
-                  강원특별자치도 속초시 영랑호반길 140
-                </p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/tel.png"
-                  alt="문의처"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  문의처
-                </h3>
-                <p className="text-xl font-normal text-neutral-800">
-                  033-639-2690
-                </p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/homepage.png"
-                  alt="홈페이지"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  홈페이지
-                </h3>
-                <a
-                  href="https://yeongrang-lake.co.kr"
-                  className="text-xl font-normal text-neutral-800 underline hover:no-underline"
-                >
-                  www.sokctour.com
-                </a>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/Facility.png"
-                  alt="편의시설"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  편의시설
-                </h3>
+         //운영정보 적음
+         // const key = 2798406;
 
-                <Image
-                  src="/images/parking.png"
-                  alt="주차"
-                  width={20}
-                  height={20}
-                />
-                <p className="text-xl font-normal text-neutral-800">주차</p>
+         //운영정보 많고 관광지 이미지 없음
+         //const key = 125800;
 
-                <Image
-                  src="/images/rest_man.png"
-                  alt="남자 화장실"
-                  width={16}
-                  height={16}
-                />
-                <Image
-                  src="/images/rest_wo.png"
-                  alt="여자 화장실"
-                  width={16}
-                  height={16}
-                />
-                <p className="text-xl font-normal text-neutral-800">화장실</p>
-              </div>
+         //운영정보 많은 페이지
+         // const key = 125789;
+         
+         const infoList: TourDetailInfo = await APIConnect.getTourAreaInfo(key, 12);
+         const img = await APIConnect.getTourImg(key);
+         setInfoList(infoList);
+         setImgList(img); // 상태 업데이트
+         console.log("infoList : ", infoList);
+         console.log("imgList : ", imgList);
+      };
+      loadData();
+   }, []); // 빈 배열로 설정하여 마운트 시 한 번만 실행
+
+   const getContentCategory = (key: string | undefined) => {
+      return (
+         <>
+            <span>{catList[key].cat2}</span> · <span>{catList[key].cat3}</span>
+         </>
+      );
+   };
+
+   const parseAnchors = (htmlString: string) => {
+      const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
+      const anchors = [];
+      let match;
+      while ((match = anchorRegex.exec(htmlString)) !== null) {
+         const [_, href, title, content] = match;
+         anchors.push({ href, title, content });
+      }
+      return anchors.map((anchor, idx) => (
+         <div key={idx}>
+            <a href={anchor.href} title={anchor.title}>
+               {""}
+               {anchor.content}{" "}
+            </a>
+            <br />
+         </div>
+      ));
+   };
+   const convertBrToSpan = (htmlString: string) => {
+      const parts = htmlString.split(/<br\s*\/?>/gi);
+      return parts.map((part, idx) => <p key={idx}>{part}</p>);
+   };
+
+   return (
+      <div className="min-h-screen">
+         <Header />
+         <main className="mx-auto max-w-screen-xl px-4 py-8">
+            {/* 뒤로 가기 버튼 */}
+            <div className="flex justify-start mb-4">
+               <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
+                  <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
+                  <span className="text-sky-500 text-lg font-semibold">목록</span>
+               </button>
             </div>
 
-            {/* Buttons */}
-            <div className="flex items-center space-x-4">
-              <button className="w-72 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
-                <span className="font-semibold text-lg leading-7 tracking-normal">
-                  다녀온 관광지 추가
-                </span>
-              </button>
-              <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  리뷰 작성
-                </span>
-              </button>
-              {/* 찜하기 버튼 */}
-              <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
-                <Image
-                  src="/images/heart.png"
-                  alt="찜하기"
-                  width={24}
-                  height={24}
-                />
-                <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  찜
-                </span>
-              </button>
+            {/* Title Section */}
+            <div className="text-center">
+               <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
+               <p className="text-xl font-normal text-neutral-800">
+                  {infoList ? getContentCategory(infoList.cat3) : blankbox}
+               </p>
             </div>
-          </div>
-        </div>
 
-        {/* 운영 정보 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">운영 정보</h3>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/break.png"
-                alt="휴일"
-                width={20}
-                height={20}
-              />
-              <span>휴일: 연중무휴</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/time.png"
-                alt="운영시간"
-                width={20}
-                height={20}
-              />
-              <span>운영시간: 07:00-20:00</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/cost.png"
-                alt="입장료"
-                width={20}
-                height={20}
-              />
-              <span>입장료: 무료</span>
-            </li>
-          </ul>
-        </section>
+            {/* Image and Info */}
+            <div className="flex gap-12 my-12">
+               <Swiper
+                  pagination={true}
+                  modules={[Pagination]}
+                  className="w-full aspect-[16/9] rounded-lg bg-neutral-200"
+                  loop={true}>
+                  {imgList ? (
+                     imgList.map((img) => {
+                        return (
+                           <SwiperSlide
+                              key={img.serialnum}
+                              className="bg-right-bottom bg-cover"
+                              style={{ backgroundImage: `url(${img.originimgurl})` }}></SwiperSlide>
+                        );
+                     })
+                  ) : (
+                     //이미지 리스트 없을 때 처리
+                     <SwiperSlide>
+                        <div className="flex items-center justify-center w-full h-full">
+                           <p className="text-xl text-neutral-400">관광지 이미지를 준비중입니다.</p>
+                        </div>
+                     </SwiperSlide>
+                  )}
+               </Swiper>
 
-        {/* 소개 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">소개</h3>
-          <p className="text-gray-600 leading-relaxed">
-            영랑호는 해안 사구가 발달해 형성된 자연 석호로 둘레가 7.8㎞, 면적이
-            약 1.2㎢에 이르며 수심이 8m를 훌쩍 넘길 만큼 넓고 깊다. 장천천에서
-            흘러든 물이 영랑교 밑의 수로를 통해 동해와 연결된다. 속초시 장사동과
-            영랑동, 동명동, 금호동에 둘러싸여 있으며 호숫가 둘레로 걷기 좋은
-            산책로가 조성되어 있다. 산책로를 따라 맑고 잔잔한 호수와 벚꽃,
-            영산홍, 갈대 등이 어우러진 서정적이고 아름다운 풍경이 이어진다.
-            삼국유사에 따르면 영랑호는 신라의 화랑인 ‘영랑’의 이름에서 따온
-            것으로 전해진다. 금강산에서 수련을 마친 영랑이 무술대회장을 가던 중
-            이 호수를 지나게 되었는데 그만 수려한 경관에 반해 무술대회 출전도
-            잊고 이곳에 오래 머물렀다고 한다. 옛 기록에도 남아 있을 만큼
-            영랑호는 뛰어난 경치를 자랑한다. 특히 속초 8경 중 하나인 범바위는
-            보는 이들마다 감탄을 자아낸다. 호랑이가 가만히 웅크리고 앉아 있는 것
-            같은 신비로운 기운이 흐른다. 기암괴석이 여러 개 모여 있는 관음암과
-            보광사도 놓쳐선 안 될 볼거리다. 호숫가 서쪽에는 있는 습지생태공원도
-            가볼만하다.
-          </p>
-        </section>
+               <div className="flex flex-col justify-between max-w-[480] gap-12">
+                  {/* Info Section */}
+                  <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                     <DetailList iconUrl={"/images/address.png"} title="주소">
+                        {infoList ? infoList.addr : blankbox}
+                     </DetailList>
+                     <DetailList iconUrl={"/images/tel.png"} title="문의처">
+                        {infoList ? infoList.infocenter : blankbox}
+                     </DetailList>
+                     <DetailList iconUrl={"/images/homepage.png"} title="홈페이지">
+                        {infoList && infoList.homepage ? parseAnchors(infoList.homepage) : blankbox}
+                     </DetailList>
+                  </div>
 
-        {/* 위치 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">위치</h3>
-          <Image
-            src="/images/map.png"
-            alt="위치"
-            width={720}
-            height={420}
-            className="stroke-0F172A"
-          />
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
+                  {/* Buttons */}
+                  <div className="flex items-center space-x-4">
+                     <button className="w-72 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
+                        <span className="font-semibold text-lg leading-7 tracking-normal">다녀온 관광지 추가</span>
+                     </button>
+                     <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
+                        <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
+                     </button>
+                     {/* 찜하기 버튼 */}
+                     <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
+                        <Image src="/images/heart.png" alt="찜하기" width={24} height={24} />
+                        <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            {/* 운영 정보 */}
+            <section className="">
+               <h3 className="text-2xl font-bold mb-6"> 운영 정보 및 편의시설</h3>
+               {infoList ? (
+                  <div className="grid grid-cols-[auto_1fr] items-start gap-y-5 gap-x-3">
+                     {infoList && infoList.parking && (
+                        <DetailList title="주차">{convertBrToSpan(infoList.parking)}</DetailList>
+                     )}
+                     {infoList && infoList.restdate && (
+                        <DetailList title="휴일">{convertBrToSpan(infoList.restdate)}</DetailList>
+                     )}
+                     {infoList && infoList.usetime && (
+                        <DetailList title="운영시간">{convertBrToSpan(infoList.usetime)}</DetailList>
+                     )}
+                     {infoList && infoList.entranceFee && (
+                        <DetailList title="입장료">{convertBrToSpan(infoList.entranceFee)}</DetailList>
+                     )}
+                     {infoList.extraInfo.length > 0 &&
+                        infoList.extraInfo.map((exInfo) => {
+                           if (exInfo.infoname != "주차요금" && exInfo.infoname != "주차") {
+                              return (
+                                 <DetailList title={exInfo.infoname} key={exInfo.serialnum}>
+                                    {convertBrToSpan(exInfo.infotext)}
+                                 </DetailList>
+                              );
+                           }
+                        })}
+                  </div>
+               ) : (
+                  blankbox
+               )}
+            </section>
+            <hr className="my-12" />
+            {/* 소개 */}
+            <section>
+               <h3 className="text-2xl font-bold mb-6">소개</h3>
+               <p className="text-neutral-800 leading-relaxed text-lg">{infoList?.overview || blankbox}</p>
+            </section>
+            <hr className="my-12" />
+            {/* 위치 */}
+            <section>
+               <h3 className="text-2xl font-bold mb-6">위치</h3>
+               <Image src="/images/map.png" alt="위치" width={720} height={420} className="stroke-0F172A" />
+            </section>
+         </main>
+         <Footer />
+      </div>
+   );
 };
 
 export default TravelListPage;

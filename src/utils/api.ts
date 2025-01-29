@@ -60,7 +60,7 @@ export default class APIConnect {
     * @param {number} contentTypeId - 콘텐츠의 Type ID
     * @returns {object} detailCommon, detailIntro, detailInfo 세 가지 오퍼레이션에서 가지고 온 정보를 객체로 묶어 반환합니다.
     */
-   static async getTourAreaInfo(contentId: number, contentTypeId: number): Promise<TourDetailInfo> {
+   static async getTourAreaInfo(contentId: number|string, contentTypeId: number|string = 12): Promise<TourDetailInfo> {
       try {
          const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
             params: {
