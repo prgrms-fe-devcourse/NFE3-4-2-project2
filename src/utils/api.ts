@@ -3,7 +3,6 @@ import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
 
-
 // 인터페이스 정의
 interface HistoricalTourItem {
    title: string; // 관광지 이름
@@ -60,7 +59,10 @@ export default class APIConnect {
     * @param {number} contentTypeId - 콘텐츠의 Type ID
     * @returns {object} detailCommon, detailIntro, detailInfo 세 가지 오퍼레이션에서 가지고 온 정보를 객체로 묶어 반환합니다.
     */
-   static async getTourAreaInfo(contentId: number|string, contentTypeId: number|string = 12): Promise<TourDetailInfo> {
+   static async getTourAreaInfo(
+      contentId: number | string,
+      contentTypeId: number | string = 12,
+   ): Promise<TourDetailInfo> {
       try {
          const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
             params: {
@@ -102,26 +104,26 @@ export default class APIConnect {
          const infoData = responseInfo.data.response.body.items.item || {};
 
          return {
-            contentid : commonData.contentid,
-            cat3 : commonData.cat3, 
-            title : commonData.title,
-            overview : commonData.overview,
-            homepage:commonData.homepage || '',
-            firstimage:commonData.firstimage || '',
-            firstimage2:commonData.firstimage2 || '',
-            infocenter:introData.infocenter || '',
-            entranceFee:infoData.infotext || '',
-            restdate:introData.restdate || '',
-            useseason:introData.useseason || '',
-            usetime:introData.usetime || '',
+            contentid: commonData.contentid,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            infocenter: introData.infocenter || "",
+            entranceFee: infoData.infotext || "",
+            restdate: introData.restdate || "",
+            useseason: introData.useseason || "",
+            usetime: introData.usetime || "",
             //편의시설
-            chkbabycarriage:introData.chkbabycarriage || '', 
-            parking:introData.parking,
-            extraInfo:infoData,
+            chkbabycarriage: introData.chkbabycarriage || "",
+            parking: introData.parking,
+            extraInfo: infoData,
             //위치
             addr: commonData.addr1,
-            mapx:commonData.mapx,
-            mapy:commonData.mapy,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
          };
       } catch (err) {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
@@ -194,48 +196,255 @@ export default class APIConnect {
    }
 
    /**
-    * TourAPI에서 역사 관광지 리스트를 가져오는 메서드입니다.
+    * TourAPI에서 역사 관광지 전체 리스트를 가져오는 메서드
     *
-    * @param {number} page - 불러올 페이지 번호. 기본값은 1입니다.
-    * @returns {Promise<HistoricalTourItem[]>} - API에서 반환한 역사 관광지 리스트를 반환합니다.
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @returns {Promise<HistoricalTourItem[]>}
     */
    static async getHistoricalTourList(page: number = 1): Promise<HistoricalTourItem[]> {
-    try {
-       const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-          params: {
-             ...this._tourDefaultOption,
-             pageNo: page,
-             areaCode: 32,
-             listYN: "Y",
-             cat1: "A02", // 대분류: 문화관광
-             cat2: "A0201", // 중분류: 역사관광
-          },
-       });
- 
-       // 응답 상태 체크
-       if (response.status !== 200) {
-          throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
-       }
- 
-       // 응답 데이터가 예상대로 구성되어 있는지 확인
-       const items: HistoricalTourItem[] = response.data?.response?.body?.items?.item || [];
- 
-       // 만약 items가 없으면 경고를 출력하고 빈 배열을 반환
-       if (!items.length) {
-          console.warn("API 응답에 데이터가 없습니다.");
-       }
- 
-       return items;
-    } catch (err: unknown) {
-       // 에러 처리
-       if (axios.isAxiosError(err)) {
-          throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
-       } else if (err instanceof Error) {
-          throw new Error(`오류가 발생했습니다: ${err.message}`);
-       } else {
-          throw new Error(`알 수 없는 오류가 발생했습니다.`);
-       }
-    }
- }
- 
+      try {
+         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               areaCode: 32,
+               listYN: "Y",
+               cat1: "A02",
+               cat2: "A0201",
+            },
+         });
+
+         // 응답 상태 체크
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         // 응답 데이터가 예상대로 구성되어 있는지 확인
+         const items: HistoricalTourItem[] = response.data?.response?.body?.items?.item || [];
+
+         // 만약 items가 없으면 경고를 출력하고 빈 배열을 반환
+         if (!items.length) {
+            console.warn("API 응답에 데이터가 없습니다.");
+         }
+
+         return items;
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+            throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+         } else if (err instanceof Error) {
+            throw new Error(`오류가 발생했습니다: ${err.message}`);
+         } else {
+            throw new Error(`알 수 없는 오류가 발생했습니다.`);
+         }
+      }
+   }
+
+   /**
+    * TourAPI에서 미술관, 박물관 리스트를 가져오는 메서드
+    *
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @returns {Promise<HistoricalTourItem[]>}
+    */
+   static async getMuseumTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+      try {
+         const cat3List = ["A02060100", "A02060200", "A02060300", "A02060400", "A02060500"];
+
+         console.log("📌 [API 요청] 미술관·박물관 리스트 요청");
+         console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
+
+         // 여러 개의 cat3 값을 개별적으로 API 요청 후, 데이터를 병합
+         const requests = cat3List.map(async (cat3) => {
+            console.log(`📩 개별 요청: cat3=${cat3}`);
+            const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  pageNo: page,
+                  areaCode: 32,
+                  listYN: "Y",
+                  cat1: "A02",
+                  cat2: "A0206",
+                  cat3: cat3, // 개별 요청
+               },
+            });
+
+            // 응답 데이터가 예상대로 구성되어 있는지 확인
+            return response.data?.response?.body?.items?.item || [];
+         });
+
+         // 모든 요청 완료 후 데이터를 병합
+         const results = await Promise.all(requests);
+         const mergedResults = results.flat(); // 다중 배열을 하나의 배열로 변환
+
+         console.log("📩 [API 응답 데이터]:", mergedResults);
+
+         if (!mergedResults.length) {
+            console.warn("⚠️ API 응답에 데이터가 없습니다.");
+         }
+
+         return mergedResults;
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+            throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+         } else if (err instanceof Error) {
+            throw new Error(`오류가 발생했습니다: ${err.message}`);
+         } else {
+            throw new Error(`알 수 없는 오류가 발생했습니다.`);
+         }
+      }
+   }
+
+   /**
+    * TourAPI에서 유적지 리스트를 가져오는 메서드
+    *
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @returns {Promise<HistoricalTourItem[]>}
+    */
+   static async getHistoricTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+      try {
+         const cat3List = ["A02010100", "A02010200", "A02010300", "A02010400", "A02010500", "A02010600", "A02010700"];
+
+         console.log("📌 [API 요청] 유적지 리스트 요청");
+         console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
+
+         const requests = cat3List.map(async (cat3) => {
+            console.log(`📩 개별 요청: cat3=${cat3}`);
+            const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  pageNo: page,
+                  areaCode: 32,
+                  listYN: "Y",
+                  cat1: "A02",
+                  cat2: "A0201",
+                  cat3: cat3,
+               },
+            });
+
+            return response.data?.response?.body?.items?.item || [];
+         });
+
+         // 모든 요청을 병렬로 실행 후 데이터 병합
+         const results = await Promise.all(requests);
+         const mergedResults = results.flat();
+
+         console.log("📩 [API 응답 데이터]:", mergedResults);
+
+         if (!mergedResults.length) {
+            console.warn("⚠️ API 응답에 데이터가 없습니다.");
+         }
+
+         return mergedResults;
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+            throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+         } else if (err instanceof Error) {
+            throw new Error(`오류가 발생했습니다: ${err.message}`);
+         } else {
+            throw new Error(`알 수 없는 오류가 발생했습니다.`);
+         }
+      }
+   }
+
+   /**
+    * TourAPI에서 종교 여행지 리스트를 가져오는 메서드
+    *
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @returns {Promise<HistoricalTourItem[]>}
+    */
+   static async getRegionSitesData(page: number = 1): Promise<HistoricalTourItem[]> {
+      try {
+         const cat3List = ["A02010800", "A02010900"];
+
+         console.log("📌 [API 요청] 종교 여행지 리스트 요청");
+         console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
+
+         const requests = cat3List.map(async (cat3) => {
+            console.log(`📩 개별 요청: cat3=${cat3}`);
+            const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  pageNo: page,
+                  areaCode: 32,
+                  listYN: "Y",
+                  cat1: "A02",
+                  cat2: "A0201",
+                  cat3: cat3,
+               },
+            });
+
+            return response.data?.response?.body?.items?.item || [];
+         });
+
+         // 모든 요청을 병렬로 실행 후 데이터 병합
+         const results = await Promise.all(requests);
+         const mergedResults = results.flat();
+
+         console.log("📩 [API 응답 데이터]:", mergedResults);
+
+         if (!mergedResults.length) {
+            console.warn("⚠️ API 응답에 데이터가 없습니다.");
+         }
+
+         return mergedResults;
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+            throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+         } else if (err instanceof Error) {
+            throw new Error(`오류가 발생했습니다: ${err.message}`);
+         } else {
+            throw new Error(`알 수 없는 오류가 발생했습니다.`);
+         }
+      }
+   }
+
+   /**
+    * TourAPI에서 기타 여행지 리스트를 가져오는 메서드
+    *
+    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @returns {Promise<HistoricalTourItem[]>}
+    */
+   static async getEtcSitesData(page: number = 1): Promise<HistoricalTourItem[]> {
+      try {
+         const cat3List = ["A02011000"];
+
+         console.log("📌 [API 요청] 기타 여행지 리스트 요청");
+         console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
+
+         const requests = cat3List.map(async (cat3) => {
+            console.log(`📩 개별 요청: cat3=${cat3}`);
+            const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  pageNo: page,
+                  areaCode: 32,
+                  listYN: "Y",
+                  cat1: "A02",
+                  cat2: "A0201",
+                  cat3: cat3, 
+               },
+            });
+
+            return response.data?.response?.body?.items?.item || [];
+         });
+
+         const results = await Promise.all(requests);
+         const mergedResults = results.flat();
+
+         console.log("📩 [API 응답 데이터]:", mergedResults);
+
+         if (!mergedResults.length) {
+            console.warn("⚠️ API 응답에 데이터가 없습니다.");
+         }
+
+         return mergedResults;
+      } catch (err: unknown) {
+         if (axios.isAxiosError(err)) {
+            throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
+         } else if (err instanceof Error) {
+            throw new Error(`오류가 발생했습니다: ${err.message}`);
+         } else {
+            throw new Error(`알 수 없는 오류가 발생했습니다.`);
+         }
+      }
+   }
 }
