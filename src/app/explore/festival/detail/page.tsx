@@ -1,238 +1,232 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import Image from "next/image";
+import DetailList from "@/components/travel/DetailList";
+import APIConnect from "@/utils/api";
+import { TourDetailInfo, TourImg, CatList } from "@/types/types";
+import catListJson from "@/utils/catList.json";
 
-const TravelPage: React.FC = () => {
-  return (
-    <div className="min-h-screen">
-      <Header />
-      <main className="mx-auto max-w-screen-xl px-4 py-8">
-        {/* 뒤로 가기 버튼 */}
-        <div className="flex justify-start mb-4">
-          <button
-            className="flex items-center space-x-2"
-            onClick={() => window.history.back()}
-          >
-            <Image
-              src="/images/goback.png"
-              alt="뒤로 가기"
-              width={16}
-              height={16}
-            />
-            <span className="text-sky-500 text-lg font-semibold">목록</span>
-          </button>
-        </div>
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
 
-        {/* Title Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
-          얼음나라화천 산천어축제
-          </h2>
-          <p className="text-xl font-normal text-neutral-800">
-          축제
-          </p>
-        </div>
+const catList = catListJson as CatList;
 
-        {/* Image and Info */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="w-full h-auto">
-              <Image
-                src="/images/detail/sancheon.png"
-                alt="concert"
-                width={720}
-                height={420}
-                className="rounded-lg object-cover mx-auto"
-              />
+const FestivalDetailPage: React.FC = () => {
+  const swiperRef = useRef<any>(null); // 🔥 Swiper 인스턴스 저장
+  const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
+ 
+  const [infoList, setInfoList] = useState<TourDetailInfo>();
+  const [imgList, setImgList] = useState<TourImg[]>([]);
+
+   useEffect(() => {
+      const loadData = async () => {
+         // 예제용 key 설정 (축제 데이터 불러오기)
+         const key = 2541883; // 축제 고유 ID (예제)
+
+         const infoList: TourDetailInfo = await APIConnect.getFestivalInfo(key);
+         const img = await APIConnect.getTourImg(key);
+
+         setInfoList(infoList);
+         setImgList(img);
+
+         console.log("infoList:", infoList);
+         console.log("imgList:", imgList);
+
+         
+      };
+
+      loadData();
+
+      if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
+        swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
+        swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
+        swiperRef.current.navigation.init();
+        swiperRef.current.navigation.update();
+      }
+   }, []);
+
+   const blankbox = (
+      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+   );
+
+   const parseAnchors = (htmlString: string) => {
+      const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
+      const anchors = [];
+      let match;
+      while ((match = anchorRegex.exec(htmlString)) !== null) {
+         const [_, href, title, content] = match;
+         anchors.push({ href, title, content });
+      }
+      return anchors.map((anchor, idx) => (
+         <div key={idx}>
+            <a href={anchor.href} title={anchor.title} className="underline text-blue-600 hover:no-underline">
+               {anchor.content}
+            </a>
+            <br />
+         </div>
+      ));
+   };
+
+   const convertBrToSpan = (htmlString: string) => {
+      const parts = htmlString.split(/<br\s*\/?>/gi);
+      return parts.map((part, idx) => <p key={idx}>{part}</p>);
+   };
+
+   return (
+      <div className="min-h-screen">
+         <Header />
+         <main className="mx-auto max-w-screen-xl px-4 py-8">
+            {/* 뒤로 가기 버튼 */}
+            <div className="flex justify-start mb-4">
+               <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
+                  <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
+                  <span className="text-sky-500 text-lg font-semibold">목록</span>
+               </button>
             </div>
-          </div>
-          <div className="flex flex-col justify-between space-y-4">
-            {/* Info Section */}
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/detail/address.png"
-                  alt="주소"
-                  width={20}
-                  height={20}
-                />
 
-                <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
-                  주소
-                </span>
-              </div>
-              <span className="text-xl font-normal text-neutral-800">
-              강원특별자치도 화천군 화천읍 산천어길 137
-              </span>
+            {/* Title Section */}
+            <div className="text-center">
+               <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
+               <p className="text-xl font-normal text-neutral-800">
+                  {infoList ? catList[infoList.cat3]?.cat2 + " · " + catList[infoList.cat3]?.cat3 : blankbox}
+               </p>
             </div>
+
+            {/* Image and Info */}
+            <div className="flex gap-12 my-12">
+
+            <div className="relative w-full max-w-[800px]">
+              <Swiper
+                onSwiper={(swiper) => (swiperRef.current = swiper)} //
+                pagination={{ clickable: true }}
+                navigation={true} // 🔥 useEffect에서 버튼 연결
+                autoplay={{ delay: 5000, disableOnInteraction: false }} // 🔥 5초마다 자동 넘김
+                loop={true}
+                modules={[Pagination, Navigation, Autoplay]}
+                className="w-full aspect-[16/9] rounded-lg bg-neutral-200">
+                
+                {imgList.length > 0 ? (
+                    imgList.map((img) => (
+                      <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
+                          <Image
+                            src={img.originimgurl}
+                            alt={img.imgname || "축제 이미지"}
+                            width={800}
+                            height={450}
+                            className="rounded-lg object-cover mx-auto"
+                          />
+                      </SwiperSlide>
+                    ))
+                ) : (
+                    <SwiperSlide>
+                      <div className="flex items-center justify-center w-full h-full">
+                          <p className="text-xl text-neutral-400">축제 이미지를 준비중입니다.</p>
+                      </div>
+                    </SwiperSlide>
+                )}
+              </Swiper>
+
+              {/* 🔥 Swiper 내부 좌우 네비게이션 버튼 */}
+              
+              <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
+              </button>
+              <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
+              </button>
               
               
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Image
-                    src="/images/detail/tel.png"
-                    alt="문의처"
-                    width={20}
-                    height={20}
-                  />
-                  <h3 className="text-xl font-semibold text-neutral-800">
-                    문의처
-                  </h3>
-                </div>
-                <p className="text-xl font-normal text-neutral-800">
-                033-342-5503, 5504
-                </p>
-              </div>
               
-              <div className="space-y-2">
-                <div className="flex items-center space-x-2">
-                  <Image
-                    src="/images/detail/homepage.png"
-                    alt="홈페이지"
-                    width={20}
-                    height={20}
-                  />
-                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
-                    홈페이지
-                  </span>
-                </div>
-                <a
-                  href="https://www.narafestival.com/01_icenara/"
-                  className="text-xl font-normal text-neutral-800 underline hover:no-underline block"
-                >
-                  https://www.narafestival.com/01_icenara/
-                </a>
-                <a
-                  href="www.narafestival.com"
-                  className="text-xl font-normal text-neutral-800 underline hover:no-underline block"
-                >
-                  https://www.narafestival.com
-                </a>
-              </div>
+            </div>
+               <div className="flex flex-col justify-between max-w-[480] gap-12">
+                  {/* Info Section */}
+                  <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                     <DetailList iconUrl={"/images/address.png"} title="주소">
+                        {infoList ? infoList.addr : blankbox}
+                     </DetailList>
+                     <DetailList iconUrl={"/images/tel.png"} title="문의처">
+                        {infoList ? infoList.infocenter : blankbox}
+                     </DetailList>
+                     <DetailList iconUrl={"/images/homepage.png"} title="홈페이지">
+                        {infoList && infoList.homepage ? parseAnchors(infoList.homepage) : blankbox}
+                     </DetailList>
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex items-center space-x-4">
+                     <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
+                        <span className="font-semibold text-lg leading-7 tracking-normal">예매하기</span>
+                     </button>
+                     <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
+                        <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
+                     </button>
+                     <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
+                        <Image src="/images/heart.png" alt="찜하기" width={24} height={24} />
+                        <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
+                     </button>
+                  </div>
+               </div>
+            </div>
+
+            {/* 운영 정보 */}
+            <section className="my-12">
+              <h3 className="text-2xl font-bold mb-6">운영 정보</h3>
+              {infoList ? (
+                  <div className="grid grid-cols-[auto_1fr] items-start gap-y-5 gap-x-3">
+                    {infoList.usetime && <DetailList title="운영시간">{convertBrToSpan(infoList.usetime)}</DetailList>}
+                    {infoList.entranceFee && (
+                        <DetailList title="입장료">{convertBrToSpan(infoList.entranceFee)}</DetailList>
+                    )}
+                  </div>
+              ) : (
+                  blankbox
+              )}
+            </section>
+
+            <hr className="my-12" />
+
+            {/* 행사 내용 추가 */}
+            {infoList?.extraInfo?.map((exInfo) => {
+              if (exInfo.infoname === "행사내용") {
+                  return (
+                    <section key={exInfo.serialnum} className="my-12">
+                        <h3 className="text-2xl font-bold mb-6">{exInfo.infoname}</h3>
+                        <div className="text-neutral-800 leading-relaxed text-lg">
+                          {convertBrToSpan(exInfo.infotext)}
+                        </div>
+                    </section>
+                  );
+              }
+              return null;
+            })}
 
             
+            {/* 소개 */}
+            <section>
+               <h3 className="text-2xl font-bold mb-6">소개</h3>
+               <p className="text-neutral-800 leading-relaxed text-lg">{infoList?.overview || blankbox}</p>
+            </section>
 
-            {/* Buttons */}
-            <div className="flex items-center space-x-4">
-              {/* 예매하기 버튼 */}
-              <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
-                <span className="font-semibold text-lg leading-7 tracking-normal">
-                  예매하기
-                </span>
-              </button>
+            <hr className="my-12" />
 
-              {/* 리뷰 작성 버튼 */}
-              <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  리뷰 작성
-                </span>
-              </button>
-
-              {/* 찜하기 버튼 */}
-              <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
-                <Image
-                  src="/images/heart.png"
-                  alt="찜하기"
-                  width={24}
-                  height={24}
-                />
-                <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  찜
-                </span>
-              </button>
-            </div>
-
-
-          </div>
-        </div>
-
-        {/* 운영 정보 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">운영 정보</h3>
-          <ul className="space-y-2 text-gray-600">
-          <li className="flex space-x-2 items-start">
-            {/* 행사 내용 아이콘 */}
-            <Image
-              src="/images/detail/info.png"
-              alt="휴일"
-              width={20}
-              height={20}
-            />
-
-            {/* 행사 내용 텍스트 */}
-            <div>
-              <span className="font-semibold">행사 내용</span>
-              <div className="mt-2 text-neutral-800">
-              산천어 체험: 얼음낚시(현장/예약), 맨손잡기, 루어낚시<br />
-                눈/얼음 체험: 눈썰매, 얼음썰매, 하늘가르기, 얼곰이성 미끄럼틀, 얼음축구, 컬링, 피겨 스케이트, 빙판 버블슈트<br />
-                문화/이벤트: 축제 여는 마당, 화천 복불복 이벤트, 얼음나라 방송국, 호국이 체험존, 화천 관광 홍보관 등<br />
-                편의/안전: 종합안내센터, 낚시 가이드, 몸녹임/유아쉼터, 이동 도우미, 의료 센터, 재난구조대, 화천소방서 등<br />
-                먹거리/살거리: 산천어식당, 산천어 회센터/구이터, 향토주전부리장, 농특산물 판매점, 기념품 판매점 등<br />
-                연계 행사 및 관광지: 선등거리 페스티벌, 세계 최대 실내 얼음조각광장, 화천 산천어 파크골프장, 산타우체국 한국 본점, 백암산 케이블카 등
-              </div>
-            </div>
-          </li>
-
-            <li className="flex items-start space-x-2">
-              <Image
-                src="/images/detail/time.png"
-                alt="운영시간"
-                width={20}
-                height={20}
-              />
-              <span><span className="font-semibold">운영시간 : </span> 9:00 ~ 18:00 (밤낚시 18:00 ~ 21:00) </span>
-            </li>
-            <li className="flex items-start space-x-2">
-              <Image
-                src="/images/detail/cost.png"
-                alt="입장료"
-                width={20}
-                height={20}
-              />
-              <span>
-                <span className="font-semibold">입장료 : </span> 
-                유료 (자세한 사항은 홈페이지 참조.)
-              </span>
-            </li>
-
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/detail/cost.png"
-                alt="입장료"
-                width={20}
-                height={20}
-              />
-              <span><span className="font-semibold">추가정보 : </span></span>
-            </li>
-          </ul>
-        </section>
-
-        {/* 소개 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">소개</h3>
-          <p className="text-gray-600 leading-relaxed">
-          강원특별자치도 화천에서 열리는 얼음나라화천 산천어축제는 2011년 미국 CNN이 선정한 겨울의 7대 불가사의 중 하나로 꼽힌 이색 겨울축제다. 물 맑기로 유명한 화천천이 꽁꽁 얼어붙는 매년 1월에 축제가 열리며 얼음낚시, 맨손잡기 등으로 계곡의 여왕이라고 불리는 산천어를 잡는 체험을 할 수 있다. 산천어 얼음낚시의 손맛은 물론 바로 회나 구이로 맛있게 먹을 수 있고 낚시 외에도 얼음썰매, 눈썰매, 봅슬레이 등의 다양한 겨울놀이가 펼쳐져 매년 100만명 이상이 방문하고 있다.
-          </p>
-        </section>
-
-        {/* 위치 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">위치</h3>
-          <Image
-            src="/images/detail/map.png"
-            alt="위치"
-            width={720}
-            height={420}
-            className="stroke-0F172A"
-          />
-        </section>
-      </main>
-      <Footer />
-    </div>
-  );
+            {/* 위치 */}
+            <section>
+               <h3 className="text-2xl font-bold mb-6">위치</h3>
+               <Image src="/images/map.png" alt="위치" width={720} height={420} className="stroke-0F172A" />
+            </section>
+         </main>
+         <Footer />
+      </div>
+   );
 };
 
-export default TravelPage;
+export default FestivalDetailPage;

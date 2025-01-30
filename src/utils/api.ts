@@ -171,6 +171,72 @@ export default class APIConnect {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
    }
+
+   /**
+    * 개별 축제 정보를 가져오는 API
+    */
+   static async getFestivalInfo(contentId: number | string): Promise<TourDetailInfo> {
+      try {
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15,
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
+
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15,
+            },
+         });
+
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15,
+            },
+         });
+
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error("축제 데이터를 가져오는 도중 오류 발생");
+         }
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0] || {};
+         const infoData = responseInfo.data.response.body.items.item || [];
+
+         return {
+            contentid: commonData.contentid,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            infocenter: commonData.tel || introData.sponsor1tel || "",
+            entranceFee: introData.usetimefestival || "무료",
+            restdate: "",
+            usetime: introData.playtime || "정보 없음",
+            addr: commonData.addr1,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
+            extraInfo: infoData,
+         };
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
    /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
     * @param {string} contentId - 콘텐츠 고유 ID
