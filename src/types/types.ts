@@ -64,3 +64,31 @@ export interface CatList {
       cat3:string
    }
 }
+
+export interface RestaurantDetailInfo {
+   contentid: string;
+   cat2: string;
+   cat3: string;
+   title: string;
+   addr: string;
+   firstimage?: string;
+   homepage?: string;
+   infocenterfood?: string;  // 문의처
+   opentimefood?: string;     // 운영 시간
+   restdatefood?: string;     // 휴무일
+   parkingfood?: string;      // 주차 가능 여부 및 정보
+   firstmenu?: string;        // 대표 메뉴
+   treatmenu?: string;        // 제공 메뉴
+   overview?: string;         // 음식점 소개
+   mapx?: string;             // 경도 (위치 정보)
+   mapy?: string;             // 위도 (위치 정보)
+   chkcreditcardfood?: string; // 신용카드 사용 여부
+   reservationfood?: string;   // 예약 가능 여부
+   packing?: string;           // 포장 가능 여부
+   kidsfacility?: string;      // 어린이 시설 여부
+   smoking?: string;           // 흡연 가능 여부
+   scalefood?: string;         // 규모
+   lcnsno?: string;            // 사업자 등록번호
+   extraInfo?: TourExtraInfo[]; // 추가 정보 (예: 화장실 여부 등)
+}
+

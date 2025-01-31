@@ -1,4 +1,5 @@
-import { TourImg, TourDetailInfo } from "@/types/types";
+import { TourImg, TourDetailInfo, RestaurantDetailInfo } from "@/types/types";
+
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
@@ -237,6 +238,103 @@ export default class APIConnect {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
    }
+   
+   /**
+ * 음식점 목록을 가져오는 메서드
+ * @param {number} page - 불러올 페이지 번호 (기본값: 1)
+ * @returns {Promise<object[]>} 음식점 목록을 반환
+ */
+static async getRestaurantList(page: number = 1): Promise<object[]> {
+   try {
+      const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+         params: {
+            ...this._tourDefaultOption,
+            pageNo: page,
+            areaCode: 32,
+            contentTypeId: 39,
+            cat1: "A05",
+            cat2: "A0502",
+            listYN: "Y",
+         },
+      });
+
+      if (response.status !== 200) {
+         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+      }
+
+      return response.data.response.body.items.item || [];
+   } catch (err) {
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+   }
+}
+
+/**
+ * 특정 음식점의 상세 정보를 가져오는 메서드
+ * @param {number} contentId - 음식점 고유 ID
+ * @returns {Promise<RestaurantDetailInfo>} 음식점 상세 정보를 반환
+ */
+static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo> {
+   try {
+      const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 39,
+            defaultYN: "Y",
+            firstImageYN: "Y",
+            areacodeYN: "Y",
+            catcodeYN: "Y",
+            addrinfoYN: "Y",
+            mapinfoYN: "Y",
+            overviewYN: "Y",
+         },
+      });
+
+      const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 39,
+         },
+      });
+
+      const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 39,
+         },
+      });
+
+      if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+         throw new Error("음식점 데이터를 가져오는 도중 오류 발생");
+      }
+
+      const commonData = responseCommon.data.response.body.items.item[0];
+      const introData = responseIntro.data.response.body.items.item[0] || {};
+      const infoData = responseInfo.data.response.body.items.item || [];
+
+      return {
+         contentid: commonData.contentid,
+         cat2: commonData.cat2,
+         cat3: commonData.cat3,
+         title: commonData.title,
+         overview: commonData.overview,
+         addr: commonData.addr1,
+         firstimage: commonData.firstimage || "",
+         homepage: commonData.homepage || "",
+         infocenterfood: introData.infocenterfood || "",
+         opentimefood: introData.opentimefood || "",
+         restdatefood: introData.restdatefood || "",
+         parkingfood: introData.parkingfood || "",
+         firstmenu: introData.firstmenu || "",
+         treatmenu: introData.treatmenu || "",
+         extraInfo: infoData,
+      };
+   } catch (err) {
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+   }
+}
    /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
     * @param {string} contentId - 콘텐츠 고유 ID

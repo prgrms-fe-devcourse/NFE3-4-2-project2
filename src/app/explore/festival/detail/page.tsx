@@ -143,10 +143,10 @@ const FestivalDetailPage: React.FC = () => {
               <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
                   <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
               </button>
+            </div>  
               
               
-              
-            </div>
+            
                <div className="flex flex-col justify-between max-w-[480] gap-12">
                   {/* Info Section */}
                   <div className="grid grid-cols-[auto_1fr] items-start gap-4">
@@ -178,7 +178,7 @@ const FestivalDetailPage: React.FC = () => {
             </div>
 
             {/* 운영 정보 */}
-            <section className="my-12">
+            <section className="">
               <h3 className="text-2xl font-bold mb-6">운영 정보</h3>
               {infoList ? (
                   <div className="grid grid-cols-[auto_1fr] items-start gap-y-5 gap-x-3">
