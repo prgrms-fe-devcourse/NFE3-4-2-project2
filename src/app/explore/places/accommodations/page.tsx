@@ -51,7 +51,7 @@ export default function Accommodations() {
             <div className="absolute inset-x-0 top-[60%] mx-auto w-[700px] p-7 shadow-xl bg-white rounded-lg z-20 transform -translate-y-1/2">
                <div className="flex justify-between">
                   {/* 식당&숙소 카테고리 */}
-                  <ul className="flex gap-3 text-lg font-bold cursor-pointer">
+                  <ul className="mb-2 flex gap-3 text-lg font-bold cursor-pointer">
                      {categories.map((category) => (
                         <li
                            key={category.name}
@@ -67,6 +67,34 @@ export default function Accommodations() {
                      ))}
                   </ul>
 
+                  {/* 지역 필터 */}
+                  <div className="mt-2 flex">
+                     <div className="w-[150px] mr-2">
+                        <p className="text-neutral-500 text-sm pb-2">지역</p>
+                        <select className="w-full bg-transparent focus:outline-none border-b border-sky-500">
+                           <option className="text-neutral-800">전체</option>
+                           <option className="text-neutral-800">원주시</option>
+                           <option className="text-neutral-800">춘천시</option>
+                           <option className="text-neutral-800">속초시</option>
+                           <option className="text-neutral-800">태백시</option>
+                           <option className="text-neutral-800">삼척시</option>
+                           <option className="text-neutral-800">동해시</option>
+                           <option className="text-neutral-800">강릉시</option>
+                           <option className="text-neutral-800">고성군</option>
+                           <option className="text-neutral-800">홍천군</option>
+                           <option className="text-neutral-800">영월군</option>
+                           <option className="text-neutral-800">철원군</option>
+                           <option className="text-neutral-800">인제군</option>
+                           <option className="text-neutral-800">횡성군</option>
+                           <option className="text-neutral-800">평창군</option>
+                           <option className="text-neutral-800">정선군</option>
+                           <option className="text-neutral-800">양양군</option>
+                           <option className="text-neutral-800">화천군</option>
+                           <option className="text-neutral-800">양구군</option>
+                        </select>
+                     </div>
+                  </div>
+
                   {/* 검색 바 */}
                   <div className="flex">
                      <div className="relative">
@@ -75,13 +103,13 @@ export default function Accommodations() {
                            placeholder="검색어를 입력해 주세요."
                            value={searchTerm}
                            onChange={handleSearchChange}
-                           className="h-[32px] w-72 p-3 pr-10 border border-sky-500 rounded-lg placeholder:text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                           className="h-[32px] w-72 pl-3 pr-10 border border-sky-500 rounded-lg placeholder:text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
                         />
                         <svg
                            aria-hidden="true"
                            fill="currentColor"
                            viewBox="0 0 20 20"
-                           className="w-4 h-4 absolute top-1/2 right-3 transform -translate-y-1/2 text-sky-500">
+                           className="w-4 h-4 absolute top-1/4 right-3 transform -translate-y-1/2 text-sky-500">
                            <path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
                         </svg>
                      </div>
