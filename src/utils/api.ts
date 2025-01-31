@@ -329,6 +329,8 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
          parkingfood: introData.parkingfood || "",
          firstmenu: introData.firstmenu || "",
          treatmenu: introData.treatmenu || "",
+         mapx: commonData.mapx || "",
+         mapy: commonData.mapy || "",
          extraInfo: infoData,
       };
    } catch (err) {

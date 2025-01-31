@@ -10,7 +10,7 @@ import DetailList from "@/components/travel/DetailList";
 import APIConnect from "@/utils/api";
 import { TourDetailInfo, TourImg, CatList } from "@/types/types";
 import catListJson from "@/utils/catList.json";
-
+import KakaoMap from "@/components/common/KakaoMap";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
@@ -221,7 +221,13 @@ const FestivalDetailPage: React.FC = () => {
             {/* 위치 */}
             <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
-               <Image src="/images/map.png" alt="위치" width={720} height={420} className="stroke-0F172A" />
+               {infoList?.mapx && infoList?.mapy ? (
+                  <div className="h-[500]">
+                     <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} />
+                  </div>
+               ) : (
+                  <p>위치 정보가 없습니다.</p>
+               )}
             </section>
          </main>
          <Footer />
