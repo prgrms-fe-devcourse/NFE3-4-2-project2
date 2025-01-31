@@ -1,210 +1,179 @@
 "use client";
 
-import React from "react";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
+import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
 
-const TravelPage: React.FC = () => {
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import DetailList from "@/components/travel/DetailList";
+import APIConnect from "@/utils/api";
+import { TourDetailInfo, TourImg, CatList } from "@/types/types";
+import catListJson from "@/utils/catList.json";
+import KakaoMap from "@/components/common/KakaoMap";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
+const catList = catListJson as CatList;
+
+const LeisureDetailPage: React.FC = () => {
+  const swiperRef = useRef<any>(null);
+  const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
+  
+  const [infoList, setInfoList] = useState<TourDetailInfo>();
+  const [imgList, setImgList] = useState<TourImg[]>([]);
+  useEffect(() => {
+    const loadData = async () => {
+      const key = 3083085; // 레저 고유 ID (예제)
+      const infoList: TourDetailInfo = await APIConnect.getLeisureInfo(key);
+      const img = await APIConnect.getTourImg(key);
+
+      setInfoList(infoList);
+      setImgList(img);
+    };
+
+    loadData();
+
+    if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
+      swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
+      swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
+      swiperRef.current.navigation.init();
+      swiperRef.current.navigation.update();
+    }
+  }, []);
+
+  const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+  const parseAnchors = (htmlString: string) => {
+    const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
+    const anchors = [];
+    let match;
+    while ((match = anchorRegex.exec(htmlString)) !== null) {
+       const [_, href, title, content] = match;
+       anchors.push({ href, title, content });
+    }
+    return anchors.map((anchor, idx) => (
+       <div key={idx}>
+          <a href={anchor.href} title={anchor.title} className="underline text-blue-600 hover:no-underline">
+             {anchor.content}
+          </a>
+          <br />
+       </div>
+    ));
+ };
+  
+  const convertBrToSpan = (htmlString: string) => {
+    const parts = htmlString.split(/<br\s*\/?>/gi);
+    return parts.map((part, idx) => <p key={idx}>{part}</p>);
+  };
+
   return (
     <div className="min-h-screen">
       <Header />
       <main className="mx-auto max-w-screen-xl px-4 py-8">
-        {/* 뒤로 가기 버튼 */}
         <div className="flex justify-start mb-4">
-          <button
-            className="flex items-center space-x-2"
-            onClick={() => window.history.back()}
-          >
-            <Image
-              src="/images/goback.png"
-              alt="뒤로 가기"
-              width={16}
-              height={16}
-            />
+          <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
+            <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
             <span className="text-sky-500 text-lg font-semibold">목록</span>
           </button>
         </div>
 
         {/* Title Section */}
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-semibold text-neutral-800 mb-2">
-            횡성루지체험장
-          </h2>
+        <div className="text-center">
+          <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
           <p className="text-xl font-normal text-neutral-800">
-            레저 및 체험
+            {infoList ? catList[infoList.cat3]?.cat2 + " · " + catList[infoList.cat3]?.cat3 : blankbox}
           </p>
         </div>
 
         {/* Image and Info */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="w-full h-auto">
-              <Image
-                src="/images/detail/ruge.png"
-                alt="Lake"
-                width={720}
-                height={420}
-                className="rounded-lg object-cover mx-auto"
-              />
-            </div>
-          </div>
-          <div className="flex flex-col justify-between space-y-4">
-            {/* Info Section */}
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/detail/address.png"
-                  alt="주소"
-                  width={20}
-                  height={20}
-                />
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
-                    주소
-                  </span>
-                  <span className="text-xl font-normal text-neutral-800">
-                  강원특별자치도 횡성군 우천면 전재로
-                  </span>
-                </div>
-              
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/detail/tel.png"
-                  alt="문의처"
-                  width={20}
-                  height={20}
-                />
-                <h3 className="text-xl font-semibold text-neutral-800">
-                  문의처
-                </h3>
-                <p className="text-xl font-normal text-neutral-800">
-                033-342-5503, 5504
-                </p>
-              </div>
-              <div className="flex items-center space-x-2">
-                <Image
-                  src="/images/detail/homepage.png"
-                  alt="홈페이지"
-                  width={20}
-                  height={20}
-                />
-                <div className="flex items-center space-x-2">
-                  <span className="text-xl font-semibold text-neutral-800 whitespace-nowrap">
-                    홈페이지:
-                  </span>
-                  <a
-                    href="http://luge.hsg.go.kr/kor/main/index.html"
-                    className="text-xl font-normal text-neutral-800 underline hover:no-underline"
-                  >
-                    http://luge.hsg.go.kr/kor/main/index.html
-                  </a>
-                </div>
-              </div>
-            </div>
+        <div className="flex gap-12 my-12">
+          <div className="relative w-full max-w-[800px]">
+            <Swiper
+              onSwiper={(swiper) => (swiperRef.current = swiper)}
+              pagination={{ clickable: true }}
+              navigation={true}
+              autoplay={{ delay: 5000, disableOnInteraction: false }}
+              loop={true}
+              modules={[Pagination, Navigation, Autoplay]}
+              className="w-full aspect-[16/9] rounded-lg bg-neutral-200"
+            >
+              {imgList.length > 0 ? (
+                imgList.map((img) => (
+                  <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
+                    <Image src={img.originimgurl} alt={img.imgname || "레저 이미지"} width={800} height={450} className="rounded-lg object-cover mx-auto" />
+                  </SwiperSlide>
+                ))
+              ) : (
+                <SwiperSlide>
+                  <div className="flex items-center justify-center w-full h-full">
+                    <p className="text-xl text-neutral-400">레저 이미지를 준비중입니다.</p>
+                  </div>
+                </SwiperSlide>
+              )}
+            </Swiper>
 
+            <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+              <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
+            </button>
+            <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+              <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
+            </button>
+          </div>
+
+          <div className="flex flex-col justify-between max-w-[480] gap-12">
+            <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+              <DetailList iconUrl="/images/address.png" title="주소">{infoList?infoList.addr : blankbox}</DetailList>
+              <DetailList iconUrl="/images/tel.png" title="문의처">{infoList?infoList.infocenter : blankbox}</DetailList>
+              <DetailList iconUrl="/images/homepage.png" title="홈페이지">{infoList && infoList.homepage ? parseAnchors(infoList.homepage) : blankbox}</DetailList>
+            </div>
             {/* Buttons */}
             <div className="flex items-center space-x-4">
-              {/* 예매하기 버튼 */}
-              <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
-                <span className="font-semibold text-lg leading-7 tracking-normal">
-                  예매하기
-                </span>
-              </button>
-
-              {/* 리뷰 작성 버튼 */}
-              <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  리뷰 작성
-                </span>
-              </button>
-
-              {/* 찜하기 버튼 */}
-              <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
-                <Image
-                  src="/images/heart.png"
-                  alt="찜하기"
-                  width={24}
-                  height={24}
-                />
-                <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">
-                  찜
-                </span>
-              </button>
+                <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
+                  <span className="font-semibold text-lg leading-7 tracking-normal">예매하기</span>
+                </button>
+                <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
+                  <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
+                </button>
+                <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
+                  <Image src="/images/heart.png" alt="찜하기" width={24} height={24} />
+                  <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
+                </button>
             </div>
-
-
           </div>
         </div>
 
         {/* 운영 정보 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">운영 정보</h3>
-          <ul className="space-y-2 text-gray-600">
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/detail/break.png"
-                alt="휴일"
-                width={20}
-                height={20}
-              />
-              <span><span className="font-semibold" >휴일 : </span> 매월 마지막주 화요일(성수기 제외), 동계휴장(12월-2월)</span>
-            </li>
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/detail/time.png"
-                alt="운영시간"
-                width={20}
-                height={20}
-              />
-              <span><span className="font-semibold">운영시간 : </span> 비수기 09:30-17:30 성수기 09:30-18:30</span>
-            </li>
-            <li className="flex items-start space-x-2">
-              <Image
-                src="/images/detail/cost.png"
-                alt="입장료"
-                width={20}
-                height={20}
-              />
-              <span>
-                <span className="font-semibold">입장료 : </span> [ 비수기 ] 1회권 12,000원 2회권 21,000원<br />
-                [ 성수기 (7/15~8/31) 및 주말, 공휴일 ] 1회권 15,000원, 2회권 24,000원<br />
-                관내학생단체 - 50% 할인, 관외학생단체 - 30% 할인, 횡성군민, 군인, 단체, 숙박, 제휴 할인, 영월, 평창, 홍천, 원주 지역민, 주요 관광시설(횡성호수길, 풍수원유물전시관, 안흥찐빵모락모락마을, 횡성한우체험관) 이용객, 청소년(9세-24세) - 20% 할인<br />
-                별도 입장료는 없음
-              </span>
-            </li>
-
-            <li className="flex items-center space-x-2">
-              <Image
-                src="/images/detail/cost.png"
-                alt="입장료"
-                width={20}
-                height={20}
-              />
-              <span><span className="font-semibold">추가정보 : </span>만 10세 이상이며 키120cm이상 단독탑승(만 10세 미만, 키 95-120cm, 총 몸무게 120kg 미만 시, 보호자(만 18세 이상)와 동반탑승)</span>
-            </li>
-          </ul>
+        <section className="">
+          <h3 className="text-2xl font-bold mb-6">운영 정보</h3>
+          {infoList ? (
+            <div className="grid grid-cols-[auto_1fr] items-start gap-y-5 gap-x-3">
+              {infoList.usetime && <DetailList title="운영시간">{infoList.usetime}</DetailList>}
+              {infoList.restdate && <DetailList title="휴무일">{infoList.restdate}</DetailList>}
+              {/* extraInfo 정보 동적 출력 */}
+              {infoList.extraInfo.length > 0 &&
+              infoList.extraInfo.map((exInfo) => {
+                return (
+                    <DetailList title={exInfo.infoname} key={exInfo.serialnum}>
+                      {convertBrToSpan(exInfo.infotext)}
+                    </DetailList>
+                );
+              })}
+            </div>
+          ) : blankbox}
         </section>
 
-        {/* 소개 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">소개</h3>
-          <p className="text-gray-600 leading-relaxed">
-          육상 썰매로도 불리는 루지는 동계올림픽 썰매종목 중 하나인 루지 썰매에 바퀴를 달아 사계절용으로 변신한 무동력 레저스포츠이다. 별도의 조작없이 중력에 몸을 맡긴 채 스스로 속도를 제어하며 시원한 바람과 풍격을 만끽할 수 있다. 국도 42호선 전재-우천면 오원리 구간의 기존 도로와 숲, 자연 그대로에 다양한 테마구간을 더하여 다이나믹한 코스가 완성되었고 단일코스로는 길이 2.4km로 세계 최장 길이와 인위적으로 S자 코스를 꼬아 놓은 것이 아니라 실제 도로를 이용하여 조성된 코스이다.
-          </p>
-        </section>
+        <hr className="my-12" />
 
-        {/* 위치 */}
-        <section className="my-8">
-          <h3 className="text-2xl font-bold mb-4">위치</h3>
-          <Image
-            src="/images/detail/map.png"
-            alt="위치"
-            width={720}
-            height={420}
-            className="stroke-0F172A"
-          />
+        <section>
+          <h3 className="text-2xl font-bold mb-6">위치</h3>
+          {infoList?.mapx && infoList?.mapy ? (
+            <div className="h-[500]">
+              <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
+            </div>
+          ) : "위치 정보 없음"}
         </section>
       </main>
       <Footer />
@@ -212,4 +181,4 @@ const TravelPage: React.FC = () => {
   );
 };
 
-export default TravelPage;
+export default LeisureDetailPage;
