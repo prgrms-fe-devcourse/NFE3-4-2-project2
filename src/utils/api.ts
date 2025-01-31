@@ -339,6 +339,102 @@ export default class APIConnect {
    }
 }
    /**
+    * 특정 레저 정보(개별 상세 정보)를 가져오는 메서드
+    * @param {number} contentId - 레저 고유 ID
+    * @returns {Promise<TourDetailInfo>} 레저 상세 정보를 반환
+    */
+   static async getLeisureInfo(contentId: number): Promise<TourDetailInfo> {
+      try {
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 28,
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
+
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 28,
+            },
+         });
+
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 28,
+            },
+         });
+
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error("레저 데이터를 가져오는 도중 오류 발생");
+         }
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0] || {};
+         const infoData = responseInfo.data.response.body.items.item || [];
+
+         return {
+            contentid: commonData.contentid,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            infocenter: introData.infocenterleports || "",
+            restdate: introData.restdateleports || "",
+            usetime: introData.usetimeleports || "",
+            parking: introData.parkingleports || "",
+            extraInfo: infoData,
+            addr: commonData.addr1,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
+         };
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
+
+   /**
+    * 레저 리스트를 가져오는 메서드
+    * @param {number} page - 불러올 페이지 (기본값: 1)
+    * @returns {Promise<TourItem[]>} 레저 리스트를 반환
+    */
+   static async getLeisureList(page: number = 1): Promise<TourItem[]> {
+      try {
+         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               areaCode: 32,
+               contentTypeId: 28,
+               cat1: "A03",
+               listYN: "Y",
+            },
+         });
+
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         return response.data.response.body.items.item || [];
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
+
+   /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
     * @param {string} contentId - 콘텐츠 고유 ID
     * @returns {Array} 이미지 정보가 담긴 배열을 반환합니다.
