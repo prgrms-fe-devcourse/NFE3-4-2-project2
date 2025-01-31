@@ -7,17 +7,24 @@ declare global {
 }
 
 interface MapProps{
-    mapx:string | undefined,
-    mapy:string | undefined
+    mapx:string,
+    mapy:string,
+    title?: string,
 }
 
-const MapComponent:React.FC<MapProps> = ({mapx, mapy}) => {
+const MapComponent:React.FC<MapProps> = ({mapx, mapy, title}) => {
     const mapRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         window.kakao.maps.load(() => {
-            const options = { center: new window.kakao.maps.LatLng(mapy, mapx), level: 3};
+            const position = new window.kakao.maps.LatLng(mapy, mapx);
+            const options = { center: position, level: 3};
             new window.kakao.maps.Map(mapRef.current, options);
+            const marker = new window.kakao.maps.Marker({
+                position: position,
+                title:title
+            });
+            marker.setMap(mapRef.current);
         });
     }, []);
 
