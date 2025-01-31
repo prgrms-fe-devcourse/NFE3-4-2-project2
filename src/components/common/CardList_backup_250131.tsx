@@ -1,10 +1,9 @@
-"use client";
-
 import React, { useEffect, useState } from "react";
-import { ListProps, SeasonType, SelectedChildParam } from "@/types/types";
+import { ListProps, SeasonType } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
+import { useSearchParams } from "next/navigation";
 
 interface TourItem {
    title: string;
@@ -13,73 +12,67 @@ interface TourItem {
    contentid: number;
    contenttypeid: number;
 }
-const itemsPerPage = 12;
 
-const CardList: React.FC<SelectedChildParam> =({selected}) => {
-   
+const CardList: React.FC<{ selectedOption: string; selectedCulture: string | null; selectedSeason: SeasonType; selectedNature: string | null; }> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
+   const params = useSearchParams();
+   const regionCode = params.get("code");
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
+   const itemsPerPage = 12;
 
    useEffect(() => {
       const fetchData = async () => {
-         // setLoading(true);
+         setLoading(true);
          try {
             let response: TourItem[] = [];
 
-            console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
-            console.log(`📌 선택된 카테고리: ${selected.cat}, 선택된 필터: ${selected.filter ? selected.filter : "없음"}`);
+            console.log(`📌 선택된 옵션: ${selectedOption}, 선택된 계절: ${selectedSeason}`);
 
-            if(selected.cat == "season"){ //계절별 
-               console.log("🚧 계절별 관광지 API 개발 중");
-               if(selected?.filter){
-                  // response = await APIConnect.getSeasonTourList(selected.filter);
-               }
-            }
-            if(selected.cat == "region"){ //지역별
-               if(selected.filter){
-                  response = await APIConnect.getTourAreaList(selected.filter);
-               }
-            }
-            if(selected.cat == "culture"){//문화별
-               if(!selected.filter){
+            if (selectedOption === "계절별 관광지") {
+               console.log(`🌸 [API 요청] ${selectedSeason ? selectedSeason : "전체 계절"} 관광지 리스트 가져오기`);
+               response = await APIConnect.getSeasonTourList(selectedSeason);
+            } else if (selectedOption === "문화·역사별 관광지") {
+               if (!selectedCulture) {
                   response = await APIConnect.getHistoricalTourList(1);
-               }else{
-                  switch (selected.filter) {
-                     case "museum":
-                        console.log('박물관 API')
+               } else {
+                  switch (selectedCulture) {
+                     case "미술관·박물관":
                         response = await APIConnect.getMuseumTourList();
                         break;
-                     case "historic":
-                        console.log('문화유적 API')
+                     case "유적지":
                         response = await APIConnect.getHistoricTourList();
                         break;
-                     case "region":
-                        console.log('지역')
+                     case "종교":
                         response = await APIConnect.getRegionSitesData();
                         break;
-                     case "etc":
-                        console.log('기타')
+                     case "기타":
                         response = await APIConnect.getEtcSitesData();
                         break;
                      default:
                         response = [];
                   }
                }
-            }
-            if(selected.cat == "nature"){//자연별
+            } else if (selectedOption === "계절별 관광지" && selectedSeason) {
+               // API가 없으므로 빈 배열 반환
+               response = [];
+               console.log("🚧 계절별 관광지 API 개발 중");
+            } else if (selectedOption === "자연별 관광지" && selectedNature) {
+               response = [];
                console.log("🚧 자연별 관광지 API 개발 중");
+            } else if (selectedOption === "지역별 관광지") {
+               response = await APIConnect.getTourAreaList(regionCode);
+               console.log("🚧 지역별 관광지 API 개발 중");
+            } else {
                response = [];
             }
-            
-            console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
 
+            console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
             setAllTourData(response);
             setTotalPages(Math.max(1, Math.ceil(response.length / itemsPerPage)));
             setLoading(false);
-
          } catch (err) {
             console.error("❌ API 요청 실패:", err);
             setLoading(false);
@@ -87,7 +80,7 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
       };
 
       fetchData();
-   }, [selected]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
+   }, [selectedOption, selectedCulture, selectedSeason, selectedNature, regionCode]); // ✅ `selectedSeason`이 변경될 때마다 다시 실행됨
 
    useEffect(() => {
       const paginatedData = allTourData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -104,7 +97,7 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
 
    useEffect(() => {
       setCurrentPage(1);
-   }, [selected]);
+   }, [selectedOption, selectedCulture, selectedSeason, selectedNature]);
 
    if (loading) return <div>Loading...</div>;
    if (!tourData.length) return <div>No data available</div>;

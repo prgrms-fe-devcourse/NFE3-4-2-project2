@@ -104,3 +104,13 @@ export interface Restaurant {
    cat3: string; // 카테고리 (API로 받아온 카테고리 정보)
    cat3Text: string; // 텍스트로 수정한 카테고리
 }
+
+//travel 페이지 검색 관련
+export interface SelectedParam {
+   cat: string | null;
+   filter?: string | null;
+}
+export interface SelectedChildParam {
+   selected : SelectedParam,
+   changeUrl : (url:SelectedParam)=>void;
+}
