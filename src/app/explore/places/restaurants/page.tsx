@@ -2,33 +2,101 @@
 
 "use client";
 
+import { useEffect, useState } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
-import { useState } from "react";
-import Link from "next/link";
 import RestaurantCard from "@/components/places/restaurantCard";
+import Link from "next/link";
+
+import { Restaurant } from "@/types/types";
+import APIConnect from "@/utils/api";
+import Pagination from "@/components/common/Pagination";
+
+// 카테고리 코드랑 텍스트 매핑하기
+const categoryMap: { [key: string]: string } = {
+   A05020100: "한식",
+   A05020200: "양식",
+   A05020300: "일식",
+   A05020400: "중식",
+   A05020700: "이색음식점",
+   A05020900: "카페/전통찻집",
+};
+
+// 전체 주소에서 시/군/구만 가져오기
+const extractCityCounty = (address: string) => {
+   const updatedAddress = address.replace("강원특별자치도", "").trim();
+   return updatedAddress.split(" ")[0];
+};
+
+// 카테고리 코드에 맞는 텍스트를 반환하는 함수
+const getCategoryText = (categoryCode: string) => {
+   return categoryMap[categoryCode] || "기타"; // 코드가 매핑되지 않으면 "기타" 반환
+};
 
 export default function Restaurants() {
+   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
    const [selectedCategory, setSelectedCategory] = useState("식당");
    const [searchTerm, setSearchTerm] = useState("");
+   const [loading, setLoading] = useState<boolean>(true);
+   const [currentPage, setCurrentPage] = useState<number>(1);
+   const [totalPages, setTotalPages] = useState<number>(1);
+   const restaurantsPerPage = 12; // 한 페이지에 표시할 음식점 수
 
    const categories = [
       { name: "식당", link: "/places/restaurants" },
       { name: "숙소", link: "/places/accommodations" },
    ];
 
-   // 입력된 검색어가 변경될 때 처리
+   // 식당 리스트 API 호출
+   useEffect(() => {
+      const fetchRestaurants = async () => {
+         try {
+            const data = await APIConnect.getRestaurantList(currentPage);
+            setTotalPages(data.totalPages); // totalPages 업데이트
+            // 각 음식점의 주소에서 시/군/구만 추출하여 업데이트
+            const updatedRestaurants = data.map((restaurant) => ({
+               ...restaurant,
+               addr1: extractCityCounty(restaurant.addr1), // 주소에서 시/군/구만 추출
+               cat3Text: getCategoryText(restaurant.cat3), // 카테고리 코드 텍스트로 변환
+            }));
+            setRestaurants(updatedRestaurants);
+         } catch (err) {
+            console.error("음식점 리스트를 가져오는 데 실패했습니다:", err);
+         } finally {
+            setLoading(false);
+         }
+      };
+
+      fetchRestaurants();
+   }, [currentPage]);
+
+   // 검색어 변경 처리
    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
    };
 
    // 검색 버튼 클릭 시 처리
    const handleSearchClick = () => {
-      // 실제 API 요청이나 필터링 로직을 넣을 부분
       console.log("카테고리:", selectedCategory, "검색어:", searchTerm);
    };
 
+   // 페이지네이션 처리
+   const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+   };
+
+   // 카테고리별 음식점 필터링
+   const filteredRestaurants =
+      selectedCategory === "식당"
+         ? restaurants.filter((restaurant) => restaurant.cat3Text !== "숙소")
+         : selectedCategory === "숙소"
+         ? restaurants.filter((restaurant) => restaurant.cat3Text === "숙소")
+         : restaurants;
+
+   if (loading) return <div>Loading...</div>;
+
+   //////////////////////////////////////////////
    return (
       <div className="min-h-screen">
          <Header />
@@ -125,7 +193,7 @@ export default function Restaurants() {
 
          {/* 식당 리스트 */}
          <div className="max-w-[1409px] mx-auto">
-            <div className="max-w-[1409px] mx-auto mb-[200px]">
+            <div className="max-w-[1409px] mx-auto mb-[150px]">
                {/* 음식 카테고리 이미지 버튼 */}
                <div className="flex justify-between items-center mb-[145px]">
                   {[
@@ -133,37 +201,37 @@ export default function Restaurants() {
                         src: "/images/places/restaurants/bibimbap.png",
                         alt: "한식",
                         text: "한식",
-                        onClick: () => alert("한식 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("한식"), // 아직...
                      },
                      {
                         src: "/images/places/restaurants/pizza.png",
                         alt: "양식",
                         text: "양식",
-                        onClick: () => alert("양식 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("양식"),
                      },
                      {
                         src: "/images/places/restaurants/manchow-soup.png",
                         alt: "중식",
                         text: "중식",
-                        onClick: () => alert("중식 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("중식"),
                      },
                      {
                         src: "/images/places/restaurants/nigiri.png",
                         alt: "일식",
                         text: "일식",
-                        onClick: () => alert("일식 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("일식"),
                      },
                      {
                         src: "/images/places/restaurants/hot-drink.png",
                         alt: "카페/전통찻집",
                         text: "카페/전통찻집",
-                        onClick: () => alert("카페/전통찻집 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("카페/전통찻집"),
                      },
                      {
                         src: "/images/places/restaurants/tacos.png",
                         alt: "이색음식점",
                         text: "이색음식점",
-                        onClick: () => alert("이색음식점 버튼 클릭됨"),
+                        onClick: () => setSelectedCategory("이색음식점"),
                      },
                   ].map(({ src, alt, text, onClick }) => (
                      <div key={alt} className="flex flex-col items-center">
@@ -181,22 +249,23 @@ export default function Restaurants() {
             {/* ///////////////////////////////////////////////////////// */}
             {/* ///////////////////////////////////////////////////////// */}
             {/* ///////////////////////////////////////////////////////// */}
-            {/* 카드 컴포넌트 부분 */}
+            {/* 카드 리스트 부분 */}
             <div className="">
-               <div className="flex justify-center items-center mb-44">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                     {[...Array(16)].map((_, index) => (
-                        <RestaurantCard
-                           key={index}
-                           imageUrl="/images/places/restaurants/WesternFood.png"
-                           title={`강릉 함박스테이크 ${index + 1}`}
-                           area="양양군"
-                           category="양식"
-                           buttonText="영업중"
-                        />
-                     ))}
-                  </div>
+               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  {filteredRestaurants.map((restaurant, index) => (
+                     <RestaurantCard
+                        key={index}
+                        imageUrl={restaurant.firstimage || "/images/ready.png"}
+                        title={restaurant.title}
+                        area={restaurant.addr1}
+                        category={restaurant.cat3Text} // 카테고리 텍스트 사용
+                        buttonText="영업중" // 예시로 넣은 버튼 텍스트
+                     />
+                  ))}
                </div>
+
+               {/* 페이지네이션 */}
+               <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
             </div>
          </div>
          <Footer />
