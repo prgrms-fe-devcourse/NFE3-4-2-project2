@@ -2,18 +2,20 @@
 
 import React, { useState } from "react";
 import RegionList from "../common/RegionList";
-import SeasonTourBar from "./SeasonTourBar";
+import SeasonBar from "./SeasonTourBar";
 import NatureBar from "./NatureBar";
 import CultureBar from "./CultureBar";
+import { SeasonType } from "@/types/types"; // ✅ 타입 가져오기
 
 interface TourSearchBarProps {
    setSelectedOption: React.Dispatch<React.SetStateAction<string>>;
+   setSelectedSeason: React.Dispatch<React.SetStateAction<SeasonType>>; // ✅ SeasonType 사용
    setSelectedCulture: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const TourSearchBar: React.FC<TourSearchBarProps> = ({ setSelectedOption, setSelectedCulture }) => {
+const TourSearchBar: React.FC<TourSearchBarProps> = ({ setSelectedOption, setSelectedSeason, setSelectedCulture }) => {
    const [selectedOption, setLocalSelectedOption] = useState<string>("계절별 관광지");
-   const [selectedSeason, setSelectedSeason] = useState<string | null>(null);
+   const [selectedSeason, setLocalSelectedSeason] = useState<SeasonType>(null); // ✅ 타입 변경
    const [selectedNature, setSelectedNature] = useState<string | null>(null);
    const [selectedCulture, setLocalSelectedCulture] = useState<string | null>(null);
 
@@ -22,16 +24,17 @@ const TourSearchBar: React.FC<TourSearchBarProps> = ({ setSelectedOption, setSel
       const selected = event.target.value;
       setLocalSelectedOption(selected);
       setSelectedOption(selected);
-      setSelectedCulture(null); // 문화·역사별 관광지 초기화
+      setSelectedSeason(null); // ✅ 계절 선택 초기화
+      setSelectedCulture(null); // ✅ 문화·역사별 관광지 초기화
 
-      if (selected === "계절별 관광지") setSelectedSeason(null);
-      else if (selected === "자연별 관광지") setSelectedNature(null);
+      if (selected === "자연별 관광지") setSelectedNature(null);
       else if (selected === "문화·역사별 관광지") setLocalSelectedCulture(null);
    };
 
-   const handleCultureSelect = (culture: string) => {
-      setLocalSelectedCulture(culture);
-      setSelectedCulture(culture);
+   const handleSeasonSelect = (season: string) => {
+      console.log(`🌍 선택한 계절: ${season}`); // ✅ 디버깅용
+      setLocalSelectedSeason(season as SeasonType);
+      setSelectedSeason(season as SeasonType); // ✅ CardList에도 적용
    };
 
    return (
@@ -54,9 +57,15 @@ const TourSearchBar: React.FC<TourSearchBarProps> = ({ setSelectedOption, setSel
             </div>
 
             {selectedOption === "지역별 관광지" && <RegionList />}
-            {selectedOption === "계절별 관광지" && <SeasonTourBar selectedSeason={selectedSeason} onSeasonSelect={setSelectedSeason} />}
-            {selectedOption === "자연별 관광지" && <NatureBar selectedNature={selectedNature} onNatureSelect={setSelectedNature} />}
-            {selectedOption === "문화·역사별 관광지" && <CultureBar selectedCulture={selectedCulture} onCultureSelect={handleCultureSelect} />}
+            {selectedOption === "계절별 관광지" && (
+               <SeasonBar selectedSeason={selectedSeason} onSeasonSelect={handleSeasonSelect} />
+            )}
+            {selectedOption === "자연별 관광지" && (
+               <NatureBar selectedNature={selectedNature} onNatureSelect={setSelectedNature} />
+            )}
+            {selectedOption === "문화·역사별 관광지" && (
+               <CultureBar selectedCulture={selectedCulture} onCultureSelect={setSelectedCulture} />
+            )}
          </div>
       </div>
    );

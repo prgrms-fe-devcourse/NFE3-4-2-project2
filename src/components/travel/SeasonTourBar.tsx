@@ -14,25 +14,25 @@ const SeasonBar: React.FC<SeasonBarProps> = ({
 }) => {
   const seasonData = [
     {
-      season: "봄",
+      season: "spring",
       imageSrc: "/images/season/spring.png",
       title: "봄 추천 여행지",
       description: "봄의 길목, 꽃향기에 취하다",
     },
     {
-      season: "여름",
+      season: "summer",
       imageSrc: "/images/season/summer.png",
       title: "여름 추천 여행지",
       description: "푸른 바다, 여름을 만나다",
     },
     {
-      season: "가을",
+      season: "autumn",
       imageSrc: "/images/season/autumn.png",
       title: "가을 추천 여행지",
       description: "가을의 품, 단풍을 만끽하다",
     },
     {
-      season: "겨울",
+      season: "winter",
       imageSrc: "/images/season/winter.png",
       title: "겨울 추천 여행지",
       description: "겨울의 정수, 눈꽃 속 여행",
@@ -49,7 +49,10 @@ const SeasonBar: React.FC<SeasonBarProps> = ({
               ? "scale-105"
               : "hover:scale-105 hover:shadow-xl"
           }`}
-          onClick={() => onSeasonSelect(season.season)}
+          onClick={() => {
+            console.log(`✅ 선택한 계절: ${season.season}`);
+            onSeasonSelect(season.season);
+          }}
         >
           <Image
             src={season.imageSrc}

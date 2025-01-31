@@ -3,6 +3,7 @@ import { TourImg, TourDetailInfo, RestaurantDetailInfo } from "@/types/types";
 import axios from "axios";
 import dotenv from "dotenv";
 dotenv.config();
+import seasonList from "./seasonList.json";
 
 // 인터페이스 정의
 interface TourItem {
@@ -579,4 +580,65 @@ export default class APIConnect {
          }
       }
    }
+
+/**
+ * TourAPI에서 계절별 관광지 리스트를 가져오는 메서드
+ *
+ * @param {string} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
+ * @param {number} page - 불러올 페이지 번호. 기본값은 1
+ * @returns {Promise<TourItem[]>}
+ */
+static async getSeasonTourList(
+   season: "spring" | "summer" | "autumn" | "winter" | null,
+   page: number = 1,
+): Promise<TourItem[]> {
+   try {
+      let cat3List: { cat1: string; cat2: string; cat3: string }[] = [];
+
+      if (season) {
+         cat3List = seasonList[season] || [];
+         console.log(`📌 [API 요청] ${season} 관광지 리스트 요청`);
+      } else {
+         // 모든 계절 데이터를 합쳐서 반환
+         cat3List = [
+            ...seasonList["spring"],
+            ...seasonList["summer"],
+            ...seasonList["autumn"],
+            ...seasonList["winter"],
+         ];
+         console.log(`📌 [API 요청] 전체 계절 관광지 리스트 요청`);
+      }
+
+      if (!cat3List.length) {
+         console.warn(`⚠️ ${season ? season : "전체"} 시즌 관광지 데이터가 없습니다.`);
+         return [];
+      }
+
+      const requests = cat3List.map(async ({ cat1, cat2, cat3 }) => {
+         console.log(`📩 개별 요청: cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`);
+         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               areaCode: 32,
+               listYN: "Y",
+               cat1,
+               cat2,
+               cat3,
+            },
+         });
+
+         return response.data?.response?.body?.items?.item || [];
+      });
+
+      const results = await Promise.all(requests);
+      const mergedResults = results.flat();
+
+      console.log("📩 [API 응답 데이터]:", mergedResults);
+      return mergedResults;
+   } catch (err) {
+      throw new Error(`API 요청 실패: ${err}`);
+   }
+}
+
 }

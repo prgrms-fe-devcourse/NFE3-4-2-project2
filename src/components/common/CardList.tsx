@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { ListProps } from "@/types/types";
+import { ListProps, SeasonType } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
@@ -15,7 +15,7 @@ interface TourItem {
 const CardList: React.FC<{
    selectedOption: string;
    selectedCulture: string | null;
-   selectedSeason: string | null;
+   selectedSeason: SeasonType;
    selectedNature: string | null;
 }> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
@@ -31,10 +31,11 @@ const CardList: React.FC<{
          try {
             let response: TourItem[] = [];
 
-            console.log(`📌 선택된 옵션: ${selectedOption}`);
+            console.log(`📌 선택된 옵션: ${selectedOption}, 선택된 계절: ${selectedSeason}`);
 
-            if (selectedOption === "계절별 관광지" && selectedSeason) {
-               //response = await APIConnect.getSeasonTourList(selectedSeason);
+            if (selectedOption === "계절별 관광지") {
+               console.log(`🌸 [API 요청] ${selectedSeason ? selectedSeason : "전체 계절"} 관광지 리스트 가져오기`);
+               response = await APIConnect.getSeasonTourList(selectedSeason);
             } else if (selectedOption === "문화·역사별 관광지") {
                if (!selectedCulture) {
                   response = await APIConnect.getHistoricalTourList(1);
@@ -57,9 +58,9 @@ const CardList: React.FC<{
                   }
                }
             } else if (selectedOption === "자연별 관광지" && selectedNature) {
-               //response = await APIConnect.getNatureTourList(selectedNature);
+               // response = await APIConnect.getNatureTourList(selectedNature);
             } else if (selectedOption === "지역별 관광지") {
-               //response = await APIConnect.getRegionTourList();
+               // response = await APIConnect.getRegionTourList();
             } else {
                response = [];
             }
@@ -75,7 +76,7 @@ const CardList: React.FC<{
       };
 
       fetchData();
-   }, [selectedOption, selectedCulture, selectedSeason, selectedNature]);
+   }, [selectedOption, selectedCulture, selectedSeason, selectedNature]); // ✅ `selectedSeason`이 변경될 때마다 다시 실행됨
 
    useEffect(() => {
       const paginatedData = allTourData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
