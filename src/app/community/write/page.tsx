@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import { createPost } from "@/utils/postapi"; // ✅ API 호출 함수 가져오기
 
-export default function WritePage() {
+export default function WritePage({ channelId }: { channelId: string }) {
    const router = useRouter();
 
    const [title, setTitle] = useState("");
@@ -14,9 +15,16 @@ export default function WritePage() {
    const [date, setDate] = useState("");
    const [fee, setFee] = useState("");
    const [email, setEmail] = useState("");
-   const [adultCount, setAdultCount] = useState(1);
-   const [childCount, setChildCount] = useState(0);
    const [image, setImage] = useState<File | null>(null);
+   const [loading, setLoading] = useState(false);
+
+   useEffect(() => {
+      const token = localStorage.getItem("accessToken");
+      if (!token) {
+         alert("로그인이 필요합니다.");
+         router.push("/auth/login");
+      }
+   }, [router]);
 
    // 사진 업로드 핸들러
    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -28,11 +36,39 @@ export default function WritePage() {
    // 모든 필수 입력 필드가 채워졌는지 확인
    const isFormValid = title && content && date && fee && email;
 
-   const handleSubmit = (e: React.FormEvent) => {
+   // 게시글 제출 핸들러
+   const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!isFormValid) return;
-      alert("글이 작성되었습니다.");
-      router.push("/community"); // 작성 완료 후 이동
+      if (!isFormValid || loading) return;
+
+      setLoading(true);
+
+      try {
+         const formData = new FormData();
+         formData.append("title", title);
+         formData.append("channelId", channelId);
+         formData.append("date", date);
+         formData.append("fee", fee);
+         formData.append("email", email);
+         if (image) {
+            formData.append("image", image);
+         }
+
+         console.log("🔹 전송할 데이터:", Object.fromEntries(formData.entries())); // 확인용 로그
+
+         // ✅ API 호출
+         const responseData = await createPost(formData);
+         console.log("🔹 서버 응답:", responseData);
+
+         alert("글이 성공적으로 작성되었습니다.");
+         router.push("/community");
+      } catch (error: any) {
+         console.error("❌ 오류:", error);
+         const errorMessage = error.response?.data?.message || "게시글 작성 중 오류가 발생했습니다.";
+         alert(errorMessage);
+      } finally {
+         setLoading(false);
+      }
    };
 
    return (
@@ -45,7 +81,7 @@ export default function WritePage() {
                width={0}
                height={0}
                sizes="100vw"
-               src="/images/community/banner.jpg"
+               src="/images/community/banner.png"
                alt="banner"
                className="w-full h-[160px] object-cover"
             />
@@ -56,7 +92,7 @@ export default function WritePage() {
          </div>
 
          {/* 글 작성 폼 */}
-         <div className="max-w-[800px] w-full mx-auto mt-8 p-6 bg-white shadow-md rounded-lg">
+         <div className="max-w-[800px] w-full mx-auto mt-16 p-6 bg-white shadow-lg rounded-lg mb-16">
             <button onClick={() => router.back()} className="mb-4 text-blue-500 hover:underline">
                ◀ 게시글 목록
             </button>
@@ -120,33 +156,6 @@ export default function WritePage() {
                />
             </div>
 
-            {/* 모집 인원 */}
-            <div className="mb-4">
-               <label className="block text-lg font-semibold">몇 명을 모집하나요?</label>
-               <div className="flex items-center gap-4">
-                  <div className="flex items-center">
-                     <span className="mr-2">👨‍💼 성인</span>
-                     <input
-                        type="number"
-                        value={adultCount}
-                        onChange={(e) => setAdultCount(Number(e.target.value))}
-                        min="1"
-                        className="w-[60px] p-2 border border-gray-300 rounded-md text-center"
-                     />
-                  </div>
-                  <div className="flex items-center">
-                     <span className="mr-2">👶 아동</span>
-                     <input
-                        type="number"
-                        value={childCount}
-                        onChange={(e) => setChildCount(Number(e.target.value))}
-                        min="0"
-                        className="w-[60px] p-2 border border-gray-300 rounded-md text-center"
-                     />
-                  </div>
-               </div>
-            </div>
-
             {/* 참가비 */}
             <div className="mb-4">
                <label className="block text-lg font-semibold">참가비 안내 *</label>
@@ -173,21 +182,15 @@ export default function WritePage() {
                />
             </div>
 
-            {/* 주의사항 */}
-            <div className="bg-gray-100 p-4 text-gray-700 text-sm rounded-md mb-6">
-               저는 모든 참여자에게 공정하고 투명한 절차를 제공하며, 동행 중 발생할 수 있는 문제를 예방하기 위해 최선을
-               다할 것을 서약합니다. 또한, 불법적인 모집이나 문제 발생 시 삭제 및 경고 조치를 시행할 수 있습니다.
-            </div>
-
             {/* 등록하기 버튼 */}
             <button
                onClick={handleSubmit}
-               disabled={!isFormValid}
+               disabled={!isFormValid || loading}
                className={`w-full p-4 text-lg font-semibold rounded-md ${
-                  isFormValid ? "bg-sky-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
+                  isFormValid && !loading ? "bg-sky-500 text-white" : "bg-gray-300 text-gray-500 cursor-not-allowed"
                }`}
             >
-               작성 완료
+               {loading ? "작성 중..." : "작성 완료"}
             </button>
          </div>
 

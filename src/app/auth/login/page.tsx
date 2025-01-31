@@ -1,16 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation"; // ✅ useRouter 추가
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
 import Link from "next/link";
 import { login } from "@/utils/authapi"; // authapi.ts의 login 함수를 가져옵니다.
+import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가
+
+interface LoginResponse {
+   token: string;
+   user: {
+      fullName: string;
+   };
+}
 
 export default function Login() {
-   const router = useRouter(); // ✅ useRouter 정상 동작
-
    const [formData, setFormData] = useState({
       email: "",
       password: "",
@@ -30,16 +35,27 @@ export default function Login() {
             password: formData.password,
          });
 
-         console.log("로그인 성공:", response.data);
+         const data: LoginResponse = response.data;
+         console.log("✅ 로그인 성공:", data);
+
+         // ✅ 토큰을 "accessToken"으로 저장하여 글 작성 시 정상적으로 인식되도록 수정
+         if (data.token) {
+            localStorage.setItem("accessToken", data.token);
+            localStorage.setItem("nickname", data.user.fullName || "사용자");
+         }
 
          alert("로그인에 성공하였습니다! 메인 페이지로 이동합니다."); // ✅ 로그인 성공 알림
 
-         if (typeof window !== "undefined") {
-            router.push("/"); // ✅ 메인 페이지로 이동
-         }
+         // ✅ 로그인 후 강제 새로고침 (토큰 저장 후 즉시 반영)
+         window.location.replace("/");
       } catch (error) {
-         console.error("로그인 실패:", error.message);
-         alert("로그인에 실패하였습니다. 이메일 또는 비밀번호를 확인해주세요."); // ✅ 로그인 실패 알림
+         if (error instanceof AxiosError) {
+            console.error("❌ 로그인 실패:", error);
+            alert(error.response?.data?.message || "로그인에 실패하였습니다. 이메일 또는 비밀번호를 확인해주세요.");
+         } else {
+            console.error("❌ 예기치 않은 오류 발생:", error);
+            alert("로그인 중 오류가 발생했습니다.");
+         }
       }
    };
 

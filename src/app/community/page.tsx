@@ -59,7 +59,7 @@ export default function Places() {
                width={0}
                height={0}
                sizes="100vw"
-               src="/images/community/banner.jpg"
+               src="/images/community/banner.png"
                alt="banner"
                className="w-full h-[392px] object-cover"
             />

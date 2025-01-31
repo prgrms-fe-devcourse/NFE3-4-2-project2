@@ -1,20 +1,21 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation'; // ✅ next/navigation에서 import
-import Header from '@/components/common/Header';
-import Footer from '@/components/common/Footer';
-import { signUp } from '@/utils/authapi';
+import { useState } from "react";
+import { useRouter } from "next/navigation"; // ✅ next/navigation에서 import
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import { signUp } from "@/utils/authapi";
+import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가
 
 export default function Signup() {
-   const router = useRouter(); // ✅ useRouter 정상 동작
+   const router = useRouter();
 
    const [formData, setFormData] = useState({
-      email: '',
-      fullName: '',
-      nickname: '',
-      password: '',
-      confirmPassword: '',
+      email: "",
+      fullName: "",
+      nickname: "",
+      password: "",
+      confirmPassword: "",
    });
 
    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -26,7 +27,7 @@ export default function Signup() {
       e.preventDefault();
 
       if (formData.password !== formData.confirmPassword) {
-         alert('비밀번호와 비밀번호 확인이 일치하지 않습니다.');
+         alert("비밀번호와 비밀번호 확인이 일치하지 않습니다.");
          return;
       }
 
@@ -37,16 +38,21 @@ export default function Signup() {
             password: formData.password,
          });
 
-         console.log('회원가입 성공:', response.data);
-         
-         alert('회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.');
+         console.log("✅ 회원가입 성공:", response.data);
 
-         if (typeof window !== 'undefined') {
-            router.push('/auth/login'); // ✅ 정상적인 클라이언트 사이드 라우팅
+         alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
+
+         if (typeof window !== "undefined") {
+            router.push("/auth/login"); // ✅ 정상적인 클라이언트 사이드 라우팅
          }
       } catch (error) {
-         console.error('회원가입 실패:', error.message);
-         alert('회원가입에 실패했습니다. 다시 시도해주세요.');
+         if (error instanceof AxiosError) {
+            console.error("❌ 회원가입 실패:", error);
+            alert(error.response?.data?.message || "회원가입에 실패했습니다. 다시 시도해주세요.");
+         } else {
+            console.error("❌ 예기치 않은 오류 발생:", error);
+            alert("회원가입 중 오류가 발생했습니다.");
+         }
       }
    };
 
