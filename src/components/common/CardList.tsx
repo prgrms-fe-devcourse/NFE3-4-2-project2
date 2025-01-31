@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ListProps, SeasonType, SelectedChildParam } from "@/types/types";
+import { ListProps, SelectedChildParam } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
+import EmptyListCard from "./EmptyListCard";
 
 interface TourItem {
    title: string;
@@ -13,7 +14,7 @@ interface TourItem {
    contentid: number;
    contenttypeid: number;
 }
-const itemsPerPage = 12;
+const ITEMS_PER_PAGE = 12;
 
 const CardList: React.FC<SelectedChildParam> =({selected}) => {
    
@@ -23,7 +24,7 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
    const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
 
-   useEffect(() => {
+   useEffect(() => {//API관련
       const fetchData = async () => {
          // setLoading(true);
          try {
@@ -41,6 +42,8 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
             if(selected.cat == "region"){ //지역별
                if(selected.filter){
                   response = await APIConnect.getTourAreaList(selected.filter);
+               }else{
+                  response = await APIConnect.getTourAreaList("");
                }
             }
             if(selected.cat == "culture"){//문화별
@@ -49,19 +52,15 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
                }else{
                   switch (selected.filter) {
                      case "museum":
-                        console.log('박물관 API')
                         response = await APIConnect.getMuseumTourList();
                         break;
                      case "historic":
-                        console.log('문화유적 API')
                         response = await APIConnect.getHistoricTourList();
                         break;
-                     case "region":
-                        console.log('지역')
+                     case "religion":
                         response = await APIConnect.getRegionSitesData();
                         break;
                      case "etc":
-                        console.log('기타')
                         response = await APIConnect.getEtcSitesData();
                         break;
                      default:
@@ -77,20 +76,20 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
             console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
 
             setAllTourData(response);
-            setTotalPages(Math.max(1, Math.ceil(response.length / itemsPerPage)));
+            setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
+
             setLoading(false);
 
          } catch (err) {
-            console.error("❌ API 요청 실패:", err);
+            console.log("❌ API 요청 실패:", err);
             setLoading(false);
          }
       };
-
       fetchData();
    }, [selected]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
 
-   useEffect(() => {
-      const paginatedData = allTourData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+   useEffect(() => { //페이지네이션 관련
+      const paginatedData = allTourData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
       setTourData(
          paginatedData.map((item) => ({
             imageUrl: item.firstimage || "/images/ready.png",
@@ -106,13 +105,25 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
       setCurrentPage(1);
    }, [selected]);
 
-   if (loading) return <div>Loading...</div>;
-   if (!tourData.length) return <div>No data available</div>;
+   if (loading) {
+      return (
+         <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
+            <div className="grid grid-cols-3 gap-8">
+               <EmptyListCard/>
+            </div>
+         </div>
+      )
+   }
 
    return (
-      <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
+      <div className="w-[1280px] mx-auto px-6 m-16">
          <div className="grid grid-cols-3 gap-8">
-            {tourData.map((item) => <ListCard key={item.contentId} {...item} />)}
+            {
+               !loading && allTourData.length ?
+               tourData.map((item) => <ListCard key={item.contentId} {...item} />)
+               :
+               <div>No data available</div>
+            }
          </div>
 
          {totalPages > 1 && (
