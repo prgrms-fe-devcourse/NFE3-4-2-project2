@@ -6,6 +6,7 @@ import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
 import EmptyListCard from "./EmptyListCard";
+import EmptyData from "./EmptyData";
 
 interface TourItem {
    title: string;
@@ -115,15 +116,14 @@ const CardList: React.FC<SelectedChildParam> =({selected}) => {
       )
    }
 
+   if(!loading && !allTourData.length){
+      return (<EmptyData/>)
+   }
+
    return (
       <div className="w-[1280px] mx-auto px-6 m-16">
          <div className="grid grid-cols-3 gap-8">
-            {
-               !loading && allTourData.length ?
-               tourData.map((item) => <ListCard key={item.contentId} {...item} />)
-               :
-               <div>No data available</div>
-            }
+            {tourData.map((item) => <ListCard key={item.contentId} {...item} />)}
          </div>
 
          {totalPages > 1 && (
