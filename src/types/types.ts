@@ -6,7 +6,7 @@ export interface ListProps {
    contentTypeId: number;
 }
 
-export interface HistoricalTourItem {
+export interface TourItem {
    addr1: string;
    firstimage?: string;
    firstimage2?: string;
