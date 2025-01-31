@@ -16,12 +16,11 @@ import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
+import { useSearchParams } from "next/navigation";
 
 const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
-   // const router = useRouter();
-   // const {contentId, contetnTypeId} = router.query;
 
    const blankbox = (
       <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
@@ -36,18 +35,7 @@ const TravelListPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-         // 기본적인 느낌
-         const key = 127565;
 
-         //운영정보 적음
-         // const key = 2798406;
-
-         //운영정보 많고 관광지 이미지 없음
-         // const key = 125800;
-
-         //운영정보 많은 페이지
-         // const key = 125789;
-         
          const infoList: TourDetailInfo = await APIConnect.getTourAreaInfo(key, 12);
          const img = await APIConnect.getTourImg(key);
          setInfoList(infoList);
@@ -128,7 +116,7 @@ const TravelListPage: React.FC = () => {
                   modules={[Pagination, Navigation, Autoplay]}
                   className="w-full aspect-[16/9] rounded-lg bg-neutral-200">
                   
-                  {imgList.length > 0 ? (
+                  { imgList && imgList.length > 0 ? (
                      imgList.map((img) => (
                         <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
                            <Image
