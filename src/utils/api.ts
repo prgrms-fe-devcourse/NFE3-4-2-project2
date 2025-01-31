@@ -47,12 +47,21 @@ export default class APIConnect {
                listYN: "Y",
             },
          });
+         console.log(response);
          if (response.status !== 200) {
             throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
          }
-         return response.data.response.body.items.item;
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+         if(!response.data.response){
+            const isLitimed = /limited|number|requests/i.test(response.data);
+            if(isLitimed){
+               console.log(`⚠️ API 요청 횟수를 초과하였습니다.`)
+            }
+            return [];
+         }else{
+            return response.data.response.body.items.item;
+         }
+      } catch{
+         return [];
       }
    }
    /**
