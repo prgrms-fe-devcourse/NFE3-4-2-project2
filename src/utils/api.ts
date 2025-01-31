@@ -315,27 +315,29 @@ export default class APIConnect {
          const introData = responseIntro.data.response.body.items.item[0] || {};
          const infoData = responseInfo.data.response.body.items.item || [];
 
-         return {
-            contentid: commonData.contentid,
-            cat2: commonData.cat2,
-            cat3: commonData.cat3,
-            title: commonData.title,
-            overview: commonData.overview,
-            addr: commonData.addr1,
-            firstimage: commonData.firstimage || "",
-            homepage: commonData.homepage || "",
-            infocenterfood: introData.infocenterfood || "",
-            opentimefood: introData.opentimefood || "",
-            restdatefood: introData.restdatefood || "",
-            parkingfood: introData.parkingfood || "",
-            firstmenu: introData.firstmenu || "",
-            treatmenu: introData.treatmenu || "",
-            extraInfo: infoData,
-         };
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
-      }
+      return {
+         contentid: commonData.contentid,
+         cat2: commonData.cat2,
+         cat3: commonData.cat3,
+         title: commonData.title,
+         overview: commonData.overview,
+         addr: commonData.addr1,
+         firstimage: commonData.firstimage || "",
+         homepage: commonData.homepage || "",
+         infocenterfood: introData.infocenterfood || "",
+         opentimefood: introData.opentimefood || "",
+         restdatefood: introData.restdatefood || "",
+         parkingfood: introData.parkingfood || "",
+         firstmenu: introData.firstmenu || "",
+         treatmenu: introData.treatmenu || "",
+         mapx: commonData.mapx || "",
+         mapy: commonData.mapy || "",
+         extraInfo: infoData,
+      };
+   } catch (err) {
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
+}
    /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
     * @param {string} contentId - 콘텐츠 고유 ID

@@ -21,9 +21,10 @@ import { useSearchParams } from "next/navigation";
 const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
+   
    const params = useSearchParams();
    const key = params.get("contentId");
-   
+
    const blankbox = (
       <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
    );
@@ -225,7 +226,7 @@ const TravelListPage: React.FC = () => {
             {/* 위치 */}
             <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
-               {infoList ? (
+               {infoList?.mapx && infoList?.mapy ? (
                   <div className="h-[500]">
                   <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title}/>
                </div>
