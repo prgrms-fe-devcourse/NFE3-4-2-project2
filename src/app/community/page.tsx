@@ -69,11 +69,11 @@ export default function Places() {
             </div>
          </div>
 
-         {/* ✅ 배너 아래 컨텐츠를 1280px로 제한 */}
-         <div className="w-[1280px] mx-auto">
+         {/* ✅ 배너 아래 컨텐츠를 최대 1280px로 제한 & 반응형 패딩 추가 */}
+         <div className="max-w-[1280px] w-full mx-auto px-4">
             {/* 카테고리 메뉴 */}
             <div className="flex justify-center py-6">
-               <div className="flex gap-8">
+               <div className="flex gap-8 flex-nowrap">
                   {categories.map((category) => (
                      <button
                         key={category.name}
@@ -97,8 +97,8 @@ export default function Places() {
                </div>
             </div>
 
-            {/* ✅ 글 작성하기 버튼을 카드 리스트 위, 오른쪽 정렬 */}
-            <div className="flex justify-end px-6 mb-4">
+            {/* ✅ 글 작성하기 버튼을 카드 리스트 위쪽, 정렬된 위치로 이동 */}
+            <div className="flex justify-end mb-6">
                <button
                   onClick={() => router.push("/community/write")}
                   className="w-[170px] h-[48px] bg-sky-500 text-white text-[18px] font-semibold rounded-lg">
@@ -107,7 +107,7 @@ export default function Places() {
             </div>
 
             {/* 🔥 CommunityCard 리스트 */}
-            <div className="flex flex-wrap justify-center gap-6 p-6">
+            <div className="flex flex-wrap justify-center gap-6">
                {filteredData.map((data, index) => (
                   <CommunityCard key={index} {...data} />
                ))}
