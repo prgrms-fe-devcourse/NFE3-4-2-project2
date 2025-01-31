@@ -37,13 +37,13 @@ const TravelListPage: React.FC = () => {
    useEffect(() => {
       const loadData = async () => {
          // 기본적인 느낌
-         // const key = 127565;
+         const key = 127565;
 
          //운영정보 적음
-         const key = 2798406;
+         // const key = 2798406;
 
          //운영정보 많고 관광지 이미지 없음
-         //const key = 125800;
+         // const key = 125800;
 
          //운영정보 많은 페이지
          // const key = 125789;
@@ -237,7 +237,7 @@ const TravelListPage: React.FC = () => {
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList ? (
                   <div className="h-[500]">
-                  <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} />
+                  <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title}/>
                </div>
                ) : ""}
             </section>

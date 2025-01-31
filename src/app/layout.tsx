@@ -1,5 +1,7 @@
 import "../styles/globals.css";
 import Script from "next/script";
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 export const metadata = {
   title: "My Next App",
@@ -15,7 +17,7 @@ export default function RootLayout({
     <html lang="en">
       <head>
         <Script 
-          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAKO_KEY}&autoload=false`}
+          src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&autoload=false`}
           type="text/javascript"
           strategy="beforeInteractive"
         />
