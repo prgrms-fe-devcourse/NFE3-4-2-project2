@@ -93,3 +93,14 @@ export interface RestaurantDetailInfo {
 }
 
 export type SeasonType = "spring" | "summer" | "autumn" | "winter" | null;
+
+// 식당 데이터 타입
+export interface Restaurant {
+   contentid: number; // 음식점 고유 ID
+   title: string; // 음식점 제목
+   addr1: string; // 주소
+   firstimage: string; // 대표 이미지 URL
+   areacode: string; // 지역 코드
+   cat3: string; // 카테고리 (API로 받아온 카테고리 정보)
+   cat3Text: string; // 텍스트로 수정한 카테고리
+}
