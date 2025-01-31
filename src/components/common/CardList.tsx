@@ -12,7 +12,12 @@ interface TourItem {
    contenttypeid: number;
 }
 
-const CardList: React.FC<{ selectedOption: string; selectedCulture: string | null; selectedSeason: string | null; selectedNature: string | null; }> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
+const CardList: React.FC<{
+   selectedOption: string;
+   selectedCulture: string | null;
+   selectedSeason: string | null;
+   selectedNature: string | null;
+}> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +33,9 @@ const CardList: React.FC<{ selectedOption: string; selectedCulture: string | nul
 
             console.log(`📌 선택된 옵션: ${selectedOption}`);
 
-            if (selectedOption === "문화·역사별 관광지") {
+            if (selectedOption === "계절별 관광지" && selectedSeason) {
+               //response = await APIConnect.getSeasonTourList(selectedSeason);
+            } else if (selectedOption === "문화·역사별 관광지") {
                if (!selectedCulture) {
                   response = await APIConnect.getHistoricalTourList(1);
                } else {
@@ -49,16 +56,10 @@ const CardList: React.FC<{ selectedOption: string; selectedCulture: string | nul
                         response = [];
                   }
                }
-            } else if (selectedOption === "계절별 관광지" && selectedSeason) {
-               // API가 없으므로 빈 배열 반환
-               response = [];
-               console.log("🚧 계절별 관광지 API 개발 중");
             } else if (selectedOption === "자연별 관광지" && selectedNature) {
-               response = [];
-               console.log("🚧 자연별 관광지 API 개발 중");
+               //response = await APIConnect.getNatureTourList(selectedNature);
             } else if (selectedOption === "지역별 관광지") {
-               response = [];
-               console.log("🚧 지역별 관광지 API 개발 중");
+               //response = await APIConnect.getRegionTourList();
             } else {
                response = [];
             }
@@ -85,7 +86,7 @@ const CardList: React.FC<{ selectedOption: string; selectedCulture: string | nul
             title: item.title || "",
             contentId: item.contentid,
             contentTypeId: item.contenttypeid,
-         }))
+         })),
       );
    }, [currentPage, allTourData]);
 
@@ -99,15 +100,13 @@ const CardList: React.FC<{ selectedOption: string; selectedCulture: string | nul
    return (
       <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
          <div className="grid grid-cols-3 gap-8">
-            {tourData.map((item) => <ListCard key={item.contentId} {...item} />)}
+            {tourData.map((item) => (
+               <ListCard key={item.contentId} {...item} />
+            ))}
          </div>
 
          {totalPages > 1 && (
-            <Pagination
-               currentPage={currentPage}
-               totalPages={totalPages}
-               onPageChange={setCurrentPage}
-            />
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
          )}
       </div>
    );

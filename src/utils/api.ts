@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 // 인터페이스 정의
-interface HistoricalTourItem {
+interface TourItem {
    title: string; // 관광지 이름
    addr1: string; // 주소
    firstimage?: string; // 대표 이미지 URL
@@ -238,103 +238,103 @@ export default class APIConnect {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
    }
-   
+
    /**
- * 음식점 목록을 가져오는 메서드
- * @param {number} page - 불러올 페이지 번호 (기본값: 1)
- * @returns {Promise<object[]>} 음식점 목록을 반환
- */
-static async getRestaurantList(page: number = 1): Promise<object[]> {
-   try {
-      const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-         params: {
-            ...this._tourDefaultOption,
-            pageNo: page,
-            areaCode: 32,
-            contentTypeId: 39,
-            cat1: "A05",
-            cat2: "A0502",
-            listYN: "Y",
-         },
-      });
+    * 음식점 목록을 가져오는 메서드
+    * @param {number} page - 불러올 페이지 번호 (기본값: 1)
+    * @returns {Promise<object[]>} 음식점 목록을 반환
+    */
+   static async getRestaurantList(page: number = 1): Promise<object[]> {
+      try {
+         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               areaCode: 32,
+               contentTypeId: 39,
+               cat1: "A05",
+               cat2: "A0502",
+               listYN: "Y",
+            },
+         });
 
-      if (response.status !== 200) {
-         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         return response.data.response.body.items.item || [];
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-
-      return response.data.response.body.items.item || [];
-   } catch (err) {
-      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
-}
 
-/**
- * 특정 음식점의 상세 정보를 가져오는 메서드
- * @param {number} contentId - 음식점 고유 ID
- * @returns {Promise<RestaurantDetailInfo>} 음식점 상세 정보를 반환
- */
-static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo> {
-   try {
-      const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 39,
-            defaultYN: "Y",
-            firstImageYN: "Y",
-            areacodeYN: "Y",
-            catcodeYN: "Y",
-            addrinfoYN: "Y",
-            mapinfoYN: "Y",
-            overviewYN: "Y",
-         },
-      });
+   /**
+    * 특정 음식점의 상세 정보를 가져오는 메서드
+    * @param {number} contentId - 음식점 고유 ID
+    * @returns {Promise<RestaurantDetailInfo>} 음식점 상세 정보를 반환
+    */
+   static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo> {
+      try {
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 39,
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
 
-      const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 39,
-         },
-      });
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 39,
+            },
+         });
 
-      const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 39,
-         },
-      });
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 39,
+            },
+         });
 
-      if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
-         throw new Error("음식점 데이터를 가져오는 도중 오류 발생");
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error("음식점 데이터를 가져오는 도중 오류 발생");
+         }
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0] || {};
+         const infoData = responseInfo.data.response.body.items.item || [];
+
+         return {
+            contentid: commonData.contentid,
+            cat2: commonData.cat2,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            addr: commonData.addr1,
+            firstimage: commonData.firstimage || "",
+            homepage: commonData.homepage || "",
+            infocenterfood: introData.infocenterfood || "",
+            opentimefood: introData.opentimefood || "",
+            restdatefood: introData.restdatefood || "",
+            parkingfood: introData.parkingfood || "",
+            firstmenu: introData.firstmenu || "",
+            treatmenu: introData.treatmenu || "",
+            extraInfo: infoData,
+         };
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-
-      const commonData = responseCommon.data.response.body.items.item[0];
-      const introData = responseIntro.data.response.body.items.item[0] || {};
-      const infoData = responseInfo.data.response.body.items.item || [];
-
-      return {
-         contentid: commonData.contentid,
-         cat2: commonData.cat2,
-         cat3: commonData.cat3,
-         title: commonData.title,
-         overview: commonData.overview,
-         addr: commonData.addr1,
-         firstimage: commonData.firstimage || "",
-         homepage: commonData.homepage || "",
-         infocenterfood: introData.infocenterfood || "",
-         opentimefood: introData.opentimefood || "",
-         restdatefood: introData.restdatefood || "",
-         parkingfood: introData.parkingfood || "",
-         firstmenu: introData.firstmenu || "",
-         treatmenu: introData.treatmenu || "",
-         extraInfo: infoData,
-      };
-   } catch (err) {
-      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
-}
    /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
     * @param {string} contentId - 콘텐츠 고유 ID
@@ -360,38 +360,37 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
    }
 
    /**
-    * TourAPI에서 역사 관광지 전체 리스트를 가져오는 메서드
+    * TourAPI에서 문화·역사별 관광지 전체 리스트를 가져오는 메서드
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1
-    * @returns {Promise<HistoricalTourItem[]>}
+    * @returns {Promise<TourItem[]>}
     */
-   static async getHistoricalTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+   static async getHistoricalTourList(page: number = 1): Promise<TourItem[]> {
       try {
-         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-            params: {
-               ...this._tourDefaultOption,
-               pageNo: page,
-               areaCode: 32,
-               listYN: "Y",
-               cat1: "A02",
-               cat2: "A0201",
-            },
-         });
+         console.log("📌 [API 요청] 문화·역사 관광지 전체 리스트 요청");
 
-         // 응답 상태 체크
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         // 각각의 카테고리 데이터를 가져오는 요청
+         const museumPromise = this.getMuseumTourList(page); // 미술관·박물관
+         const historicPromise = this.getHistoricTourList(page); // 유적지
+         const religionPromise = this.getRegionSitesData(page); // 종교 관광지
+         const etcPromise = this.getEtcSitesData(page); // 기타
+
+         // 모든 요청을 병렬로 실행 후 데이터 병합
+         const [museumData, historicData, religionData, etcData] = await Promise.all([
+            museumPromise,
+            historicPromise,
+            religionPromise,
+            etcPromise,
+         ]);
+
+         const mergedResults = [...museumData, ...historicData, ...religionData, ...etcData];
+
+         console.log("📩 [API 응답 데이터]:", mergedResults);
+         if (!mergedResults.length) {
+            console.warn("⚠️ API 응답에 데이터가 없습니다.");
          }
 
-         // 응답 데이터가 예상대로 구성되어 있는지 확인
-         const items: HistoricalTourItem[] = response.data?.response?.body?.items?.item || [];
-
-         // 만약 items가 없으면 경고를 출력하고 빈 배열을 반환
-         if (!items.length) {
-            console.warn("API 응답에 데이터가 없습니다.");
-         }
-
-         return items;
+         return mergedResults;
       } catch (err: unknown) {
          if (axios.isAxiosError(err)) {
             throw new Error(`Axios 요청이 실패했습니다: ${err.message}`);
@@ -407,15 +406,13 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
     * TourAPI에서 미술관, 박물관 리스트를 가져오는 메서드
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1
-    * @returns {Promise<HistoricalTourItem[]>}
+    * @returns {Promise<TourItem[]>}
     */
-   static async getMuseumTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+   static async getMuseumTourList(page: number = 1): Promise<TourItem[]> {
       try {
          const cat3List = ["A02060100", "A02060200", "A02060300", "A02060400", "A02060500"];
-
          console.log("📌 [API 요청] 미술관·박물관 리스트 요청");
          console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
-
          // 여러 개의 cat3 값을 개별적으로 API 요청 후, 데이터를 병합
          const requests = cat3List.map(async (cat3) => {
             console.log(`📩 개별 요청: cat3=${cat3}`);
@@ -430,21 +427,16 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
                   cat3: cat3, // 개별 요청
                },
             });
-
             // 응답 데이터가 예상대로 구성되어 있는지 확인
             return response.data?.response?.body?.items?.item || [];
          });
-
          // 모든 요청 완료 후 데이터를 병합
          const results = await Promise.all(requests);
          const mergedResults = results.flat(); // 다중 배열을 하나의 배열로 변환
-
          console.log("📩 [API 응답 데이터]:", mergedResults);
-
          if (!mergedResults.length) {
             console.warn("⚠️ API 응답에 데이터가 없습니다.");
          }
-
          return mergedResults;
       } catch (err: unknown) {
          if (axios.isAxiosError(err)) {
@@ -456,20 +448,17 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
          }
       }
    }
-
    /**
     * TourAPI에서 유적지 리스트를 가져오는 메서드
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1
-    * @returns {Promise<HistoricalTourItem[]>}
+    * @returns {Promise<TourItem[]>}
     */
-   static async getHistoricTourList(page: number = 1): Promise<HistoricalTourItem[]> {
+   static async getHistoricTourList(page: number = 1): Promise<TourItem[]> {
       try {
          const cat3List = ["A02010100", "A02010200", "A02010300", "A02010400", "A02010500", "A02010600", "A02010700"];
-
          console.log("📌 [API 요청] 유적지 리스트 요청");
          console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
-
          const requests = cat3List.map(async (cat3) => {
             console.log(`📩 개별 요청: cat3=${cat3}`);
             const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
@@ -483,20 +472,15 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
                   cat3: cat3,
                },
             });
-
             return response.data?.response?.body?.items?.item || [];
          });
-
          // 모든 요청을 병렬로 실행 후 데이터 병합
          const results = await Promise.all(requests);
          const mergedResults = results.flat();
-
          console.log("📩 [API 응답 데이터]:", mergedResults);
-
          if (!mergedResults.length) {
             console.warn("⚠️ API 응답에 데이터가 없습니다.");
          }
-
          return mergedResults;
       } catch (err: unknown) {
          if (axios.isAxiosError(err)) {
@@ -508,20 +492,17 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
          }
       }
    }
-
    /**
     * TourAPI에서 종교 여행지 리스트를 가져오는 메서드
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1
-    * @returns {Promise<HistoricalTourItem[]>}
+    * @returns {Promise<TourItem[]>}
     */
-   static async getRegionSitesData(page: number = 1): Promise<HistoricalTourItem[]> {
+   static async getRegionSitesData(page: number = 1): Promise<TourItem[]> {
       try {
          const cat3List = ["A02010800", "A02010900"];
-
          console.log("📌 [API 요청] 종교 여행지 리스트 요청");
          console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
-
          const requests = cat3List.map(async (cat3) => {
             console.log(`📩 개별 요청: cat3=${cat3}`);
             const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
@@ -535,20 +516,15 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
                   cat3: cat3,
                },
             });
-
             return response.data?.response?.body?.items?.item || [];
          });
-
          // 모든 요청을 병렬로 실행 후 데이터 병합
          const results = await Promise.all(requests);
          const mergedResults = results.flat();
-
          console.log("📩 [API 응답 데이터]:", mergedResults);
-
          if (!mergedResults.length) {
             console.warn("⚠️ API 응답에 데이터가 없습니다.");
          }
-
          return mergedResults;
       } catch (err: unknown) {
          if (axios.isAxiosError(err)) {
@@ -560,20 +536,17 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
          }
       }
    }
-
    /**
     * TourAPI에서 기타 여행지 리스트를 가져오는 메서드
     *
     * @param {number} page - 불러올 페이지 번호. 기본값은 1
-    * @returns {Promise<HistoricalTourItem[]>}
+    * @returns {Promise<TourItem[]>}
     */
-   static async getEtcSitesData(page: number = 1): Promise<HistoricalTourItem[]> {
+   static async getEtcSitesData(page: number = 1): Promise<TourItem[]> {
       try {
          const cat3List = ["A02011000"];
-
          console.log("📌 [API 요청] 기타 여행지 리스트 요청");
          console.log("🔗 요청 URL:", this._tourDefaultURL + "areaBasedList1");
-
          const requests = cat3List.map(async (cat3) => {
             console.log(`📩 개별 요청: cat3=${cat3}`);
             const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
@@ -584,22 +557,17 @@ static async getRestaurantInfo(contentId: number): Promise<RestaurantDetailInfo>
                   listYN: "Y",
                   cat1: "A02",
                   cat2: "A0201",
-                  cat3: cat3, 
+                  cat3: cat3,
                },
             });
-
             return response.data?.response?.body?.items?.item || [];
          });
-
          const results = await Promise.all(requests);
          const mergedResults = results.flat();
-
          console.log("📩 [API 응답 데이터]:", mergedResults);
-
          if (!mergedResults.length) {
             console.warn("⚠️ API 응답에 데이터가 없습니다.");
          }
-
          return mergedResults;
       } catch (err: unknown) {
          if (axios.isAxiosError(err)) {
