@@ -8,7 +8,7 @@ export default function Header() {
       { name: "축제·공연·행사", href: "/explore/festival" },
       { name: "레저 및 체험", href: "/explore/leisure" },
       { name: "식당 및 숙소", href: "/explore/places/restaurants" }, // -> default 식당페이지
-      { name: "커뮤니티", href: "/explore/community" },
+      { name: "커뮤니티", href: "/community" },
    ];
 
    return (
