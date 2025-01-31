@@ -36,7 +36,7 @@ export default class APIConnect {
     * @param {number} page - 불러올 페이지. 기본값은 1입니다.
     * @returns {Array} 인덱스 이미지, 시군구 정보, 제목으로 구성된 12개의 정보 리스트를 반환합니다.
     */
-   static async getTourAreaList(code: string, page: number = 1): Promise<string> {
+   static async getTourAreaList(code: string | undefined, page: number = 1): Promise<TourItem[]> {
       try {
          const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
             params: {
