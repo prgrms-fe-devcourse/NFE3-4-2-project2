@@ -56,123 +56,45 @@ export default class APIConnect {
       }
    }
    /**
-    * TourAPI에서 지역별 상세정보를 가지고오는 메서드입니다.
-    * @param {string} contentId - 콘텐츠 고유 ID
-    * @param {number} contentTypeId - 콘텐츠의 Type ID
-    * @returns {object} detailCommon, detailIntro, detailInfo 세 가지 오퍼레이션에서 가지고 온 정보를 객체로 묶어 반환합니다.
-    */
-   static async getTourAreaInfo(
-      contentId: number | string,
-      contentTypeId: number | string = 12,
-   ): Promise<TourDetailInfo> {
-      try {
-         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
-            params: {
-               ...this._tourDefaultOption,
-               contentId: contentId,
-               defaultYN: "Y",
-               firstImageYN: "Y",
-               areacodeYN: "Y",
-               catcodeYN: "Y",
-               addrinfoYN: "Y",
-               mapinfoYN: "Y",
-               overviewYN: "Y",
-            },
-         });
-         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
-            params: {
-               ...this._tourDefaultOption,
-               contentId: contentId,
-               contentTypeId: contentTypeId,
-            },
-         });
-         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
-            params: {
-               ...this._tourDefaultOption,
-               contentId: contentId,
-               contentTypeId: contentTypeId,
-            },
-         });
-         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
-            throw new Error(
-               `HTTP Error: ${
-                  responseCommon.status || responseIntro.status || responseInfo.status
-               } - 데이터를 불러오지 못했습니다.`,
-            );
-         }
+ * TourAPI에서 축제 정보를 가져오는 메서드입니다.
+ * @param {string} eventStartDate - 축제 시작일 (YYYYMMDD 형식, 기본값: '20240101').
+ * @param {string} eventEndDate - 축제 종료일 (YYYYMMDD 형식, 기본값: 없음).
+ * @param {number} page - 불러올 페이지 (기본값: 1).
+ * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
+ * @returns {Promise<object[]>} 축제 정보 리스트를 반환합니다.
+ */
+static async getFestivalList(
+   eventStartDate: string = "20240101",
+   eventEndDate?: string,
+   page: number = 1,
+   sigunguCode: string = "",
+): Promise<object[]> {
+   try {
+      // 요청 보내기 (축제 A0207)
+      const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
+         params: {
+            ...this._tourDefaultOption,
+            eventStartDate,
+            eventEndDate,
+            pageNo: page,
+            areaCode: 32, // 강원도 지역 코드
+            sigunguCode,
+            listYN: "Y",
+            cat1: "A02", // 대분류: 행사/공연/축제
+            cat2: "A0207", // 중분류: 축제
+         },
+      });
 
-         const commonData = responseCommon.data.response.body.items.item[0];
-         const introData = responseIntro.data.response.body.items.item[0];
-         const infoData = responseInfo.data.response.body.items.item || {};
-
-         return {
-            contentid: commonData.contentid,
-            cat3: commonData.cat3,
-            title: commonData.title,
-            overview: commonData.overview,
-            homepage: commonData.homepage || "",
-            firstimage: commonData.firstimage || "",
-            firstimage2: commonData.firstimage2 || "",
-            infocenter: introData.infocenter || "",
-            entranceFee: infoData.infotext || "",
-            restdate: introData.restdate || "",
-            useseason: introData.useseason || "",
-            usetime: introData.usetime || "",
-            //편의시설
-            chkbabycarriage: introData.chkbabycarriage || "",
-            parking: introData.parking,
-            extraInfo: infoData,
-            //위치
-            addr: commonData.addr1,
-            mapx: commonData.mapx,
-            mapy: commonData.mapy,
-         };
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      if (response.status !== 200) {
+         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
       }
-   }
-   static getTourNatureList() {}
-   /**
-    * TourAPI에서 축제 정보를 가져오는 메서드입니다.
-    * @param {string} eventStartDate - 축제 시작일 (YYYYMMDD 형식, 기본값: '20240101').
-    * @param {string} eventEndDate - 축제 종료일 (YYYYMMDD 형식, 기본값: 없음).
-    * @param {number} page - 불러올 페이지 (기본값: 1).
-    * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
-    * @returns {Promise<object[]>} 축제 정보 리스트를 반환합니다.
-    */
-   static async getFestivalList(
-      eventStartDate: string = "20240101",
-      eventEndDate?: string,
-      page: number = 1,
-      sigunguCode: string = "",
-   ): Promise<object[]> {
-      try {
-         // 요청 보내기
-         const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
-            params: {
-               ...this._tourDefaultOption, // 기본 옵션
-               eventStartDate,
-               eventEndDate,
-               pageNo: page,
-               areaCode: 32, // 강원도 지역 코드
-               sigunguCode,
-               listYN: "Y", // 목록 구분
-            },
-         });
 
-         // 응답 상태 확인
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
-         }
-
-         // 축제 데이터 반환
-         return response.data.response.body.items.item || [];
-      } catch (err) {
-         // 에러 처리
-         console.error("getFestivalList 요청 실패:", err);
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
-      }
+      return response.data.response.body.items.item || [];
+   } catch (err) {
+      console.error("getFestivalList 요청 실패:", err);
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
+}
 
    /**
     * 개별 축제 정보를 가져오는 API
@@ -240,6 +162,115 @@ export default class APIConnect {
       }
    }
 
+
+/**
+ * TourAPI에서 공연 및 행사 정보를 가져오는 메서드입니다.
+ * @param {string} eventStartDate - 행사 시작일 (YYYYMMDD 형식, 기본값: '20240101').
+ * @param {string} eventEndDate - 행사 종료일 (YYYYMMDD 형식, 기본값: 없음).
+ * @param {number} page - 불러올 페이지 (기본값: 1).
+ * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
+ * @returns {Promise<object[]>} 공연 및 행사 정보 리스트를 반환합니다.
+ */
+static async getPerformanceEventList(
+   eventStartDate: string = "20240101",
+   eventEndDate?: string,
+   page: number = 1,
+   sigunguCode: string = "",
+): Promise<object[]> {
+   try {
+      // 요청 보내기 (공연 & 행사 A0208)
+      const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
+         params: {
+            ...this._tourDefaultOption,
+            eventStartDate,
+            eventEndDate,
+            pageNo: page,
+            areaCode: 32, // 강원도 지역 코드
+            sigunguCode,
+            listYN: "Y",
+            cat1: "A02", // 대분류: 행사/공연/축제
+            cat2: "A0208", // 중분류: 공연 & 행사
+         },
+      });
+
+      if (response.status !== 200) {
+         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+      }
+
+      return response.data.response.body.items.item || [];
+   } catch (err) {
+      console.error("getPerformanceEventList 요청 실패:", err);
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+   }
+}
+
+   /**
+ * 개별 공연 & 행사 정보를 가져오는 API
+ */
+static async getPerformanceEventInfo(contentId: number | string): Promise<TourDetailInfo> {
+   try {
+      const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 15, // 공연 & 행사도 동일한 contentTypeId 사용
+            defaultYN: "Y",
+            firstImageYN: "Y",
+            areacodeYN: "Y",
+            catcodeYN: "Y",
+            addrinfoYN: "Y",
+            mapinfoYN: "Y",
+            overviewYN: "Y",
+         },
+      });
+
+      const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 15,
+         },
+      });
+
+      const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+         params: {
+            ...this._tourDefaultOption,
+            contentId,
+            contentTypeId: 15,
+         },
+      });
+
+      if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+         throw new Error("공연 & 행사 데이터를 가져오는 도중 오류 발생");
+      }
+
+      const commonData = responseCommon.data.response.body.items.item[0];
+      const introData = responseIntro.data.response.body.items.item[0] || {};
+      const infoData = responseInfo.data.response.body.items.item || [];
+
+      return {
+         contentid: commonData.contentid,
+         cat3: commonData.cat3,
+         title: commonData.title,
+         overview: commonData.overview,
+         homepage: commonData.homepage || "",
+         firstimage: commonData.firstimage || "",
+         firstimage2: commonData.firstimage2 || "",
+         infocenter: commonData.tel || introData.sponsor1tel || "",
+         entranceFee: introData.usetimefestival || "무료",
+         restdate: "",
+         usetime: introData.playtime || "정보 없음",
+         addr: commonData.addr1,
+         mapx: commonData.mapx,
+         mapy: commonData.mapy,
+         extraInfo: infoData,
+      };
+   } catch (err) {
+      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+   }
+}
+
+   
    /**
     * 음식점 목록을 가져오는 메서드
     * @param {number} page - 불러올 페이지 번호 (기본값: 1)
