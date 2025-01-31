@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect,  useState} from "react";
+import React, { useEffect,  useState, useRef } from "react";
 import Image from "next/image";
 
 import Header from "@/components/common/Header";
@@ -12,9 +12,10 @@ import { TourImg, TourDetailInfo, CatList } from "@/types/types";
 import catListJson from "@/utils/catList.json";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper/modules";
+import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/pagination";
+import "swiper/css/navigation";
 
 const catList = catListJson as CatList;
 
@@ -25,6 +26,11 @@ const TravelListPage: React.FC = () => {
    const blankbox = (
       <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
    );
+
+   const swiperRef = useRef<any>(null); // 🔥 Swiper 인스턴스 저장
+   const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+   const nextBtnRef = useRef<HTMLButtonElement | null>(null);
+
    const [infoList, setInfoList] = useState<TourDetailInfo>();
    const [imgList, setImgList] = useState<TourImg[]>([]);
 
@@ -50,6 +56,13 @@ const TravelListPage: React.FC = () => {
          console.log("imgList : ", imgList);
       };
       loadData();
+
+      if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
+         swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
+         swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
+         swiperRef.current.navigation.init();
+         swiperRef.current.navigation.update();
+       }
    }, []); // 빈 배열로 설정하여 마운트 시 한 번만 실행
 
    const getContentCategory = (key: string | undefined) => {
@@ -105,29 +118,49 @@ const TravelListPage: React.FC = () => {
 
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
+            <div className="relative w-full max-w-[800px]">
                <Swiper
-                  pagination={true}
-                  modules={[Pagination]}
-                  className="w-full aspect-[16/9] rounded-lg bg-neutral-200"
-                  loop={true}>
-                  {imgList ? (
-                     imgList.map((img) => {
-                        return (
-                           <SwiperSlide
-                              key={img.serialnum}
-                              className="bg-right-bottom bg-cover"
-                              style={{ backgroundImage: `url(${img.originimgurl})` }}></SwiperSlide>
-                        );
-                     })
+                  onSwiper={(swiper) => (swiperRef.current = swiper)} //
+                  pagination={{ clickable: true }}
+                  navigation={true} // 🔥 useEffect에서 버튼 연결
+                  autoplay={{ delay: 5000, disableOnInteraction: false }} // 🔥 5초마다 자동 넘김
+                  loop={true}
+                  modules={[Pagination, Navigation, Autoplay]}
+                  className="w-full aspect-[16/9] rounded-lg bg-neutral-200">
+                  
+                  {imgList.length > 0 ? (
+                     imgList.map((img) => (
+                        <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
+                           <Image
+                              src={img.originimgurl}
+                              alt={img.imgname || "축제 이미지"}
+                              width={800}
+                              height={450}
+                              className="rounded-lg object-cover mx-auto"
+                           />
+                        </SwiperSlide>
+                     ))
                   ) : (
-                     //이미지 리스트 없을 때 처리
                      <SwiperSlide>
                         <div className="flex items-center justify-center w-full h-full">
-                           <p className="text-xl text-neutral-400">관광지 이미지를 준비중입니다.</p>
+                           <p className="text-xl text-neutral-400">축제 이미지를 준비중입니다.</p>
                         </div>
                      </SwiperSlide>
                   )}
                </Swiper>
+
+               {/* 🔥 Swiper 내부 좌우 네비게이션 버튼 */}
+               
+               <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
+               </button>
+               <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
+               </button>
+               
+               
+               
+            </div>
 
                <div className="flex flex-col justify-between max-w-[480] gap-12">
                   {/* Info Section */}
