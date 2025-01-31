@@ -21,7 +21,9 @@ import { useSearchParams } from "next/navigation";
 const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
-
+   const params = useSearchParams();
+   const key = params.get("contentId");
+   
    const blankbox = (
       <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
    );
@@ -121,7 +123,7 @@ const TravelListPage: React.FC = () => {
                         <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
                            <Image
                               src={img.originimgurl}
-                              alt={img.imgname || "축제 이미지"}
+                              alt={img.imgname || "이미지"}
                               width={800}
                               height={450}
                               className="rounded-lg object-cover mx-auto"
@@ -131,7 +133,7 @@ const TravelListPage: React.FC = () => {
                   ) : (
                      <SwiperSlide>
                         <div className="flex items-center justify-center w-full h-full">
-                           <p className="text-xl text-neutral-400">축제 이미지를 준비중입니다.</p>
+                           <p className="text-xl text-neutral-400">이미지를 준비중입니다.</p>
                         </div>
                      </SwiperSlide>
                   )}
