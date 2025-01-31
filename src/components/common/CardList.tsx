@@ -3,6 +3,7 @@ import { ListProps } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
+import { useSearchParams } from "next/navigation";
 
 interface TourItem {
    title: string;
@@ -12,12 +13,9 @@ interface TourItem {
    contenttypeid: number;
 }
 
-const CardList: React.FC<{
-   selectedOption: string;
-   selectedCulture: string | null;
-   selectedSeason: string | null;
-   selectedNature: string | null;
-}> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
+const CardList: React.FC<{ selectedOption: string; selectedCulture: string | null; selectedSeason: string | null; selectedNature: string | null; }> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
+   const params = useSearchParams();
+   const regionCode = params.get("code");
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
@@ -33,9 +31,7 @@ const CardList: React.FC<{
 
             console.log(`📌 선택된 옵션: ${selectedOption}`);
 
-            if (selectedOption === "계절별 관광지" && selectedSeason) {
-               //response = await APIConnect.getSeasonTourList(selectedSeason);
-            } else if (selectedOption === "문화·역사별 관광지") {
+            if (selectedOption === "문화·역사별 관광지") {
                if (!selectedCulture) {
                   response = await APIConnect.getHistoricalTourList(1);
                } else {
@@ -56,10 +52,16 @@ const CardList: React.FC<{
                         response = [];
                   }
                }
+            } else if (selectedOption === "계절별 관광지" && selectedSeason) {
+               // API가 없으므로 빈 배열 반환
+               response = [];
+               console.log("🚧 계절별 관광지 API 개발 중");
             } else if (selectedOption === "자연별 관광지" && selectedNature) {
-               //response = await APIConnect.getNatureTourList(selectedNature);
+               response = [];
+               console.log("🚧 자연별 관광지 API 개발 중");
             } else if (selectedOption === "지역별 관광지") {
-               //response = await APIConnect.getRegionTourList();
+               response = await APIConnect.getTourAreaList(regionCode);
+               console.log("🚧 지역별 관광지 API 개발 중");
             } else {
                response = [];
             }
@@ -75,7 +77,7 @@ const CardList: React.FC<{
       };
 
       fetchData();
-   }, [selectedOption, selectedCulture, selectedSeason, selectedNature]);
+   }, [selectedOption, selectedCulture, selectedSeason, selectedNature, regionCode]);
 
    useEffect(() => {
       const paginatedData = allTourData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -86,7 +88,7 @@ const CardList: React.FC<{
             title: item.title || "",
             contentId: item.contentid,
             contentTypeId: item.contenttypeid,
-         })),
+         }))
       );
    }, [currentPage, allTourData]);
 
@@ -100,13 +102,15 @@ const CardList: React.FC<{
    return (
       <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
          <div className="grid grid-cols-3 gap-8">
-            {tourData.map((item) => (
-               <ListCard key={item.contentId} {...item} />
-            ))}
+            {tourData.map((item) => <ListCard key={item.contentId} {...item} />)}
          </div>
 
          {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
+            <Pagination
+               currentPage={currentPage}
+               totalPages={totalPages}
+               onPageChange={setCurrentPage}
+            />
          )}
       </div>
    );

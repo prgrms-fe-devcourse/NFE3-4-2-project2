@@ -21,9 +21,10 @@ import { useSearchParams } from "next/navigation";
 const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
+   
    const params = useSearchParams();
    const key = params.get("contentId");
-   
+
    const blankbox = (
       <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
    );
