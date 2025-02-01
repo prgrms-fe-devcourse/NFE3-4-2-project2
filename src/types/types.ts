@@ -92,8 +92,10 @@ export interface RestaurantDetailInfo {
    extraInfo?: TourExtraInfo[]; // 추가 정보 (예: 화장실 여부 등)
 }
 
-// ✅ 숙소(Accommodation) 관련 타입 추가
 export interface AccommodationItem {
+   cat2: string;
+   cat3: string;
+   cat3Text?: string | undefined; 
    contentid: number;
    title: string;
    addr1: string;
@@ -160,6 +162,7 @@ export interface Restaurant {
    cat2?: string;
    cat3: string; // 카테고리 (API로 받아온 카테고리 정보)
    cat3Text?: string | undefined; // 텍스트로 수정한 카테고리
+   opentimefood?: string; // ✅ 운영 시간 추가
 }
 
 export interface RestaurantListResponse {

@@ -21,8 +21,8 @@ import { useSearchParams } from "next/navigation";
 const catList = catListJson as CatList;
 
 const AccommodationDetailPage: React.FC = () => {
-  //  const params = useSearchParams();
-  //  const contentId = params.get("contentId");
+   const params = useSearchParams();
+   const contentId = params.get("contentId");
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
 
@@ -35,10 +35,9 @@ const AccommodationDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-        //  if (!contentId) return;
+         if (!contentId) return;
 
          try {
-            const contentId = 940259;
             const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(contentId);
             const img = await APIConnect.getTourImg(contentId);
 

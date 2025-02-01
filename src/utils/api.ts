@@ -509,12 +509,16 @@ export default class APIConnect {
     * @param {number} page - 페이지 번호 (기본값: 1)
     * @returns {Promise<AccommodationItem[]>} 숙소 리스트 반환
     */
-      static async getAccommodationList(page: number = 1): Promise<AccommodationItem[]> {
+      static async getAccommodationList(
+         page: number = 1, 
+         numOfRows: number = 1000,
+      ): Promise<AccommodationItem[]> {
          try {
             const response = await axios.get(this._tourDefaultURL + "searchStay1", {
                params: {
                   ...this._tourDefaultOption,
                   pageNo: page,
+                  numOfRows: numOfRows,
                   areaCode: 32,
                   listYN: "Y",
                },
