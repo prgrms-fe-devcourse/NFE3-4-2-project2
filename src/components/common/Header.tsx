@@ -98,7 +98,7 @@ export default function Header() {
                            </span>
                            <div className="flex gap-4">
                               {/* 마이페이지 및 로그아웃 버튼 */}
-                              <Link href="/my-page">
+                              <Link href="/mypage">
                                  <button
                                     className="h-[32px] px-4 text-neutral-800 text-sm font-medium border-2 border-solid border-neutral-800 rounded-md 
                                              hover:text-white hover:bg-sky-500 hover:border-sky-500 active:bg-sky-600 active:border-sky-600">
