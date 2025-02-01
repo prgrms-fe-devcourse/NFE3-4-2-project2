@@ -92,6 +92,57 @@ export interface RestaurantDetailInfo {
    extraInfo?: TourExtraInfo[]; // 추가 정보 (예: 화장실 여부 등)
 }
 
+// ✅ 숙소(Accommodation) 관련 타입 추가
+export interface AccommodationItem {
+   contentid: number;
+   title: string;
+   addr1: string;
+   firstimage?: string;
+   firstimage2?: string;
+   mapx?: number;
+   mapy?: number;
+   tel?: string;
+}
+
+export interface AccommodationDetailInfo {
+   contentid: string;
+   cat2: string;
+   cat3: string;
+   title: string;
+   overview: string;
+   homepage?: string;
+   firstimage?: string;
+   firstimage2?: string;
+   tel?: string;
+   addr: string;
+   mapx: string;
+   mapy: string;
+   checkin?: string;
+   checkout?: string;
+   parking?: string;
+   facilities?: string;
+   rooms: AccommodationRoom[];
+}
+
+export interface AccommodationRoom {
+   roomTitle: string;
+   roomSize?: string;
+   baseCapacity: number;
+   maxCapacity: number;
+   priceLow?: string;
+   priceHigh?: string;
+   amenities: {
+      bath: boolean;
+      airConditioning: boolean;
+      tv: boolean;
+      internet: boolean;
+      refrigerator: boolean;
+      toiletries: boolean;
+      hairdryer: boolean;
+   };
+   images: string[];
+}
+
 export type SeasonType = "spring" | "summer" | "autumn" | "winter" | null;
 
 // 식당 데이터 타입

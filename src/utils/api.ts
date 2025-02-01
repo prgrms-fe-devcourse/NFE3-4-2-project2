@@ -1,4 +1,5 @@
 import { TourImg, TourDetailInfo, RestaurantDetailInfo } from "@/types/types";
+import { AccommodationItem, AccommodationDetailInfo } from "@/types/types";
 
 import axios from "axios";
 import dotenv from "dotenv";
@@ -64,46 +65,71 @@ export default class APIConnect {
          return [];
       }
    }
+
    /**
- * TourAPI에서 축제 정보를 가져오는 메서드입니다.
- * @param {string} eventStartDate - 축제 시작일 (YYYYMMDD 형식, 기본값: '20240101').
- * @param {string} eventEndDate - 축제 종료일 (YYYYMMDD 형식, 기본값: 없음).
- * @param {number} page - 불러올 페이지 (기본값: 1).
- * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
- * @returns {Promise<object[]>} 축제 정보 리스트를 반환합니다.
- */
-static async getFestivalList(
-   eventStartDate: string = "20240101",
-   eventEndDate?: string,
-   page: number = 1,
-   sigunguCode: string = "",
-): Promise<object[]> {
-   try {
-      // 요청 보내기 (축제 A0207)
-      const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
-         params: {
-            ...this._tourDefaultOption,
-            eventStartDate,
-            eventEndDate,
-            pageNo: page,
-            areaCode: 32, // 강원도 지역 코드
-            sigunguCode,
-            listYN: "Y",
-            cat1: "A02", // 대분류: 행사/공연/축제
-            cat2: "A0207", // 중분류: 축제
-         },
-      });
-
-      if (response.status !== 200) {
-         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+    * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
+    * @param {string} contentId - 콘텐츠 고유 ID
+    * @returns {Array} 이미지 정보가 담긴 배열을 반환합니다.
+    */
+   static async getTourImg(contentId: number): Promise<TourImg[]> {
+      try {
+         const response = await axios.get(this._tourDefaultURL + "detailImage1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId: contentId,
+               imageYN: "Y",
+               subImageYN: "Y",
+            },
+         });
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+         return response.data.response.body.items.item;
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-
-      return response.data.response.body.items.item || [];
-   } catch (err) {
-      console.error("getFestivalList 요청 실패:", err);
-      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
-}
+
+   /**
+    * TourAPI에서 축제 정보를 가져오는 메서드입니다.
+    * @param {string} eventStartDate - 축제 시작일 (YYYYMMDD 형식, 기본값: '20240101').
+    * @param {string} eventEndDate - 축제 종료일 (YYYYMMDD 형식, 기본값: 없음).
+    * @param {number} page - 불러올 페이지 (기본값: 1).
+    * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
+    * @returns {Promise<object[]>} 축제 정보 리스트를 반환합니다.
+    */
+   static async getFestivalList(
+      eventStartDate: string = "20240101",
+      eventEndDate?: string,
+      page: number = 1,
+      sigunguCode: string = "",
+   ): Promise<object[]> {
+      try {
+         // 요청 보내기 (축제 A0207)
+         const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
+            params: {
+               ...this._tourDefaultOption,
+               eventStartDate,
+               eventEndDate,
+               pageNo: page,
+               areaCode: 32, // 강원도 지역 코드
+               sigunguCode,
+               listYN: "Y",
+               cat1: "A02", // 대분류: 행사/공연/축제
+               cat2: "A0207", // 중분류: 축제
+            },
+         });
+
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         return response.data.response.body.items.item || [];
+      } catch (err) {
+         console.error("getFestivalList 요청 실패:", err);
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
 
    /**
     * 개별 축제 정보를 가져오는 API
@@ -172,112 +198,112 @@ static async getFestivalList(
    }
 
 
-/**
- * TourAPI에서 공연 및 행사 정보를 가져오는 메서드입니다.
- * @param {string} eventStartDate - 행사 시작일 (YYYYMMDD 형식, 기본값: '20240101').
- * @param {string} eventEndDate - 행사 종료일 (YYYYMMDD 형식, 기본값: 없음).
- * @param {number} page - 불러올 페이지 (기본값: 1).
- * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
- * @returns {Promise<object[]>} 공연 및 행사 정보 리스트를 반환합니다.
- */
-static async getPerformanceEventList(
-   eventStartDate: string = "20240101",
-   eventEndDate?: string,
-   page: number = 1,
-   sigunguCode: string = "",
-): Promise<object[]> {
-   try {
-      // 요청 보내기 (공연 & 행사 A0208)
-      const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
-         params: {
-            ...this._tourDefaultOption,
-            eventStartDate,
-            eventEndDate,
-            pageNo: page,
-            areaCode: 32, // 강원도 지역 코드
-            sigunguCode,
-            listYN: "Y",
-            cat1: "A02", // 대분류: 행사/공연/축제
-            cat2: "A0208", // 중분류: 공연 & 행사
-         },
-      });
+   /**
+    * TourAPI에서 공연 및 행사 정보를 가져오는 메서드입니다.
+    * @param {string} eventStartDate - 행사 시작일 (YYYYMMDD 형식, 기본값: '20240101').
+    * @param {string} eventEndDate - 행사 종료일 (YYYYMMDD 형식, 기본값: 없음).
+    * @param {number} page - 불러올 페이지 (기본값: 1).
+    * @param {string} sigunguCode - 시군구 코드 (선택, 기본값: '').
+    * @returns {Promise<object[]>} 공연 및 행사 정보 리스트를 반환합니다.
+    */
+   static async getPerformanceEventList(
+      eventStartDate: string = "20240101",
+      eventEndDate?: string,
+      page: number = 1,
+      sigunguCode: string = "",
+   ): Promise<object[]> {
+      try {
+         // 요청 보내기 (공연 & 행사 A0208)
+         const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
+            params: {
+               ...this._tourDefaultOption,
+               eventStartDate,
+               eventEndDate,
+               pageNo: page,
+               areaCode: 32, // 강원도 지역 코드
+               sigunguCode,
+               listYN: "Y",
+               cat1: "A02", // 대분류: 행사/공연/축제
+               cat2: "A0208", // 중분류: 공연 & 행사
+            },
+         });
 
-      if (response.status !== 200) {
-         throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         return response.data.response.body.items.item || [];
+      } catch (err) {
+         console.error("getPerformanceEventList 요청 실패:", err);
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-
-      return response.data.response.body.items.item || [];
-   } catch (err) {
-      console.error("getPerformanceEventList 요청 실패:", err);
-      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
-}
 
    /**
- * 개별 공연 & 행사 정보를 가져오는 API
- */
-static async getPerformanceEventInfo(contentId: number | string): Promise<TourDetailInfo> {
-   try {
-      const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 15, // 공연 & 행사도 동일한 contentTypeId 사용
-            defaultYN: "Y",
-            firstImageYN: "Y",
-            areacodeYN: "Y",
-            catcodeYN: "Y",
-            addrinfoYN: "Y",
-            mapinfoYN: "Y",
-            overviewYN: "Y",
-         },
-      });
+    * 개별 공연 & 행사 정보를 가져오는 API
+    */
+   static async getPerformanceEventInfo(contentId: number | string): Promise<TourDetailInfo> {
+      try {
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15, // 공연 & 행사도 동일한 contentTypeId 사용
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
 
-      const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 15,
-         },
-      });
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15,
+            },
+         });
 
-      const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
-         params: {
-            ...this._tourDefaultOption,
-            contentId,
-            contentTypeId: 15,
-         },
-      });
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 15,
+            },
+         });
 
-      if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
-         throw new Error("공연 & 행사 데이터를 가져오는 도중 오류 발생");
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error("공연 & 행사 데이터를 가져오는 도중 오류 발생");
+         }
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0] || {};
+         const infoData = responseInfo.data.response.body.items.item || [];
+
+         return {
+            contentid: commonData.contentid,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            infocenter: commonData.tel || introData.sponsor1tel || "",
+            entranceFee: introData.usetimefestival || "무료",
+            restdate: "",
+            usetime: introData.playtime || "정보 없음",
+            addr: commonData.addr1,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
+            extraInfo: infoData,
+         };
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-
-      const commonData = responseCommon.data.response.body.items.item[0];
-      const introData = responseIntro.data.response.body.items.item[0] || {};
-      const infoData = responseInfo.data.response.body.items.item || [];
-
-      return {
-         contentid: commonData.contentid,
-         cat3: commonData.cat3,
-         title: commonData.title,
-         overview: commonData.overview,
-         homepage: commonData.homepage || "",
-         firstimage: commonData.firstimage || "",
-         firstimage2: commonData.firstimage2 || "",
-         infocenter: commonData.tel || introData.sponsor1tel || "",
-         entranceFee: introData.usetimefestival || "무료",
-         restdate: "",
-         usetime: introData.playtime || "정보 없음",
-         addr: commonData.addr1,
-         mapx: commonData.mapx,
-         mapy: commonData.mapy,
-         extraInfo: infoData,
-      };
-   } catch (err) {
-      throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
-}
 
    
    /**
@@ -378,6 +404,34 @@ static async getPerformanceEventInfo(contentId: number | string): Promise<TourDe
       throw new Error(`Axios 요청이 실패했습니다: ${err}`);
    }
 }
+
+   /**
+    * 레저 리스트를 가져오는 메서드
+    * @param {number} page - 불러올 페이지 (기본값: 1)
+    * @returns {Promise<TourItem[]>} 레저 리스트를 반환
+    */
+   static async getLeisureList(page: number = 1): Promise<TourItem[]> {
+      try {
+         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               areaCode: 32,
+               contentTypeId: 28,
+               cat1: "A03",
+               listYN: "Y",
+            },
+         });
+
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         }
+
+         return response.data.response.body.items.item || [];
+      } catch (err) {
+         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
    /**
     * 특정 레저 정보(개별 상세 정보)를 가져오는 메서드
     * @param {number} contentId - 레저 고유 ID
@@ -447,56 +501,124 @@ static async getPerformanceEventInfo(contentId: number | string): Promise<TourDe
    }
 
    /**
-    * 레저 리스트를 가져오는 메서드
-    * @param {number} page - 불러올 페이지 (기본값: 1)
-    * @returns {Promise<TourItem[]>} 레저 리스트를 반환
+    * 숙소 리스트 조회 API
+    * @param {number} page - 페이지 번호 (기본값: 1)
+    * @returns {Promise<AccommodationItem[]>} 숙소 리스트 반환
     */
-   static async getLeisureList(page: number = 1): Promise<TourItem[]> {
-      try {
-         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-            params: {
-               ...this._tourDefaultOption,
-               pageNo: page,
-               areaCode: 32,
-               contentTypeId: 28,
-               cat1: "A03",
-               listYN: "Y",
-            },
-         });
-
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+      static async getAccommodationList(page: number = 1): Promise<AccommodationItem[]> {
+         try {
+            const response = await axios.get(this._tourDefaultURL + "searchStay1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  pageNo: page,
+                  areaCode: 32,
+                  listYN: "Y",
+               },
+            });
+   
+            if (response.status !== 200) {
+               throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+            }
+   
+            return response.data.response.body.items.item || [];
+         } catch (error) {
+            console.error("숙소 리스트 가져오기 실패:", error);
+            return [];
          }
-
-         return response.data.response.body.items.item || [];
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-   }
-
-   /**
-    * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.
-    * @param {string} contentId - 콘텐츠 고유 ID
-    * @returns {Array} 이미지 정보가 담긴 배열을 반환합니다.
-    */
-   static async getTourImg(contentId: number): Promise<TourImg[]> {
-      try {
-         const response = await axios.get(this._tourDefaultURL + "detailImage1", {
-            params: {
-               ...this._tourDefaultOption,
-               contentId: contentId,
-               imageYN: "Y",
-               subImageYN: "Y",
-            },
-         });
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+   
+      /**
+       * 개별 숙소 상세 정보 조회 API
+       * @param {number | string} contentId - 숙소 ID
+       * @returns {Promise<AccommodationDetailInfo>} 숙소 상세 정보 반환
+       */
+      static async getAccommodationInfo(contentId: number | string): Promise<AccommodationDetailInfo> {
+         try {
+            // 기본 상세 정보
+            const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  contentId,
+                  contentTypeId: 32,
+                  defaultYN: "Y",
+                  firstImageYN: "Y",
+                  areacodeYN: "Y",
+                  catcodeYN: "Y",
+                  addrinfoYN: "Y",
+                  mapinfoYN: "Y",
+                  overviewYN: "Y",
+               },
+            });
+      
+            // 추가 상세 정보 (객실, 편의시설 등)
+            const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  contentId,
+                  contentTypeId: 32,
+               },
+            });
+      
+            // 개별 객실 정보
+            const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+               params: {
+                  ...this._tourDefaultOption,
+                  contentId,
+                  contentTypeId: 32,
+               },
+            });
+      
+            if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+               throw new Error("숙소 데이터를 가져오는 도중 오류 발생");
+            }
+      
+            const commonData = responseCommon.data.response.body.items.item[0];
+            const introData = responseIntro.data.response.body.items.item[0] || {};
+            const infoData = responseInfo.data.response.body.items.item || [];
+      
+            return {
+               contentid: commonData.contentid,
+               cat2: commonData.cat2 || "",  
+               cat3: commonData.cat3 || "",  
+               title: commonData.title,
+               overview: commonData.overview,
+               homepage: commonData.homepage || "",
+               firstimage: commonData.firstimage || "",
+               firstimage2: commonData.firstimage2 || "",
+               tel: commonData.tel || introData.infocenterlodging || "",
+               addr: commonData.addr1,
+               mapx: commonData.mapx,
+               mapy: commonData.mapy,
+               checkin: introData.checkintime || "확인 필요",
+               checkout: introData.checkouttime || "확인 필요",
+               parking: introData.parkinglodging || "정보 없음",
+               facilities: introData.subfacility || "정보 없음",
+               rooms: infoData.map(room => ({
+                  roomTitle: room.roomtitle,
+                  roomSize: room.roomsize2,
+                  baseCapacity: room.roombasecount,
+                  maxCapacity: room.roommaxcount,
+                  priceLow: room.roomoffseasonminfee1,
+                  priceHigh: room.roompeakseasonminfee1,
+                  amenities: {
+                     bath: room.roombathfacility === "Y",
+                     airConditioning: room.roomaircondition === "Y",
+                     tv: room.roomtv === "Y",
+                     internet: room.roominternet === "Y",
+                     refrigerator: room.roomrefrigerator === "Y",
+                     toiletries: room.roomtoiletries === "Y",
+                     hairdryer: room.roomhairdryer === "Y",
+                  },
+                  images: [room.roomimg1, room.roomimg2, room.roomimg3, room.roomimg4, room.roomimg5].filter(img => img),
+               })),
+            };
+         } catch (error) {
+            throw new Error(`숙소 정보 가져오기 실패: ${error}`);
          }
-         return response.data.response.body.items.item;
-      } catch (err) {
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
-   }
+
+
+
 
    /**
     * TourAPI에서 문화·역사별 관광지 전체 리스트를 가져오는 메서드
