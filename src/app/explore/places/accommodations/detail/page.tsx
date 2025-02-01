@@ -38,7 +38,7 @@ const AccommodationDetailPage: React.FC = () => {
         //  if (!contentId) return;
 
          try {
-            const contentId = 142816;
+            const contentId = 940259;
             const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(contentId);
             const img = await APIConnect.getTourImg(contentId);
 
@@ -118,31 +118,75 @@ const AccommodationDetailPage: React.FC = () => {
                         </SwiperSlide>
                      )}
                   </Swiper>
+                  {/* Swiper 내부 네비게이션 버튼 */}
+                  <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                     <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
+                  </button>
+                  <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                     <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
+                  </button>
                </div>
 
                <div className="flex flex-col justify-between max-w-[480px] gap-12">
                   {/* Info Section */}
-                  <DetailList iconUrl="/images/address.png" title="주소">{infoList?.addr || blankbox}</DetailList>
-                  <DetailList iconUrl="/images/tel.png" title="문의처">{infoList?.tel || blankbox}</DetailList>
-                  <DetailList iconUrl="/images/time.png" title="체크인 / 체크아웃">
-                     {infoList ? `${infoList.checkin} / ${infoList.checkout}` : blankbox}
-                  </DetailList>
-                  <DetailList iconUrl="/images/parking.png" title="주차">{infoList?.parking || blankbox}</DetailList>
-                  <DetailList iconUrl="/images/facilities.png" title="편의시설">{infoList?.facilities || blankbox}</DetailList>
+                  <div className="grid grid-cols-[auto_1fr] items-start gap-4">
+                     <DetailList iconUrl="/images/address.png" title="주소">{infoList?.addr || blankbox}</DetailList>
+                     <DetailList iconUrl="/images/tel.png" title="문의처">{infoList?.tel || blankbox}</DetailList>
+                     <DetailList iconUrl="/images/time.png" title="체크인 / 체크아웃">
+                        {infoList ? `${infoList.checkin} / ${infoList.checkout}` : blankbox}
+                     </DetailList>
+
+                     {/* 주차 정보 + 숙소 규모 함께 출력 */}
+                     <DetailList iconUrl="/images/parking.png" title="주차">
+                        {infoList?.parking}
+                        {infoList?.scalelodging && ` · ${infoList.scalelodging}`}
+                     </DetailList>
+
+                     <DetailList iconUrl="/images/Facility.png" title="편의시설">{infoList?.facilities || blankbox}</DetailList>
+
+                     {/* 식사 가능 장소 추가 */}
+                     {infoList?.foodplace && (
+                        <DetailList iconUrl="/images/Facility.png" title="식사 장소">
+                           {infoList.foodplace}
+                        </DetailList>
+                     )}
+                  </div>
+               {/* Buttons */}
+               <div className="flex items-center space-x-4">
+                  <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
+                     <span className="font-semibold text-lg leading-7 tracking-normal">예매하기</span>
+                  </button>
+                  <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
+                     <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
+                  </button>
+                  <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
+                     <Image src="/images/heart.png" alt="찜하기" width={24} height={24} />
+                     <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
+                  </button>
                </div>
             </div>
+         </div>
 
+            
             {/* 객실 정보 */}
             <section>
                <h3 className="text-2xl font-bold mb-6">객실 정보</h3>
                {infoList?.rooms && infoList.rooms.length > 0 ? (
-                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                  <div className="flex flex-col gap-6">
                      {infoList.rooms.map((room, index) => (
                         <DetailList key={index} title={room.roomTitle}>
-                           <p>크기: {room.roomSize}㎡</p>
-                           <p>기본 인원: {room.baseCapacity}명</p>
-                           <p>최대 인원: {room.maxCapacity}명</p>
-                           <p>요금: {room.priceLow} ~ {room.priceHigh}원</p>
+                           <div className="flex flex-wrap gap-x-4">
+                              <p>크기: {room.roomSize}㎡</p>
+                              <p>기본 인원: {room.baseCapacity}명</p>
+                              <p>최대 인원: {room.maxCapacity}명</p>
+                              {(room.priceLow && room.priceLow !== "0") || (room.priceHigh && room.priceHigh !== "0") ? (
+                                 <p>
+                                    요금: {room.priceLow && room.priceLow !== "0" ? `${room.priceLow}원` : ""} 
+                                    {room.priceLow && room.priceHigh ? " ~ " : ""}
+                                    {room.priceHigh && room.priceHigh !== "0" ? `${room.priceHigh}원` : ""}
+                                 </p>
+                              ) : null}
+                           </div>
                         </DetailList>
                      ))}
                   </div>

@@ -121,6 +121,8 @@ export interface AccommodationDetailInfo {
    checkout?: string;
    parking?: string;
    facilities?: string;
+   foodplace?: string;
+   scalelodging?: string;
    rooms: AccommodationRoom[];
 }
 
