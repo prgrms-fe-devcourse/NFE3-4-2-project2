@@ -123,61 +123,59 @@ export default function Accommodations() {
             </div>
          </div>
 
-         {/* 숙소 리스트 */}
-         <div className="max-w-[1409px] mx-auto">
-            <div className="max-w-[1409px] mx-auto">
-               {/* 숙소 카테고리 이미지 버튼 */}
-               <div className="flex justify-between items-center mb-[145px]">
-                  {[
-                     {
-                        src: "/images/places/accommodations/hotel.png",
-                        alt: "호텔",
-                        text: "호텔",
-                        onClick: () => alert("호텔 버튼 클릭됨"),
-                     },
-                     {
-                        src: "/images/places/accommodations/pension.png",
-                        alt: "펜션",
-                        text: "펜션",
-                        onClick: () => alert("펜션 버튼 클릭됨"),
-                     },
-                     {
-                        src: "/images/places/accommodations/motel.png",
-                        alt: "모텔",
-                        text: "모텔",
-                        onClick: () => alert("모텔 버튼 클릭됨"),
-                     },
-                     {
-                        src: "/images/places/accommodations/b&b.png",
-                        alt: "민박",
-                        text: "민박",
-                        onClick: () => alert("민박 버튼 클릭됨"),
-                     },
-                     {
-                        src: "/images/places/accommodations/guestHouse.png",
-                        alt: "게스트하우스",
-                        text: "게스트하우스",
-                        onClick: () => alert("게스트하우스 버튼 클릭됨"),
-                     },
-                     {
-                        src: "/images/places/accommodations/hanok.png",
-                        alt: "한옥",
-                        text: "한옥",
-                        onClick: () => alert("한옥 버튼 클릭됨"),
-                     },
-                  ].map(({ src, alt, text, onClick }) => (
-                     <div key={alt} className="flex flex-col items-center">
-                        <button
-                           className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                           onClick={onClick}>
-                           <Image src={src} alt={alt} fill className="object-cover" />
-                           <div className="absolute inset-0 flex items-center justify-center"></div>
-                        </button>
-                        <span className="text-center text-xl font-bold mt-4">{text}</span>
-                     </div>
-                  ))}
-               </div>
+         {/* 숙소 카테고리 이미지 버튼 */}
+         <div className="max-w-[1409px] mx-auto mb-[150px]">
+            <div className="flex justify-between items-center mb-[145px]">
+               {[
+                  {
+                     src: "/images/places/accommodations/hotel.png",
+                     alt: "호텔",
+                     text: "호텔",
+                     onClick: () => alert("호텔 버튼 클릭됨"),
+                  },
+                  {
+                     src: "/images/places/accommodations/pension.png",
+                     alt: "펜션",
+                     text: "펜션",
+                     onClick: () => alert("펜션 버튼 클릭됨"),
+                  },
+                  {
+                     src: "/images/places/accommodations/motel.png",
+                     alt: "모텔",
+                     text: "모텔",
+                     onClick: () => alert("모텔 버튼 클릭됨"),
+                  },
+                  {
+                     src: "/images/places/accommodations/b&b.png",
+                     alt: "민박",
+                     text: "민박",
+                     onClick: () => alert("민박 버튼 클릭됨"),
+                  },
+                  {
+                     src: "/images/places/accommodations/guestHouse.png",
+                     alt: "게스트하우스",
+                     text: "게스트하우스",
+                     onClick: () => alert("게스트하우스 버튼 클릭됨"),
+                  },
+                  {
+                     src: "/images/places/accommodations/hanok.png",
+                     alt: "한옥",
+                     text: "한옥",
+                     onClick: () => alert("한옥 버튼 클릭됨"),
+                  },
+               ].map(({ src, alt, text, onClick }) => (
+                  <div key={alt} className="flex flex-col items-center">
+                     <button
+                        className="w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none flex items-center justify-center bg-neutral-100 hover:bg-sky-100 hover:scale-105 hover:shadow-md relative"
+                        onClick={onClick}>
+                        <Image src={src} alt={alt} width={80} height={80} className="object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center"></div>
+                     </button>
+                     <span className="text-center text-xl font-bold mt-4">{text}</span>
+                  </div>
+               ))}
             </div>
+
             {/* ///////////////////////////////////////////////////////// */}
             {/* ///////////////////////////////////////////////////////// */}
             {/* ///////////////////////////////////////////////////////// */}
