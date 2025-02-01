@@ -16,12 +16,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const catList = catListJson as CatList;
 
 const AccommodationDetailPage: React.FC = () => {
+   const router = useRouter();
    const params = useSearchParams();
+   
    const contentId = params.get("contentId");
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
@@ -70,14 +72,20 @@ const AccommodationDetailPage: React.FC = () => {
       const parts = htmlString.split(/<br\s*\/?>/gi);
       return parts.map((part, idx) => <p key={idx}>{part}</p>);
    };
+   // 🔹 현재 페이지 번호 가져오기 (기본값 1)
+   const currentPage = params.get("page") || "1";
 
+   // 🔹 목록으로 돌아가기 버튼 함수
+   const handleBackToList = () => {
+      router.push(`/explore/places/accommodations?page=${currentPage}`); // 페이지 번호 유지한 채 목록으로 이동
+   };
    return (
       <div className="min-h-screen">
          <Header />
          <main className="mx-auto max-w-screen-xl px-4 py-8">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
-               <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
+               <button className="flex items-center space-x-2" onClick={handleBackToList}>
                   <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
                   <span className="text-sky-500 text-lg font-semibold">목록</span>
                </button>
@@ -135,16 +143,29 @@ const AccommodationDetailPage: React.FC = () => {
                         {infoList ? `${infoList.checkin} / ${infoList.checkout}` : blankbox}
                      </DetailList>
 
-                     {/* 주차 정보 + 숙소 규모 함께 출력 */}
-                     <DetailList iconUrl="/images/parking.png" title="주차">
-                        {infoList?.parking}
-                        {infoList?.scalelodging && ` · ${infoList.scalelodging}`}
-                     </DetailList>
+                     {/* 주차 정보가 있을 경우에만 출력 */}
+                     {infoList?.parking && !["", "0", "정보 없음"].includes(infoList.parking.trim()) && (
+                        <DetailList iconUrl="/images/parking.png" title="주차">
+                           {infoList.parking}
+                        </DetailList>
+                     )}
 
-                     <DetailList iconUrl="/images/Facility.png" title="편의시설">{infoList?.facilities || blankbox}</DetailList>
+                     {/* 숙소 규모가 있을 경우에만 출력 */}
+                     {infoList?.scalelodging && !["", "0", "정보 없음"].includes(infoList.scalelodging.trim()) && (
+                        <DetailList iconUrl="/images/Facility.png" title="숙소 규모">
+                           {infoList.scalelodging}
+                        </DetailList>
+                     )}
 
-                     {/* 식사 가능 장소 추가 */}
-                     {infoList?.foodplace && (
+                     {/* 편의시설이 있을 경우에만 출력 */}
+                     {infoList?.facilities && !["", "0", "정보 없음"].includes(infoList.facilities.trim()) && (
+                        <DetailList iconUrl="/images/Facility.png" title="편의시설">
+                           {infoList.facilities}
+                        </DetailList>
+                     )}
+
+                     {/* 식사 가능 장소가 있을 경우에만 출력 */}
+                     {infoList?.foodplace && !["", "0", "정보 없음"].includes(infoList.foodplace.trim()) && (
                         <DetailList iconUrl="/images/Facility.png" title="식사 장소">
                            {infoList.foodplace}
                         </DetailList>
@@ -167,17 +188,24 @@ const AccommodationDetailPage: React.FC = () => {
          </div>
 
             
-            {/* 객실 정보 */}
-            <section>
-               <h3 className="text-2xl font-bold mb-6">객실 정보</h3>
-               {infoList?.rooms && infoList.rooms.length > 0 ? (
+            {/* 객실 정보 (객실 데이터가 있을 경우에만 출력) */}
+            {infoList?.rooms && infoList.rooms.length > 0 && (
+               <section>
+                  <h3 className="text-2xl font-bold mb-6">객실 정보</h3>
                   <div className="flex flex-col gap-6">
                      {infoList.rooms.map((room, index) => (
                         <DetailList key={index} title={room.roomTitle}>
                            <div className="flex flex-wrap gap-x-4">
-                              <p>크기: {room.roomSize}㎡</p>
-                              <p>기본 인원: {room.baseCapacity}명</p>
-                              <p>최대 인원: {room.maxCapacity}명</p>
+                              {/* 객실 크기 */}
+                              {room.roomSize && room.roomSize !== "0" && <p>크기: {room.roomSize}㎡</p>}
+                              
+                              {/* 기본 인원 */}
+                              {room.baseCapacity && room.baseCapacity !== 0 && <p>기본 인원: {room.baseCapacity}명</p>}
+                              
+                              {/* 최대 인원 */}
+                              {room.maxCapacity && room.maxCapacity !== 0 && <p>최대 인원: {room.maxCapacity}명</p>}
+                              
+                              {/* 요금 정보 (둘 다 0이면 출력 안 함) */}
                               {(room.priceLow && room.priceLow !== "0") || (room.priceHigh && room.priceHigh !== "0") ? (
                                  <p>
                                     요금: {room.priceLow && room.priceLow !== "0" ? `${room.priceLow}원` : ""} 
@@ -189,8 +217,9 @@ const AccommodationDetailPage: React.FC = () => {
                         </DetailList>
                      ))}
                   </div>
-               ) : blankbox}
-            </section>
+               </section>
+            )}
+
 
             <hr className="my-12" />
 

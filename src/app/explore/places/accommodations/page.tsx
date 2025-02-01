@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useMemo } from "react";
+
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
@@ -36,6 +37,7 @@ const getCategoryText = (categoryCode: string | undefined): string => {
 };
 
 export default function Accommodations() {
+
    const [allAccommodations, setAllAccommodations] = useState<AccommodationItem[]>([]);
    const [selectedCategory, setSelectedCategory] = useState("숙소");
    const [searchTerm, setSearchTerm] = useState("");
@@ -49,7 +51,7 @@ export default function Accommodations() {
       { name: "식당", link: "/places/restaurants" },
       { name: "숙소", link: "/places/accommodations" },
    ];
-
+   
    // 숙소 리스트 API 가져오기
    useEffect(() => {
       const fetchAccommodations = async () => {
@@ -122,6 +124,8 @@ export default function Accommodations() {
    const handleSearchClick = () => {
       console.log("카테고리:", selectedCategory, "검색어:", searchTerm);
    };
+
+   
 
    if (loading) return <div>Loading...</div>;
 
