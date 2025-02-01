@@ -16,9 +16,14 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+import { useSearchParams } from "next/navigation";
+
 const catList = catListJson as CatList;
 
 const RestaurantDetailPage: React.FC = () => {
+
+   const params = useSearchParams();
+   const contentId = params.get("contentId"); // 쿼리 파라미터에서 `contentId` 가져오기
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
    
@@ -31,11 +36,11 @@ const RestaurantDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
+         if (!contentId) return; // contentId가 없으면 API 호출하지 않음
+
          try {
-            const key = 133817; // 테스트용 ID
-            
-            const infoList: RestaurantDetailInfo = await APIConnect.getRestaurantInfo(key);
-            const img = await APIConnect.getTourImg(key);
+            const infoList: RestaurantDetailInfo = await APIConnect.getRestaurantInfo(contentId);
+            const img = await APIConnect.getTourImg(contentId);
 
             setRestaurantInfo(infoList);
             setImgList(img);
@@ -102,7 +107,7 @@ const RestaurantDetailPage: React.FC = () => {
                      modules={[Pagination, Navigation, Autoplay]}
                      className="w-full aspect-[16/9] rounded-lg bg-neutral-200"
                   >
-                     {imgList.length > 0 ? (
+                     {Array.isArray(imgList) && imgList.length > 0 ? (
                         imgList.map((img) => (
                            <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
                               <Image src={img.originimgurl} alt={img.imgname || "식당 이미지"} width={800} height={450} className="rounded-lg object-cover mx-auto" />

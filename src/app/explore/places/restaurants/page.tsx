@@ -253,14 +253,18 @@ export default function Restaurants() {
             <div className="">
                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                   {filteredRestaurants.map((restaurant, index) => (
+                     <Link
+                     key={index}
+                     href={`/explore/places/restaurants/detail?contentId=${restaurant.contentid}`} // `contentId`를 쿼리 파라미터로 전달
+                  >
                      <RestaurantCard
-                        key={index}
                         imageUrl={restaurant.firstimage || "/images/ready.png"}
                         title={restaurant.title}
                         area={restaurant.addr1}
-                        category={restaurant.cat3Text} // 카테고리 텍스트 사용
-                        buttonText="영업중" // 예시로 넣은 버튼 텍스트
+                        category={restaurant.cat3Text}
+                        buttonText="영업중"
                      />
+                  </Link>
                   ))}
                </div>
 
