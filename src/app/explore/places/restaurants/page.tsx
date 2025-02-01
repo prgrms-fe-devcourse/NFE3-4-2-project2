@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import Image from "next/image";
@@ -13,7 +13,7 @@ import { Restaurant } from "@/types/types";
 import APIConnect from "@/utils/api";
 import Pagination from "@/components/common/Pagination";
 
-// 카테고리 코드랑 텍스트 매핑하기
+// 카테고리 코드와 텍스트 매핑
 const categoryMap: { [key: string]: string } = {
    A05020100: "한식",
    A05020200: "양식",
@@ -23,25 +23,26 @@ const categoryMap: { [key: string]: string } = {
    A05020900: "카페/전통찻집",
 };
 
-// 전체 주소에서 시/군/구만 가져오기
+// 전체 주소에서 시/군/구만 추출하는 함수
 const extractCityCounty = (address: string) => {
    const updatedAddress = address.replace("강원특별자치도", "").trim();
    return updatedAddress.split(" ")[0];
 };
 
 // 카테고리 코드에 맞는 텍스트를 반환하는 함수
-const getCategoryText = (categoryCode: string) => {
-   return categoryMap[categoryCode] || "기타"; // 코드가 매핑되지 않으면 "기타" 반환
+const getCategoryText = (categoryCode: string | undefined): string => {
+   if (!categoryCode) return "기타";
+   return categoryMap[categoryCode] || "기타";
 };
 
 export default function Restaurants() {
-   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+   const [allRestaurants, setAllRestaurants] = useState<Restaurant[]>([]);
    const [selectedCategory, setSelectedCategory] = useState("식당");
    const [searchTerm, setSearchTerm] = useState("");
    const [loading, setLoading] = useState<boolean>(true);
    const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
-   const restaurantsPerPage = 12; // 한 페이지에 표시할 음식점 수
+   const restaurantsPerPage = 12; // -> 한 페이지에 표시할 아이템 수
 
    const categories = [
       { name: "식당", link: "/places/restaurants" },
@@ -52,15 +53,14 @@ export default function Restaurants() {
    useEffect(() => {
       const fetchRestaurants = async () => {
          try {
-            const data = await APIConnect.getRestaurantList(currentPage);
-            setTotalPages(data.totalPages); // totalPages 업데이트
-            // 각 음식점의 주소에서 시/군/구만 추출하여 업데이트
-            const updatedRestaurants = data.map((restaurant) => ({
+            const result = await APIConnect.getRestaurantList(1, 1000);
+            const { items } = result;
+            const updatedRestaurants = (items as Restaurant[]).map((restaurant) => ({
                ...restaurant,
-               addr1: extractCityCounty(restaurant.addr1), // 주소에서 시/군/구만 추출
-               cat3Text: getCategoryText(restaurant.cat3), // 카테고리 코드 텍스트로 변환
+               addr1: extractCityCounty(restaurant.addr1),
+               cat3Text: getCategoryText(restaurant.cat3),
             }));
-            setRestaurants(updatedRestaurants);
+            setAllRestaurants(updatedRestaurants);
          } catch (err) {
             console.error("음식점 리스트를 가져오는 데 실패했습니다:", err);
          } finally {
@@ -69,11 +69,49 @@ export default function Restaurants() {
       };
 
       fetchRestaurants();
-   }, [currentPage]);
+   }, []);
+
+   // 카테고리별 필터링 부분
+   const filteredRestaurants = useMemo(() => {
+      let filtered = allRestaurants;
+      if (selectedCategory === "식당") {
+         filtered = allRestaurants.filter((restaurant) => restaurant.cat3Text !== "숙소");
+      } else if (selectedCategory === "숙소") {
+         filtered = allRestaurants.filter((restaurant) => restaurant.cat3Text === "숙소");
+      } else {
+         // 한식, 양식, 일식, 중식, 카페/전통찻집, 이색음식점 필터링
+         filtered = allRestaurants.filter((restaurant) => restaurant.cat3Text === selectedCategory);
+      }
+      if (searchTerm.trim() !== "") {
+         filtered = filtered.filter((restaurant) => restaurant.title.includes(searchTerm));
+      }
+      return filtered;
+   }, [allRestaurants, selectedCategory, searchTerm]);
+
+   // 필터링된 결과에 따른 총 페이지 수 계산과 현재 페이지 유효성 검사
+   useEffect(() => {
+      const pages = Math.ceil(filteredRestaurants.length / restaurantsPerPage);
+      setTotalPages(pages);
+      if (currentPage > pages) {
+         setCurrentPage(1);
+      }
+   }, [filteredRestaurants, currentPage]);
+
+   // 현재 페이지에 표시할 아이템 슬라이스
+   const displayedRestaurants = useMemo(() => {
+      const startIndex = (currentPage - 1) * restaurantsPerPage;
+      return filteredRestaurants.slice(startIndex, startIndex + restaurantsPerPage);
+   }, [filteredRestaurants, currentPage]);
+
+   // 페이지네이션 처리
+   const handlePageChange = (page: number) => {
+      setCurrentPage(page);
+   };
 
    // 검색어 변경 처리
    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setSearchTerm(e.target.value);
+      setCurrentPage(1);
    };
 
    // 검색 버튼 클릭 시 처리
@@ -81,22 +119,8 @@ export default function Restaurants() {
       console.log("카테고리:", selectedCategory, "검색어:", searchTerm);
    };
 
-   // 페이지네이션 처리
-   const handlePageChange = (page: number) => {
-      setCurrentPage(page);
-   };
-
-   // 카테고리별 음식점 필터링
-   const filteredRestaurants =
-      selectedCategory === "식당"
-         ? restaurants.filter((restaurant) => restaurant.cat3Text !== "숙소")
-         : selectedCategory === "숙소"
-         ? restaurants.filter((restaurant) => restaurant.cat3Text === "숙소")
-         : restaurants;
-
    if (loading) return <div>Loading...</div>;
 
-   //////////////////////////////////////////////
    return (
       <div className="min-h-screen">
          <Header />
@@ -118,12 +142,15 @@ export default function Restaurants() {
             {/* 검색창 */}
             <div className="absolute inset-x-0 top-[60%] mx-auto w-[700px] p-7 shadow-xl bg-white rounded-lg z-20 transform -translate-y-1/2">
                <div className="flex justify-between">
-                  {/* 식당&숙소 카테고리 */}
+                  {/* 식당 & 숙소 탭 */}
                   <ul className="mb-2 flex gap-3 text-lg font-bold cursor-pointer">
                      {categories.map((category) => (
                         <li
                            key={category.name}
-                           onClick={() => setSelectedCategory(category.name)}
+                           onClick={() => {
+                              setSelectedCategory(category.name);
+                              setCurrentPage(1);
+                           }}
                            className={`${
                               selectedCategory === category.name ? "text-sky-500" : "text-neutral-800"
                            } hover:text-sky-500`}>
@@ -191,86 +218,96 @@ export default function Restaurants() {
             </div>
          </div>
 
-         {/* 식당 리스트 */}
-         <div className="max-w-[1409px] mx-auto">
-            <div className="max-w-[1409px] mx-auto mb-[150px]">
-               {/* 음식 카테고리 이미지 버튼 */}
-               <div className="flex justify-between items-center mb-[145px]">
-                  {[
-                     {
-                        src: "/images/places/restaurants/bibimbap.png",
-                        alt: "한식",
-                        text: "한식",
-                        onClick: () => setSelectedCategory("한식"), // 아직...
+         {/* 음식 카테고리 이미지 버튼 */}
+         <div className="max-w-[1409px] mx-auto mb-[150px]">
+            <div className="flex justify-between items-center mb-[145px]">
+               {[
+                  {
+                     src: "/images/places/restaurants/bibimbap.png",
+                     alt: "한식",
+                     text: "한식",
+                     onClick: () => {
+                        setSelectedCategory("한식");
+                        setCurrentPage(1);
                      },
-                     {
-                        src: "/images/places/restaurants/pizza.png",
-                        alt: "양식",
-                        text: "양식",
-                        onClick: () => setSelectedCategory("양식"),
+                  },
+                  {
+                     src: "/images/places/restaurants/pizza.png",
+                     alt: "양식",
+                     text: "양식",
+                     onClick: () => {
+                        setSelectedCategory("양식");
+                        setCurrentPage(1);
                      },
-                     {
-                        src: "/images/places/restaurants/manchow-soup.png",
-                        alt: "중식",
-                        text: "중식",
-                        onClick: () => setSelectedCategory("중식"),
+                  },
+                  {
+                     src: "/images/places/restaurants/manchow-soup.png",
+                     alt: "중식",
+                     text: "중식",
+                     onClick: () => {
+                        setSelectedCategory("중식");
+                        setCurrentPage(1);
                      },
-                     {
-                        src: "/images/places/restaurants/nigiri.png",
-                        alt: "일식",
-                        text: "일식",
-                        onClick: () => setSelectedCategory("일식"),
+                  },
+                  {
+                     src: "/images/places/restaurants/nigiri.png",
+                     alt: "일식",
+                     text: "일식",
+                     onClick: () => {
+                        setSelectedCategory("일식");
+                        setCurrentPage(1);
                      },
-                     {
-                        src: "/images/places/restaurants/hot-drink.png",
-                        alt: "카페/전통찻집",
-                        text: "카페/전통찻집",
-                        onClick: () => setSelectedCategory("카페/전통찻집"),
+                  },
+                  {
+                     src: "/images/places/restaurants/hot-drink.png",
+                     alt: "카페/전통찻집",
+                     text: "카페/전통찻집",
+                     onClick: () => {
+                        setSelectedCategory("카페/전통찻집");
+                        setCurrentPage(1);
                      },
-                     {
-                        src: "/images/places/restaurants/tacos.png",
-                        alt: "이색음식점",
-                        text: "이색음식점",
-                        onClick: () => setSelectedCategory("이색음식점"),
+                  },
+                  {
+                     src: "/images/places/restaurants/tacos.png",
+                     alt: "이색음식점",
+                     text: "이색음식점",
+                     onClick: () => {
+                        setSelectedCategory("이색음식점");
+                        setCurrentPage(1);
                      },
-                  ].map(({ src, alt, text, onClick }) => (
-                     <div key={alt} className="flex flex-col items-center">
-                        <button
-                           className="w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none flex items-center justify-center bg-neutral-100 hover:bg-sky-100 hover:scale-105 hover:shadow-md relative"
-                           onClick={onClick}>
-                           <Image src={src} alt={alt} width={80} height={80} className="object-cover" />
-                           <div className="absolute inset-0 flex items-center justify-center"></div>
-                        </button>
-                        <span className="text-center text-xl font-bold mt-4">{text}</span>
-                     </div>
-                  ))}
-               </div>
+                  },
+               ].map(({ src, alt, text, onClick }) => (
+                  <div key={alt} className="flex flex-col items-center">
+                     <button
+                        className="w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none flex items-center justify-center bg-neutral-100 hover:bg-sky-100 hover:scale-105 hover:shadow-md relative"
+                        onClick={onClick}>
+                        <Image src={src} alt={alt} width={80} height={80} className="object-cover" />
+                        <div className="absolute inset-0 flex items-center justify-center"></div>
+                     </button>
+                     <span className="text-center text-xl font-bold mt-4">{text}</span>
+                  </div>
+               ))}
             </div>
-            {/* ///////////////////////////////////////////////////////// */}
-            {/* ///////////////////////////////////////////////////////// */}
-            {/* ///////////////////////////////////////////////////////// */}
-            {/* 카드 리스트 부분 */}
-            <div className="">
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-                  {filteredRestaurants.map((restaurant, index) => (
-                     <Link
-                     key={index}
-                     href={`/explore/places/restaurants/detail?contentId=${restaurant.contentid}`} // `contentId`를 쿼리 파라미터로 전달
-                  >
+         </div>
+
+         {/* 카드 리스트 부분 */}
+         <div className="max-w-[1409px] mx-auto">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+               {displayedRestaurants.map((restaurant, index) => (
+                  <Link key={index} href={`/explore/places/restaurants/detail?contentId=${restaurant.contentid}`}>
                      <RestaurantCard
                         imageUrl={restaurant.firstimage || "/images/ready.png"}
                         title={restaurant.title}
                         area={restaurant.addr1}
-                        category={restaurant.cat3Text}
+                        category={restaurant.cat3Text ?? "기타"}
                         buttonText="영업중"
                      />
                   </Link>
-                  ))}
-               </div>
-
-               {/* 페이지네이션 */}
-               <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+               ))}
             </div>
+
+            {/* 페이지네이션 */}
+            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
          </div>
          <Footer />
       </div>

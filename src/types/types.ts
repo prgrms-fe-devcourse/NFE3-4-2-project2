@@ -147,13 +147,22 @@ export type SeasonType = "spring" | "summer" | "autumn" | "winter" | null;
 
 // 식당 데이터 타입
 export interface Restaurant {
-   contentid: number; // 음식점 고유 ID
-   title: string; // 음식점 제목
+   contentid: string; // 음식점 고유 ID
+   title: string; // 음식점 상호명
    addr1: string; // 주소
+   addr2?: string;
+   booktour?: string;
    firstimage: string; // 대표 이미지 URL
    areacode: string; // 지역 코드
+   cat1: string;
+   cat2?: string;
    cat3: string; // 카테고리 (API로 받아온 카테고리 정보)
-   cat3Text: string; // 텍스트로 수정한 카테고리
+   cat3Text?: string | undefined; // 텍스트로 수정한 카테고리
+}
+
+export interface RestaurantListResponse {
+   totalPages: number;
+   restaurants: Restaurant[];
 }
 
 //travel 페이지 검색 관련
@@ -162,6 +171,6 @@ export interface SelectedParam {
    filter?: string | null;
 }
 export interface SelectedChildParam {
-   selected : SelectedParam,
-   changeUrl : (url:SelectedParam)=>void;
+   selected: SelectedParam;
+   changeUrl: (url: SelectedParam) => void;
 }
