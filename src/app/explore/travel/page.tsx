@@ -1,31 +1,54 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import TourSearchBar from "@/components/travel/TourSearchBar";
 import CardList from "@/components/common/CardList";
-import { SeasonType } from "@/types/types"; // ✅ 타입 가져오기
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { SelectedParam } from "@/types/types";
+
+
 
 const TravelPage: React.FC = () => {
-   const [selectedOption, setSelectedOption] = useState<string>("계절별 관광지");
-   const [selectedCulture, setSelectedCulture] = useState<string | null>(null);
-   const [selectedSeason, setSelectedSeason] = useState<SeasonType>(null); // ✅ 타입 변경
+   //라우터 세팅
+   const searchParams = useSearchParams();
+   const router = useRouter();
+
+   //파라미터 가지고오기
+   const nowCategory = searchParams.get("cat");
+   const nowFilter = searchParams.get("filter");
+   const [selected, setSelected] = useState<SelectedParam>({cat: ""});
+
+   //props로 전달할 url 변환 함수
+   const handleUrlChange = (selectedParam: SelectedParam) => {
+      if(selectedParam.filter){
+         router.push(`?cat=${selectedParam.cat}&filter=${selectedParam.filter}` ,{scroll:false});
+      }else{
+         router.push(`?cat=${selectedParam.cat}`,{scroll:false});
+      }
+      setSelected(selectedParam);
+   };
+
+   //기본 파라미터 설정
+   // const setDefaultCat =()=>{
+   //    router.replace("?cat=season" ,{scroll:false});
+   //    setSelected({cat:"season"} )
+   // }
+   // setDefaultCat();
+
+  useEffect(() => {
+    if ( nowCategory == "season" || nowCategory == "region" || nowCategory == "nature" || nowCategory == "culture") {
+       setSelected({ cat: nowCategory, filter: nowFilter });
+      }
+  },[nowCategory, nowFilter]);
 
    return (
       <div className="min-h-screen">
          <Header />
-         <TourSearchBar
-            setSelectedOption={setSelectedOption}
-            setSelectedSeason={setSelectedSeason} // ✅ 수정
-            setSelectedCulture={setSelectedCulture}
-         />
-         <CardList
-            selectedOption={selectedOption}
-            selectedSeason={selectedSeason} // ✅ 수정
-            selectedCulture={selectedCulture}
-            selectedNature={null}
-         />
+         <TourSearchBar selected={selected} changeUrl={handleUrlChange} />
+         <CardList selected={selected} changeUrl={handleUrlChange}/>
          <Footer />
       </div>
    );

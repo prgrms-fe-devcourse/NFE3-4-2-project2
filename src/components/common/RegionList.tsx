@@ -1,16 +1,12 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import RegionButton from "./RegionButton";
-import Link from "next/link";
+import { SelectedChildParam } from "@/types/types";
 
-const RegionList = () => {
-  const [activeRegion, setActiveRegion] = useState<string | null>(null); // 클릭된 지역을 관리하는 상태 변수
-
-  const handleRegionClick = (regionName: string) => {
-    setActiveRegion(regionName); // 클릭된 버튼을 활성화 상태로 설정
-
-    console.log(`${regionName} 버튼 클릭됨`);
+const RegionList:React.FC<SelectedChildParam>=({selected, changeUrl})=>{
+  const handleRegionClick = (regionCode: string) => {
+    changeUrl({cat:selected.cat, filter:regionCode})
   };
 
   const regions = [
@@ -37,14 +33,13 @@ const RegionList = () => {
   return (
     <div className="flex flex-wrap w-[1236] h-[128px] p-4 gap-4 justify-start items-center">
       {regions.map((region) => (
-        <Link key={region.name} href={{pathname:"/explore/travel", query:{code : region.code,}}} >
-          <RegionButton
-            name={region.name}
-            imageSrc={region.imageSrc}
-            isActive={activeRegion === region.name} // 선택된 버튼만 활성화
-            onClick={() => handleRegionClick(region.name)} // 버튼 클릭 시 활성화 상태 설정
-          />
-        </Link>
+        <RegionButton
+          key={region.name}
+          name={region.name}
+          imageSrc={region.imageSrc}
+          isActive={selected.filter === region.code} // 선택된 버튼만 활성화
+          onClick={() => handleRegionClick(region.code)} // 버튼 클릭 시 활성화 상태 설정
+      />
       ))}
     </div>
   );

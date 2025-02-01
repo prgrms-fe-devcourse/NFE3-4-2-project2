@@ -1,9 +1,12 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
-import { ListProps, SeasonType } from "@/types/types";
+import { ListProps, SelectedChildParam } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
-import { useSearchParams } from "next/navigation";
+import EmptyListCard from "./EmptyListCard";
+import EmptyData from "./EmptyData";
 
 interface TourItem {
    title: string;
@@ -12,78 +15,82 @@ interface TourItem {
    contentid: number;
    contenttypeid: number;
 }
+const ITEMS_PER_PAGE = 12;
 
-const CardList: React.FC<{ selectedOption: string; selectedCulture: string | null; selectedSeason: SeasonType; selectedNature: string | null; }> = ({ selectedOption, selectedCulture, selectedSeason, selectedNature }) => {
-   const params = useSearchParams();
-   const regionCode = params.get("code");
+const CardList: React.FC<SelectedChildParam> =({selected}) => {
+   
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
-   const itemsPerPage = 12;
 
-   useEffect(() => {
+   useEffect(() => {//API관련
       const fetchData = async () => {
-         setLoading(true);
+         // setLoading(true);
          try {
             let response: TourItem[] = [];
 
-            console.log(`📌 선택된 옵션: ${selectedOption}, 선택된 계절: ${selectedSeason}`);
+            console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
+            console.log(`📌 선택된 카테고리: ${selected.cat}, 선택된 필터: ${selected.filter ? selected.filter : "없음"}`);
 
-            if (selectedOption === "계절별 관광지") {
-               console.log(`🌸 [API 요청] ${selectedSeason ? selectedSeason : "전체 계절"} 관광지 리스트 가져오기`);
-               response = await APIConnect.getSeasonTourList(selectedSeason);
-            } else if (selectedOption === "문화·역사별 관광지") {
-               if (!selectedCulture) {
+            if(selected.cat == "season"){ //계절별 
+               console.log("🚧 계절별 관광지 API 개발 중");
+               if(selected?.filter){
+                  // response = await APIConnect.getSeasonTourList(selected.filter);
+               }
+            }
+            if(selected.cat == "region"){ //지역별
+               if(selected.filter){
+                  response = await APIConnect.getTourAreaList(selected.filter);
+               }else{
+                  response = await APIConnect.getTourAreaList("");
+               }
+            }
+            if(selected.cat == "culture"){//문화별
+               if(!selected.filter){
                   response = await APIConnect.getHistoricalTourList(1);
-               } else {
-                  switch (selectedCulture) {
-                     case "미술관·박물관":
+               }else{
+                  switch (selected.filter) {
+                     case "museum":
                         response = await APIConnect.getMuseumTourList();
                         break;
-                     case "유적지":
+                     case "historic":
                         response = await APIConnect.getHistoricTourList();
                         break;
-                     case "종교":
+                     case "religion":
                         response = await APIConnect.getRegionSitesData();
                         break;
-                     case "기타":
+                     case "etc":
                         response = await APIConnect.getEtcSitesData();
                         break;
                      default:
                         response = [];
                   }
                }
-            } else if (selectedOption === "계절별 관광지" && selectedSeason) {
-               // API가 없으므로 빈 배열 반환
-               response = [];
-               console.log("🚧 계절별 관광지 API 개발 중");
-            } else if (selectedOption === "자연별 관광지" && selectedNature) {
-               response = [];
+            }
+            if(selected.cat == "nature"){//자연별
                console.log("🚧 자연별 관광지 API 개발 중");
-            } else if (selectedOption === "지역별 관광지") {
-               response = await APIConnect.getTourAreaList(regionCode);
-               console.log("🚧 지역별 관광지 API 개발 중");
-            } else {
                response = [];
             }
-
+            
             console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
+
             setAllTourData(response);
-            setTotalPages(Math.max(1, Math.ceil(response.length / itemsPerPage)));
+            setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
+
             setLoading(false);
+
          } catch (err) {
-            console.error("❌ API 요청 실패:", err);
+            console.log("❌ API 요청 실패:", err);
             setLoading(false);
          }
       };
-
       fetchData();
-   }, [selectedOption, selectedCulture, selectedSeason, selectedNature, regionCode]); // ✅ `selectedSeason`이 변경될 때마다 다시 실행됨
+   }, [selected]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
 
-   useEffect(() => {
-      const paginatedData = allTourData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+   useEffect(() => { //페이지네이션 관련
+      const paginatedData = allTourData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
       setTourData(
          paginatedData.map((item) => ({
             imageUrl: item.firstimage || "/images/ready.png",
@@ -97,13 +104,24 @@ const CardList: React.FC<{ selectedOption: string; selectedCulture: string | nul
 
    useEffect(() => {
       setCurrentPage(1);
-   }, [selectedOption, selectedCulture, selectedSeason, selectedNature]);
+   }, [selected]);
 
-   if (loading) return <div>Loading...</div>;
-   if (!tourData.length) return <div>No data available</div>;
+   if (loading) {
+      return (
+         <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
+            <div className="grid grid-cols-3 gap-8">
+               <EmptyListCard/>
+            </div>
+         </div>
+      )
+   }
+
+   if(!loading && !allTourData.length){
+      return (<EmptyData/>)
+   }
 
    return (
-      <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
+      <div className="w-[1280px] mx-auto px-6 m-16">
          <div className="grid grid-cols-3 gap-8">
             {tourData.map((item) => <ListCard key={item.contentId} {...item} />)}
          </div>
