@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import APIConnect from "@/utils/api";
+import Link from "next/link";
 
 const svgs = [
   {
@@ -106,36 +106,43 @@ const iconButtons = [
     id: "buttonIconMap",
     title: "지역별",
     imgSrc: "/images/main/icon_map.png",
+    href:"/explore/travel?cat=region"
   },
   {
     id: "buttonIconSeason",
     title: "계절별",
     imgSrc: "/images/main/icon_season.png",
+    href:"/explore/travel?cat=season&filter=spring"
   },
   {
     id: "buttonIconNature",
     title: "자연환경",
     imgSrc: "/images/main/icon_nature.png",
+    href:"/explore/travel?cat=nature&filter=ocean"
   },
   {
     id: "buttonIconHeritage",
     title: "문화역사",
     imgSrc: "/images/main/icon_heritage.png",
+    href:"/explore/travel?cat=culture"
   },
   {
     id: "buttonIconConcert",
     title: "공연",
     imgSrc: "/images/main/icon_concert.png",
+    href:""
   },
   {
     id: "buttonIconFestival",
     title: "축제",
     imgSrc: "/images/main/icon_festival.png",
+    href:""
   },
   {
     id: "buttonIconLeisure",
     title: "레저·체험",
     imgSrc: "/images/main/icon_leisure.png",
+    href:"/explore/leisure"
   },
 ];
 
@@ -150,12 +157,6 @@ export default function SvgMap() {
   const handleMouseOver = () => {
     setShowAreaName(false);
   };  
-  const handleClick = async (searchQuery: string) => {
-    try{
-      const data = await APIConnect.getTourAreaList(searchQuery);
-      console.log(data);
-    }catch{}
-  };
 
   return (
     <section className="py-12 bg-[url(/images/main/mountain.jpg)] bg-cover bg-left-top transition-all duration-75">
@@ -183,18 +184,17 @@ export default function SvgMap() {
           >
             {svgs.map((svg) => {
               return (
-                <path
-                  key={svg.code}
-                  className="fill-white hover:fill-sky-500 cursor-pointer"
-                  d={svg.d}
-                  onMouseEnter={() => {
-                    handleMouseEnter(svg.name);
-                  }}
-                  onMouseOut={handleMouseOver}
-                  onClick={() => {
-                    handleClick(svg.code);
-                  }}
-                />
+                <Link key={svg.code} href={`/explore/travel?cat=region&filter=${svg.code}`}>
+                  <path
+                    className="fill-white hover:fill-sky-500 cursor-pointer"
+                    d={svg.d}
+                    onMouseEnter={() => {
+                      handleMouseEnter(svg.name);
+                    }}
+                    onMouseOut={handleMouseOver}
+                  />
+                </Link>
+                
               );
             })}
 
@@ -207,14 +207,14 @@ export default function SvgMap() {
           <div className="flex flex-wrap align-top justify-items-start items-center content-center gap-4 w-2/5">
             {iconButtons.map((item) => {
               return (
-                <button
+                <Link
+                  href={item.href}
                    key={item.id}
                   className="border-sky-500 border w-28 h-28 text-center bg-white hover:bg-amber-100 rounded-xl flex flex-col justify-center items-center gap-1"
-                  onClick={()=>{handleClick(item.title)}}
                 >
                    <img src={item.imgSrc} alt={item.title + " 아이콘"} />
                    <span className="text-base font-normal">{item.title}</span>
-                </button>
+                </Link>
               );
             })}
           </div>

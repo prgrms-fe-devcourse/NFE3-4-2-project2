@@ -13,6 +13,7 @@ import "swiper/css/pagination";
 import { Swiper, SwiperSlide } from "swiper/react";
 // import { FreeMode, Pagination } from "swiper/modules";
 import SwiperCard from "@/components/main/SwiperCard";
+import Link from "next/link";
 
 export default function Home() {
    return (
@@ -72,42 +73,43 @@ export default function Home() {
                         src: "/images/main/circle_Chuncheon.png",
                         alt: "춘천",
                         text: "춘천",
-                        onClick: () => alert("춘천 버튼 클릭됨"),
+                        code: 13
                      },
                      {
                         src: "/images/main/circle_Gangneung.png",
                         alt: "강릉",
                         text: "강릉",
-                        onClick: () => alert("강릉 버튼 클릭됨"),
+                        code:"1"
                      },
                      {
                         src: "/images/main/circle_Sokcho.png",
                         alt: "속초",
                         text: "속초",
-                        onClick: () => alert("속초 버튼 클릭됨"),
+                        code:"5",
                      },
                      {
                         src: "/images/main/circle_Yangyang.png",
                         alt: "양양",
                         text: "양양",
-                        onClick: () => alert("양양 버튼 클릭됨"),
+                        code:"7",
                      },
                      {
                         src: "/images/main/circle_Jeongseon.png",
                         alt: "정선",
                         text: "정선",
-                        onClick: () => alert("정선 버튼 클릭됨"),
+                        code:"11",
                      },
-                  ].map(({ src, alt, text, onClick }) => (
-                     <button
+                  ].map(({ src, alt, text, code }) => (
+                     <Link
+                        href={`/explore/travel?cat=region&filter=${code}`}
                         key={alt}
                         className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        onClick={onClick}>
+                        >
                         <Image src={src} alt={alt} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-30">
                            <span className="text-white text-2xl font-semibold">{text}</span>
                         </div>
-                     </button>
+                     </Link>
                   ))}
                </div>
             </div>
