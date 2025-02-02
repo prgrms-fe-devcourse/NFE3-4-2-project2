@@ -68,6 +68,82 @@ export default class APIConnect {
          return {totalLength:'0', items:[]};
       }
    }
+   static async getTourAreaInfo(
+      contentId: number | string,
+      contentTypeId: number | string = 12,
+   ): Promise<TourDetailInfo> {
+      try {
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId: contentId,
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId: contentId,
+               contentTypeId: contentTypeId,
+            },
+         });
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId: contentId,
+               contentTypeId: contentTypeId,
+            },
+         });
+
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error(
+               `HTTP Error: ${
+                  responseCommon.status || responseIntro.status || responseInfo.status
+               } - 데이터를 불러오지 못했습니다.`,
+            );
+         }
+
+         console.log('Tour Detail Info 조회 중... ... ...')
+         console.log('Response Common : ' , responseCommon.data.response.body.items.item);
+         console.log('response Intro' , responseIntro.data.response.body.items.item);
+         console.log('response Info' , responseInfo.data.response.body.items.item);
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item?  responseIntro.data.response.body.items.item[0] : {};
+         const infoData = responseInfo.data.response.body.items.item || {};
+
+         return {
+            contentid: commonData.contentid,
+            cat3: commonData.cat3,
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            infocenter: introData.infocenter || "",
+            entranceFee: infoData.infotext || "",
+            restdate: introData.restdate || "",
+            useseason: introData.useseason || "",
+            usetime: introData.usetime || "",
+            //편의시설
+            chkbabycarriage: introData.chkbabycarriage || "",
+            parking: introData.parking || "",
+            extraInfo: infoData || "",
+            //위치
+            addr: commonData.addr1,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
+         };
+      } catch (err) {
+         console.log(`Axios 요청이 실패했습니다 : `, err);
+      }
+   }
 
    /**
     * TourAPI에서 상세 이미지를 가지고 오는 메서드입니다. 음식점 타입의 경우  메뉴 이미지를 불러옵니다.

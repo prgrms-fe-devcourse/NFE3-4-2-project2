@@ -7,10 +7,15 @@ import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
 import EmptyListCard from "./EmptyListCard";
 import EmptyData from "./EmptyData";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const ITEMS_PER_PAGE = 12;
 
 const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
+
+   const nowPath = usePathname();
+
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
@@ -134,7 +139,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       );
    }
 
-   if (!loading && !allTourData.length) {
+   if (!allTourData.length || allTourData.length < 0) {
       return <EmptyData />;
    }
 
@@ -142,7 +147,9 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       <div className="w-[1280px] mx-auto px-6 m-16">
          <div className="grid grid-cols-3 gap-8">
             {tourData.map((item) => (
-               <ListCard key={item.contentId} {...item} />
+               <Link key={item.contentId} href={`${nowPath}/detail?contentId=${item.contentId}`}>
+                  <ListCard {...item} />
+               </Link>
             ))}
          </div>
 
