@@ -8,7 +8,6 @@ const TravelPage: React.FC = () => {
       <div className="min-h-screen">
          <Header />
          <LeisureSearchBar />
-
          <Footer />
       </div>
    );
