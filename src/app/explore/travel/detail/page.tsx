@@ -108,7 +108,7 @@ const TravelListPage: React.FC = () => {
 
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
-               <div className="relative w-full max-w-[800px]">
+               <div className="relative w-full max-w-[800px] group ">
                   <Swiper
                      onSwiper={(swiper) => (swiperRef.current = swiper)} //
                      pagination={{ clickable: true }}
@@ -142,12 +142,12 @@ const TravelListPage: React.FC = () => {
 
                   <button
                      ref={prevBtnRef}
-                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10 opacity-0 group-hover:opacity-100 transition-[.6s]">
                      <Image src="/images/prev-icon.png" alt="이전" width={20} height={24} />
                   </button>
                   <button
                      ref={nextBtnRef}
-                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10 opacity-0 group-hover:opacity-100 transition-[.6s]">
                      <Image src="/images/next-icon.png" alt="다음" width={20} height={24} />
                   </button>
                </div>
