@@ -5,7 +5,8 @@ import Image from "next/image";
 import { SelectedChildParam } from "@/types/types";
 
 const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
-   const [active, setActive] = useState("spring");
+   const [active, setActive] = useState<string | null>(null); // 기본 선택 없음
+
    const seasonData = [
       {
          season: "spring",
@@ -32,12 +33,12 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
          description: "겨울의 정수, 눈꽃 속 여행",
       },
    ];
-   
+
    useEffect(() => {
       if (selected?.filter) {
          setActive(selected.filter);
       } else {
-         handleClick("spring");
+         setActive(null); // 기본 선택 없음
       }
    }, []);
 
@@ -52,11 +53,10 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             <div
                key={season.season}
                className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
-                  active === season.season ? "scale-105" : "hover:scale-105 hover:shadow-xl"
+                  active === season.season ? "scale-105 border-b-2 border-sky-500" : "hover:scale-105 hover:shadow-xl"
                }`}
-               onClick={() => {
-                  handleClick(season.season);
-               }}>
+               onClick={() => handleClick(season.season)}
+            >
                <Image
                   src={season.imageSrc}
                   alt={season.season}
@@ -66,11 +66,9 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                />
                <span className="text-lg font-semibold text-neutral-800 mt-2">{season.title}</span>
                <span className="text-base font-normal text-neutral-500 mt-2">{season.description}</span>
-               <div
-                  className={`absolute bottom-0 left-0 right-0 h-[2px] bg-sky-500 transition-all duration-200 transform ${
-                     active === season.season ? "scale-x-100" : "scale-x-0"
-                  }`}
-               />
+               {active === season.season && (
+                  <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-sky-500 transition-all duration-200" />
+               )}
             </div>
          ))}
       </div>

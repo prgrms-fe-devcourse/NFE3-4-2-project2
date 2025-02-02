@@ -509,123 +509,120 @@ export default class APIConnect {
     * @param {number} page - 페이지 번호 (기본값: 1)
     * @returns {Promise<AccommodationItem[]>} 숙소 리스트 반환
     */
-      static async getAccommodationList(
-         page: number = 1, 
-         numOfRows: number = 1000,
-      ): Promise<AccommodationItem[]> {
-         try {
-            const response = await axios.get(this._tourDefaultURL + "searchStay1", {
-               params: {
-                  ...this._tourDefaultOption,
-                  pageNo: page,
-                  numOfRows: numOfRows,
-                  areaCode: 32,
-                  listYN: "Y",
-               },
-            });
-   
-            if (response.status !== 200) {
-               throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
-            }
-   
-            return response.data.response.body.items.item || [];
-         } catch (error) {
-            console.error("숙소 리스트 가져오기 실패:", error);
-            return [];
+   static async getAccommodationList(page: number = 1, numOfRows: number = 1000): Promise<AccommodationItem[]> {
+      try {
+         const response = await axios.get(this._tourDefaultURL + "searchStay1", {
+            params: {
+               ...this._tourDefaultOption,
+               pageNo: page,
+               numOfRows: numOfRows,
+               areaCode: 32,
+               listYN: "Y",
+            },
+         });
+
+         if (response.status !== 200) {
+            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
          }
+
+         return response.data.response.body.items.item || [];
+      } catch (error) {
+         console.error("숙소 리스트 가져오기 실패:", error);
+         return [];
       }
-   
-      /**
-       * 개별 숙소 상세 정보 조회 API
-       * @param {number | string} contentId - 숙소 ID
-       * @returns {Promise<AccommodationDetailInfo>} 숙소 상세 정보 반환
-       */
-      static async getAccommodationInfo(contentId: number | string): Promise<AccommodationDetailInfo> {
-         try {
-            // 기본 상세 정보
-            const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
-               params: {
-                  ...this._tourDefaultOption,
-                  contentId,
-                  contentTypeId: 32,
-                  defaultYN: "Y",
-                  firstImageYN: "Y",
-                  areacodeYN: "Y",
-                  catcodeYN: "Y",
-                  addrinfoYN: "Y",
-                  mapinfoYN: "Y",
-                  overviewYN: "Y",
-               },
-            });
-      
-            // 추가 상세 정보 (객실, 편의시설 등)
-            const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
-               params: {
-                  ...this._tourDefaultOption,
-                  contentId,
-                  contentTypeId: 32,
-               },
-            });
-      
-            // 개별 객실 정보
-            const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
-               params: {
-                  ...this._tourDefaultOption,
-                  contentId,
-                  contentTypeId: 32,
-               },
-            });
-      
-            if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
-               throw new Error("숙소 데이터를 가져오는 도중 오류 발생");
-            }
-      
-            const commonData = responseCommon.data.response.body.items.item[0];
-            const introData = responseIntro.data.response.body.items.item[0] || {};
-            const infoData = responseInfo.data.response.body.items.item || [];
-      
-            return {
-               contentid: commonData.contentid,
-               cat2: commonData.cat2 || "",  
-               cat3: commonData.cat3 || "",  
-               title: commonData.title,
-               overview: commonData.overview,
-               homepage: commonData.homepage || "",
-               firstimage: commonData.firstimage || "",
-               firstimage2: commonData.firstimage2 || "",
-               tel: commonData.tel || introData.infocenterlodging || "",
-               addr: commonData.addr1,
-               mapx: commonData.mapx,
-               mapy: commonData.mapy,
-               checkin: introData.checkintime || "확인 필요",
-               checkout: introData.checkouttime || "확인 필요",
-               parking: introData.parkinglodging || "정보 없음",
-               facilities: introData.subfacility || "정보 없음",
-               foodplace: introData.foodplace || "정보 없음",  
-               scalelodging: introData.scalelodging || "정보 없음",
-               rooms: infoData.map(room => ({
-                  roomTitle: room.roomtitle,
-                  roomSize: room.roomsize2,
-                  baseCapacity: room.roombasecount,
-                  maxCapacity: room.roommaxcount,
-                  priceLow: room.roomoffseasonminfee1,
-                  priceHigh: room.roompeakseasonminfee1,
-                  amenities: {
-                     bath: room.roombathfacility === "Y",
-                     airConditioning: room.roomaircondition === "Y",
-                     tv: room.roomtv === "Y",
-                     internet: room.roominternet === "Y",
-                     refrigerator: room.roomrefrigerator === "Y",
-                     toiletries: room.roomtoiletries === "Y",
-                     hairdryer: room.roomhairdryer === "Y",
-                  },
-                  images: [room.roomimg1, room.roomimg2, room.roomimg3, room.roomimg4, room.roomimg5].filter(img => img),
-               })),
-            };
-         } catch (error) {
-            throw new Error(`숙소 정보 가져오기 실패: ${error}`);
+   }
+
+   /**
+    * 개별 숙소 상세 정보 조회 API
+    * @param {number | string} contentId - 숙소 ID
+    * @returns {Promise<AccommodationDetailInfo>} 숙소 상세 정보 반환
+    */
+   static async getAccommodationInfo(contentId: number | string): Promise<AccommodationDetailInfo> {
+      try {
+         // 기본 상세 정보
+         const responseCommon = await axios.get(this._tourDefaultURL + "detailCommon1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 32,
+               defaultYN: "Y",
+               firstImageYN: "Y",
+               areacodeYN: "Y",
+               catcodeYN: "Y",
+               addrinfoYN: "Y",
+               mapinfoYN: "Y",
+               overviewYN: "Y",
+            },
+         });
+
+         // 추가 상세 정보 (객실, 편의시설 등)
+         const responseIntro = await axios.get(this._tourDefaultURL + "detailIntro1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 32,
+            },
+         });
+
+         // 개별 객실 정보
+         const responseInfo = await axios.get(this._tourDefaultURL + "detailInfo1", {
+            params: {
+               ...this._tourDefaultOption,
+               contentId,
+               contentTypeId: 32,
+            },
+         });
+
+         if (responseCommon.status !== 200 || responseIntro.status !== 200 || responseInfo.status !== 200) {
+            throw new Error("숙소 데이터를 가져오는 도중 오류 발생");
          }
+
+         const commonData = responseCommon.data.response.body.items.item[0];
+         const introData = responseIntro.data.response.body.items.item[0] || {};
+         const infoData = responseInfo.data.response.body.items.item || [];
+
+         return {
+            contentid: commonData.contentid,
+            cat2: commonData.cat2 || "",
+            cat3: commonData.cat3 || "",
+            title: commonData.title,
+            overview: commonData.overview,
+            homepage: commonData.homepage || "",
+            firstimage: commonData.firstimage || "",
+            firstimage2: commonData.firstimage2 || "",
+            tel: commonData.tel || introData.infocenterlodging || "",
+            addr: commonData.addr1,
+            mapx: commonData.mapx,
+            mapy: commonData.mapy,
+            checkin: introData.checkintime || "확인 필요",
+            checkout: introData.checkouttime || "확인 필요",
+            parking: introData.parkinglodging || "정보 없음",
+            facilities: introData.subfacility || "정보 없음",
+            foodplace: introData.foodplace || "정보 없음",
+            scalelodging: introData.scalelodging || "정보 없음",
+            rooms: infoData.map((room) => ({
+               roomTitle: room.roomtitle,
+               roomSize: room.roomsize2,
+               baseCapacity: room.roombasecount,
+               maxCapacity: room.roommaxcount,
+               priceLow: room.roomoffseasonminfee1,
+               priceHigh: room.roompeakseasonminfee1,
+               amenities: {
+                  bath: room.roombathfacility === "Y",
+                  airConditioning: room.roomaircondition === "Y",
+                  tv: room.roomtv === "Y",
+                  internet: room.roominternet === "Y",
+                  refrigerator: room.roomrefrigerator === "Y",
+                  toiletries: room.roomtoiletries === "Y",
+                  hairdryer: room.roomhairdryer === "Y",
+               },
+               images: [room.roomimg1, room.roomimg2, room.roomimg3, room.roomimg4, room.roomimg5].filter((img) => img),
+            })),
+         };
+      } catch (error) {
+         throw new Error(`숙소 정보 가져오기 실패: ${error}`);
       }
+   }
 
    /**
     * TourAPI에서 문화·역사별 관광지 전체 리스트를 가져오는 메서드
@@ -851,8 +848,8 @@ export default class APIConnect {
    /**
     * TourAPI에서 계절별 관광지 리스트를 가져오는 메서드
     *
-    * @param {string} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
-    * @param {number} page - 불러올 페이지 번호. 기본값은 1
+    * @param {string | null} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
+    * @param {number} page 
     * @returns {Promise<TourItem[]>}
     */
    static async getSeasonTourList(
@@ -860,50 +857,52 @@ export default class APIConnect {
       page: number = 1,
    ): Promise<TourItem[]> {
       try {
-         let cat3List: { cat1: string; cat2: string; cat3: string }[] = [];
+         console.log(
+            `📌 [API 요청] ${season ? `${season} 관광지` : "전체 계절 관광지"} 리스트 가져오기, 페이지: ${page}`,
+         );
 
-         if (season) {
-            cat3List = seasonList[season] || [];
-            console.log(`📌 [API 요청] ${season} 관광지 리스트 요청`);
-         } else {
-            // 모든 계절 데이터를 합쳐서 반환
-            cat3List = [
-               ...seasonList["spring"],
-               ...seasonList["summer"],
-               ...seasonList["autumn"],
-               ...seasonList["winter"],
-            ];
-            console.log(`📌 [API 요청] 전체 계절 관광지 리스트 요청`);
-         }
+         // 선택된 계절이 없으면 모든 계절 데이터 병합
+         const selectedSeasons: Array<keyof typeof seasonList> = season
+            ? [season]
+            : ["spring", "summer", "autumn", "winter"];
 
-         if (!cat3List.length) {
+         const cat3List = selectedSeasons.flatMap((seasonKey) => seasonList[seasonKey] || []);
+
+         if (cat3List.length === 0) {
             console.warn(`⚠️ ${season ? season : "전체"} 시즌 관광지 데이터가 없습니다.`);
             return [];
          }
 
-         const requests = cat3List.map(async ({ cat1, cat2, cat3 }) => {
-            console.log(`📩 개별 요청: cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`);
-            const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-               params: {
-                  ...this._tourDefaultOption,
-                  pageNo: page,
-                  areaCode: 32,
-                  listYN: "Y",
-                  cat1,
-                  cat2,
-                  cat3,
-               },
-            });
+         // API 요청 리스트 생성
+         const requests = cat3List.map(({ cat1, cat2, cat3 }) =>
+            axios
+               .get(this._tourDefaultURL + "areaBasedList1", {
+                  params: {
+                     ...this._tourDefaultOption,
+                     pageNo: page,
+                     areaCode: 32,
+                     listYN: "Y",
+                     cat1,
+                     cat2,
+                     cat3,
+                  },
+               })
+               .then((response) => response.data?.response?.body?.items?.item || [])
+               .catch((error) => {
+                  console.error(`❌ [API 요청 실패] cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`, error);
+                  return [];
+               }),
+         );
 
-            return response.data?.response?.body?.items?.item || [];
-         });
+         const results = await Promise.allSettled(requests);
+         const mergedResults = results
+            .filter((result) => result.status === "fulfilled")
+            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
 
-         const results = await Promise.all(requests);
-         const mergedResults = results.flat();
-
-         console.log("📩 [API 응답 데이터]:", mergedResults);
+         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
          return mergedResults;
       } catch (err) {
+         console.error(`❌ [API 요청 실패]`, err);
          throw new Error(`API 요청 실패: ${err}`);
       }
    }
