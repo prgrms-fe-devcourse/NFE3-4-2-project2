@@ -11,7 +11,7 @@ const CultureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
 
    const handleClick = (cultureQuery:string)=>{
       setActive(cultureQuery)
-      changeUrl({cat:selected.cat, filter:cultureQuery})
+      changeUrl({cat:selected.cat, filter:cultureQuery, page:1})
    }
 
    const cultureData = [

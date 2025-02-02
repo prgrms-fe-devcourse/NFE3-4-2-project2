@@ -15,6 +15,11 @@ export interface TourItem {
    contenttypeid: number;
 }
 
+export interface TourItemRegion{
+   totalLength : string,
+   items : TourItem[];
+}
+
 export interface TourDetailInfo {
    //분류 및 기본정보
    contentid: string;
@@ -174,6 +179,7 @@ export interface RestaurantListResponse {
 export interface SelectedParam {
    cat: string | null;
    filter?: string | null;
+   page:number;
 }
 export interface SelectedChildParam {
    selected: SelectedParam;

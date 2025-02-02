@@ -2,19 +2,9 @@
 
 import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import { SelectedChildParam } from "@/types/types";
 
-interface SelectedParam {
-  cat: string | null;
-  filter?: string | null;
-}
-
-interface SelectedChildParam {
-  selected : SelectedParam,
-  changeUrl : (url:SelectedParam)=>void;
-}
-
-
-const NatureBar: React.FC<SelectedChildParam> = ({ selected,changeUrl}) => {
+const NatureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl}) => {
   const [active, setActive] = useState("ocean");
   const natureData = [
     {
@@ -42,13 +32,15 @@ const NatureBar: React.FC<SelectedChildParam> = ({ selected,changeUrl}) => {
       query:"forest"
     },
   ];
+
   useEffect(()=>{
     if(selected?.filter){setActive(selected.filter)}
     else{handleClick("ocean");}
   },[])
+
   const handleClick = (natureQuery:string)=>{
     setActive(natureQuery);
-    changeUrl({cat:selected.cat, filter:natureQuery});
+    changeUrl({cat:selected.cat, filter:natureQuery, page : 1});
   }
 
   return (

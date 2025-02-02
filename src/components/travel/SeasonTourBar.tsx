@@ -44,7 +44,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
 
    const handleClick = (seasonQuery: string) => {
       setActive(seasonQuery);
-      changeUrl({ cat: selected.cat, filter: seasonQuery });
+      changeUrl({ cat: selected.cat, filter: seasonQuery, page:1 });
    };
 
    return (

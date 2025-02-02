@@ -1,4 +1,4 @@
-import { TourImg, TourDetailInfo, RestaurantDetailInfo } from "@/types/types";
+import { TourImg, TourDetailInfo, RestaurantDetailInfo, TourItemRegion } from "@/types/types";
 import { AccommodationItem, AccommodationDetailInfo } from "@/types/types";
 
 import axios from "axios";
@@ -37,7 +37,7 @@ export default class APIConnect {
     * @param {number} page - 불러올 페이지. 기본값은 1입니다.
     * @returns {Array} 인덱스 이미지, 시군구 정보, 제목으로 구성된 12개의 정보 리스트를 반환합니다.
     */
-   static async getTourAreaList(code: string | undefined, page: number = 1): Promise<TourItem[]> {
+   static async getTourAreaList(code: string | undefined, page: number = 1): Promise<TourItemRegion> {
       try {
          const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
             params: {
@@ -48,7 +48,6 @@ export default class APIConnect {
                listYN: "Y",
             },
          });
-         console.log(response);
          if (response.status !== 200) {
             throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
          }
@@ -57,12 +56,16 @@ export default class APIConnect {
             if (isLitimed) {
                console.log(`⚠️ API 요청 횟수를 초과하였습니다.`);
             }
-            return [];
+            return {totalLength:'0', items:[]};
          } else {
-            return response.data.response.body.items.item;
+            console.log(response.data)
+            return {
+               totalLength : response.data.response.body.totalCount,
+               items : response.data.response.body.items.item
+            };
          }
       } catch {
-         return [];
+         return {totalLength:'0', items:[]};
       }
    }
 

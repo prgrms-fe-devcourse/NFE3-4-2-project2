@@ -6,7 +6,7 @@ import { SelectedChildParam } from "@/types/types";
 
 const RegionList:React.FC<SelectedChildParam>=({selected, changeUrl})=>{
   const handleRegionClick = (regionCode: string) => {
-    changeUrl({cat:selected.cat, filter:regionCode})
+    changeUrl({cat:selected.cat, filter:regionCode, page:1})
   };
 
   const regions = [

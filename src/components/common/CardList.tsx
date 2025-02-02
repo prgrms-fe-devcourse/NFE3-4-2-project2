@@ -1,27 +1,19 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { ListProps, SelectedChildParam } from "@/types/types";
+import { TourItem, ListProps, SelectedChildParam } from "@/types/types";
 import ListCard from "./ListCard";
 import APIConnect from "@/utils/api";
 import Pagination from "./Pagination";
 import EmptyListCard from "./EmptyListCard";
 import EmptyData from "./EmptyData";
 
-interface TourItem {
-   title: string;
-   addr1: string;
-   firstimage?: string;
-   contentid: number;
-   contenttypeid: number;
-}
 const ITEMS_PER_PAGE = 12;
 
-const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
+const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
-   const [currentPage, setCurrentPage] = useState<number>(1);
    const [totalPages, setTotalPages] = useState<number>(1);
 
    useEffect(() => {
@@ -30,12 +22,12 @@ const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
          // setLoading(true);
          try {
             let response: TourItem[] = [];
+            let regionRes; //region의 경우 12개씩만 API에서 호출
 
             console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
             console.log(
                `📌 선택된 카테고리: ${selected.cat}, 선택된 필터: ${selected.filter ? selected.filter : "없음"}`,
             );
-
             if (selected.cat == "season") {
                //계절별
                if (selected.filter) {
@@ -51,10 +43,13 @@ const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
             if (selected.cat == "region") {
                //지역별
                if (selected.filter) {
-                  response = await APIConnect.getTourAreaList(selected.filter);
+                  regionRes = await APIConnect.getTourAreaList(selected.filter, selected.page || 1);
+                  response = regionRes.items;
                } else {
-                  response = await APIConnect.getTourAreaList("");
+                  regionRes = await APIConnect.getTourAreaList("", selected.page || 1);
+                  response = regionRes.items;
                }
+               setTotalPages(Number(regionRes.totalLength));
             }
             if (selected.cat == "culture") {
                //문화별
@@ -85,11 +80,11 @@ const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
                response = [];
             }
 
-            console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
-
+            console.log(`🔍 API 응답 데이터 개수: ${response.length || regionRes?.totalLength}`);
             setAllTourData(response);
-            setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
-
+            if (selected.cat !== "region") {
+               setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
+            }
             setLoading(false);
          } catch (err) {
             console.log("❌ API 요청 실패:", err);
@@ -101,21 +96,33 @@ const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
 
    useEffect(() => {
       //페이지네이션 관련
-      const paginatedData = allTourData.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
-      setTourData(
-         paginatedData.map((item) => ({
-            imageUrl: item.firstimage || "/images/ready.png",
-            area: item.addr1 || "",
-            title: item.title || "",
-            contentId: item.contentid,
-            contentTypeId: item.contenttypeid,
-         })),
-      );
-   }, [currentPage, allTourData]);
+      if (selected.cat !== "region") {
+         const paginatedData = allTourData.slice((selected.page - 1) * ITEMS_PER_PAGE, selected.page * ITEMS_PER_PAGE);
+         setTourData(
+            paginatedData.map((item) => ({
+               imageUrl: item.firstimage || "/images/ready.png",
+               title: item.title || "",
+               area: item.addr1 || "",
+               contentId: item.contentid,
+               contentTypeId: item.contenttypeid,
+            })),
+         );
+      }else{
+         setTourData(
+            allTourData.map((item)=>({
+               imageUrl: item.firstimage || "/images/ready.png",
+               title: item.title ,
+               area: item.addr1 || "",
+               contentId: item.contentid,
+               contentTypeId: item.contenttypeid
+            }))
+         );
+      }
+   }, [selected, allTourData]);
 
-   useEffect(() => {
-      setCurrentPage(1);
-   }, [selected]);
+   // useEffect(() => {
+   //    setCurrentPage(1);
+   // }, [selected]);
 
    if (loading) {
       return (
@@ -139,9 +146,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected }) => {
             ))}
          </div>
 
-         {totalPages > 1 && (
-            <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} />
-         )}
+         {totalPages > 1 && <Pagination totalPages={totalPages} selected={selected} changeUrl={changeUrl} />}
       </div>
    );
 };
