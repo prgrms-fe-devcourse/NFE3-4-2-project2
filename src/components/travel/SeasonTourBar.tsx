@@ -40,7 +40,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       } else {
          setActive(null); // 기본 선택 없음
       }
-   }, []);
+   }, [selected.filter]);
 
    const handleClick = (seasonQuery: string) => {
       setActive(seasonQuery);
@@ -55,8 +55,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
                   active === season.season ? "scale-105 border-b-2 border-sky-500" : "hover:scale-105 hover:shadow-xl"
                }`}
-               onClick={() => handleClick(season.season)}
-            >
+               onClick={() => handleClick(season.season)}>
                <Image
                   src={season.imageSrc}
                   alt={season.season}
