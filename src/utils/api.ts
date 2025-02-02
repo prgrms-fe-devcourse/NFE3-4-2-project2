@@ -141,7 +141,7 @@ export default class APIConnect {
             mapy: commonData.mapy,
          };
       } catch (err) {
-         console.log(`Axios 요청이 실패했습니다 : `, err);
+         throw new Error(`Axios 요청이 실패했습니다 : ${err}`);
       }
    }
 
