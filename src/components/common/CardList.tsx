@@ -47,14 +47,26 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             }
             if (selected.cat == "region") {
                //지역별
-               if (selected.filter) {
-                  regionRes = await APIConnect.getTourAreaList(selected.filter, selected.page || 1);
-                  response = regionRes.items;
-               } else {
-                  regionRes = await APIConnect.getTourAreaList("", selected.page || 1);
-                  response = regionRes.items;
+               console.log(nowPath)
+               if(nowPath == "/explore/leisure"){
+                  if (selected.filter) {
+                     regionRes = await APIConnect.getLeisureList(selected.filter, selected.page || 1);
+                     response = regionRes.items;
+                  } else {
+                     regionRes = await APIConnect.getLeisureList("", selected.page || 1);
+                     response = regionRes.items;
+                  }
+                  setTotalPages(Number(regionRes.totalLength));
+               }else if(nowPath == "/explore/travel"){
+                  if (selected.filter) {
+                     regionRes = await APIConnect.getTourAreaList(selected.filter, selected.page || 1);
+                     response = regionRes.items;
+                  } else {
+                     regionRes = await APIConnect.getTourAreaList("", selected.page || 1);
+                     response = regionRes.items;
+                  }
+                  setTotalPages(Number(regionRes.totalLength));
                }
-               setTotalPages(Number(regionRes.totalLength));
             }
             if (selected.cat == "culture") {
                //문화별
@@ -85,7 +97,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                response = [];
             }
 
-            console.log(`🔍 API 응답 데이터 개수: ${response.length || regionRes?.totalLength}`);
+            console.log(`🔍 API 응답 데이터 개수: ${regionRes?.totalLength || response.length}`);
             setAllTourData(response);
             if (selected.cat !== "region") {
                setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));

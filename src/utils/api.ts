@@ -58,7 +58,6 @@ export default class APIConnect {
             }
             return {totalLength:'0', items:[]};
          } else {
-            console.log(response.data)
             return {
                totalLength : response.data.response.body.totalCount,
                items : response.data.response.body.items.item
@@ -493,13 +492,14 @@ export default class APIConnect {
     * @param {number} page - 불러올 페이지 (기본값: 1)
     * @returns {Promise<TourItem[]>} 레저 리스트를 반환
     */
-   static async getLeisureList(page: number = 1): Promise<TourItem[]> {
+   static async getLeisureList(code:string|number,page: number = 1): Promise<TourItemRegion> {
       try {
          const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
             params: {
                ...this._tourDefaultOption,
                pageNo: page,
                areaCode: 32,
+               sigunguCode: code,
                contentTypeId: 28,
                cat1: "A03",
                listYN: "Y",
@@ -509,8 +509,18 @@ export default class APIConnect {
          if (response.status !== 200) {
             throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
          }
-
-         return response.data.response.body.items.item || [];
+         if (!response.data.response) {
+            const isLitimed = /limited|number|requests/i.test(response.data);
+            if (isLitimed) {
+               console.log(`⚠️ API 요청 횟수를 초과하였습니다.`);
+            }
+            return {totalLength:'0', items:[]};
+         }else{
+            return {
+               totalLength : response.data.response.body.totalCount,
+               items : response.data.response.body.items.item
+            };
+         }
       } catch (err) {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
