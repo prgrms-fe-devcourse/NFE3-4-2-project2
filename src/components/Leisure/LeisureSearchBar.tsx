@@ -14,31 +14,31 @@ const LeisureSearchBar: React.FC = () => {
    //파라미터 가지고오기
    const nowCategory = searchParams.get("cat");
    const nowFilter = searchParams.get("filter");
-   const [selected, setSelected] = useState<SelectedParam>({ cat: "" });
+   const nowPage = Number(searchParams.get("page"));
+   const [selected, setSelected] = useState<SelectedParam>({ cat: "", page:1 });
 
    //props로 전달할 url 변환 함수
    const handleUrlChange = (selectedParam: SelectedParam) => {
-      if (selectedParam.filter) {
-         router.push(`?cat=${selectedParam.cat}&filter=${selectedParam.filter}`, { scroll: false });
-      } else {
-         router.push(`?cat=${selectedParam.cat}`, { scroll: false });
-      }
-      setSelected(selectedParam);
-   };
+         const queryString = selectedParam.filter
+            ? `?cat=${selectedParam.cat}&filter=${selectedParam.filter}&page=${selectedParam.page}`
+            : `?cat=${selectedParam.cat}&page=${selectedParam.page}`;
+         router.push(queryString, { scroll: false });
+         setSelected(selectedParam);
+      };
    // 기본 파라미터 설정 (cat이 없을 경우 season으로 설정)
    useEffect(() => {
       if (!nowCategory) {
          console.log("🔄 기본 카테고리 'season' 적용");
-         router.replace("?cat=region", { scroll: false });
-         setSelected({ cat: "region" });
+         setSelected({ cat: "region", page:1 });
+         router.replace("?cat=region&page=1", { scroll: false });
          return;
       }
 
       // 올바른 카테고리 값인지 확인 후 설정
       if (["season", "region"].includes(nowCategory)) {
-         setSelected({ cat: nowCategory, filter: nowFilter });
+         setSelected({ cat: nowCategory, filter: nowFilter, page:nowPage });
       }
-   }, [nowCategory, nowFilter, router]);
+   }, [nowCategory, nowFilter, nowPage, router]);
 
    return (
       <div className="bg-sky-50 w-full flex justify-center items-start p-6 h-[392px]">
@@ -50,7 +50,7 @@ const LeisureSearchBar: React.FC = () => {
                         ? "bg-sky-500 text-white border-b-2 border-sky-500"
                         : "bg-transparent text-sky-500 border-b-2 border-sky-500"
                   } text-2xl font-semibold w-[50%] h-[48px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
-                  onClick={()=>{handleUrlChange({cat:"region"})}}
+                  onClick={()=>{handleUrlChange({cat:"region", page:1})}}
                   >
                   지역별 레저 및 체험
                </button>
@@ -60,7 +60,7 @@ const LeisureSearchBar: React.FC = () => {
                         ? "bg-sky-500 text-white border-b-2 border-sky-500"
                         : "bg-transparent text-sky-500 border-b-2 border-sky-500"
                   } text-2xl font-semibold w-[50%] h-[48px] flex items-center justify-center cursor-pointer transition-all duration-200 ease-in-out`}
-                  onClick={()=>{handleUrlChange({cat:"season"})}}
+                  onClick={()=>{handleUrlChange({cat:"season", page:1})}}
                   >
                   계절별 레저 및 체험
                </button>
