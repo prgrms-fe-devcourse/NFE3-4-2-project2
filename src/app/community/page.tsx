@@ -1,59 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import CommunityCard from "../../components/travel/CommunityCard";
+import { getPostsByChannel } from "@/utils/postapi";
+import { AxiosResponse } from "axios";
 
-export default function Places() {
-   const [selectedCategory, setSelectedCategory] = useState("여행 동행 모집");
+interface Post {
+   _id: string;
+   title: string;
+   image?: string;
+   content: string;
+   createdAt: string;
+}
+
+export default function Community() {
    const router = useRouter();
+   const [posts, setPosts] = useState<Post[]>([]);
+   const [loadingPosts, setLoadingPosts] = useState(false);
+   const [isLoggedIn, setIsLoggedIn] = useState(false);
+   const channelId = "679f3aba7cd28d7700f70f40";
 
-   const categories = [
-      { name: "여행 동행 모집", icon: "bi bi-heart-fill text-red-500" },
-      { name: "여행 리뷰", icon: "bi bi-star-fill text-yellow-500" },
-   ];
+   useEffect(() => {
+      const fetchPosts = async () => {
+         setLoadingPosts(true);
+         try {
+            const response: AxiosResponse<Post[]> = await getPostsByChannel(channelId);
+            setPosts(response.data);
+         } catch (error) {
+            console.error("❌ 게시글 불러오기 실패:", error);
+         } finally {
+            setLoadingPosts(false);
+         }
+      };
+      fetchPosts();
 
-   const travelData = [
-      {
-         category: "여행 동행 모집",
-         imageUrl: "/images/travel1.jpg",
-         title: "강릉 바다 여행 멤버 모집",
-         location: "강릉시",
-         buttonText: "참가",
-      },
-      {
-         category: "여행 동행 모집",
-         imageUrl: "/images/travel2.jpg",
-         title: "설악산 단풍 여행 팀원 모집",
-         location: "속초시",
-         buttonText: "참가",
-      },
-      {
-         category: "여행 리뷰",
-         imageUrl: "/images/review1.jpg",
-         title: "강릉 바다 여행 후기",
-         location: "강릉시",
-         buttonText: "보기",
-      },
-      {
-         category: "여행 리뷰",
-         imageUrl: "/images/review2.jpg",
-         title: "제주도 여행 후기",
-         location: "제주시",
-         buttonText: "보기",
-      },
-   ];
-
-   const filteredData = travelData.filter((item) => item.category === selectedCategory);
+      // 로그인 여부 확인 (localStorage 사용 예시)
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+         setIsLoggedIn(true);
+      } else {
+         setIsLoggedIn(false);
+      }
+   }, []);
 
    return (
       <div className="min-h-screen flex flex-col">
          <Header />
-
-         {/* 배너 */}
          <div className="relative">
             <Image
                width={0}
@@ -63,57 +58,56 @@ export default function Places() {
                alt="banner"
                className="w-full h-[392px] object-cover"
             />
-            <div className="absolute top-1/2 left-12 transform -translate-y-1/2 text-white text-left">
-               <p className="text-[36px] font-medium">설레는 동행과 특별한 이야기가 머무는 곳</p>
-               <h2 className="text-[48px] font-semibold mt-2">강원도 커뮤니티</h2>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
+               <p className="text-[36px] font-medium">함께하는 여행, 특별한 동행</p>
+               <h2 className="text-[48px] font-semibold mt-2">강원도 여행 동행 모집</h2>
             </div>
          </div>
-
-         {/* ✅ 배너 아래 컨텐츠를 최대 1280px로 제한 & 반응형 패딩 추가 */}
-         <div className="max-w-[1280px] w-full mx-auto px-4">
-            {/* 카테고리 메뉴 */}
-            <div className="flex justify-center py-6">
-               <div className="flex gap-8 flex-nowrap">
-                  {categories.map((category) => (
-                     <button
-                        key={category.name}
-                        onClick={() => setSelectedCategory(category.name)}
-                        className="flex flex-col items-center">
-                        <div className="flex items-center gap-2">
-                           <i className={category.icon}></i>
-                           <span
-                              className={`text-[24px] font-semibold ${
-                                 selectedCategory === category.name ? "text-orange-500" : "text-gray-400"
-                              }`}>
-                              {category.name}
-                           </span>
-                        </div>
-                        <div
-                           className={`mt-1 h-[2px] w-full transition-all ${
-                              selectedCategory === category.name ? "bg-sky-500" : "bg-gray-400"
-                           }`}></div>
-                     </button>
-                  ))}
-               </div>
+         <div className="max-w-[1280px] w-full mx-auto px-4 py-10">
+            <div className="flex justify-between items-center mb-8">
+               <h3 className="text-[32px] font-semibold text-gray-800">📌 여행 동행 모집 게시판</h3>
+               {isLoggedIn && (
+                  <button
+                     onClick={() => router.push(`/community/write?channelId=${channelId}`)}
+                     className="w-[200px] h-[50px] bg-orange-500 hover:bg-orange-600 transition text-white text-[18px] font-semibold rounded-xl shadow-md">
+                     ✏️ 글 작성하기
+                  </button>
+               )}
             </div>
-
-            {/* ✅ 글 작성하기 버튼을 카드 리스트 위쪽, 정렬된 위치로 이동 */}
-            <div className="flex justify-end mb-6">
-               <button
-                  onClick={() => router.push("/community/write")}
-                  className="w-[170px] h-[48px] bg-sky-500 text-white text-[18px] font-semibold rounded-lg">
-                  글 작성하기
-               </button>
-            </div>
-
-            {/* 🔥 CommunityCard 리스트 */}
-            <div className="flex flex-wrap justify-center gap-6">
-               {filteredData.map((data, index) => (
-                  <CommunityCard key={index} {...data} />
-               ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+               {loadingPosts ? (
+                  <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
+               ) : posts.length > 0 ? (
+                  posts.map((post, index) => (
+                     <div
+                        key={`${post._id}-${index}`}
+                        className="border rounded-lg shadow-lg p-6 bg-white hover:shadow-xl transition">
+                        {post.image && (
+                           <Image
+                              src={post.image || "/images/break.png"}
+                              alt={post.title}
+                              width={350}
+                              height={150}
+                              className="rounded-lg w-full object-cover"
+                           />
+                        )}
+                        <h3 className="text-xl font-bold mt-4 text-gray-900">{post.title}</h3>
+                        <p className="text-gray-500 text-sm mt-2">
+                           작성일 {new Date(post.createdAt).toLocaleDateString()}
+                        </p>
+                        <p className="mt-3 text-gray-700 line-clamp-2">{post.content}</p>
+                        <button
+                           onClick={() => router.push(`/community/post/${post._id}`)}
+                           className="mt-6 block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
+                           자세히 보기
+                        </button>
+                     </div>
+                  ))
+               ) : (
+                  <p className="text-gray-500 text-center w-full">등록된 게시글이 없습니다.</p>
+               )}
             </div>
          </div>
-
          <Footer />
       </div>
    );
