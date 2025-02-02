@@ -12,7 +12,7 @@ import Pagination from "@/components/common/Pagination";
 import { AccommodationItem } from "@/types/types";
 
 const categoryMap: { [key: string]: string } = {
-   B02010100: "관광호텔",
+   B02010100: "호텔",
    B02010500: "콘도미니엄",
    B02010600: "유스호스텔",
    B02010700: "펜션",
@@ -37,7 +37,6 @@ const getCategoryText = (categoryCode: string | undefined): string => {
 };
 
 export default function Accommodations() {
-
    const [allAccommodations, setAllAccommodations] = useState<AccommodationItem[]>([]);
    const [selectedCategory, setSelectedCategory] = useState("숙소");
    const [searchTerm, setSearchTerm] = useState("");
@@ -51,13 +50,13 @@ export default function Accommodations() {
       { name: "식당", link: "/places/restaurants" },
       { name: "숙소", link: "/places/accommodations" },
    ];
-   
+
    // 숙소 리스트 API 가져오기
    useEffect(() => {
       const fetchAccommodations = async () => {
          try {
             const accommodations = await APIConnect.getAccommodationList(1, 1000);
-            
+
             const updatedAccommodations = accommodations.map((accommodation) => ({
                ...accommodation,
                addr1: extractCityCounty(accommodation.addr1),
@@ -93,7 +92,6 @@ export default function Accommodations() {
       return filtered;
    }, [allAccommodations, selectedCategory, searchTerm]);
 
-
    // 총 페이지 수 계산
    useEffect(() => {
       const pages = Math.ceil(filteredAccommodations.length / accommodationsPerPage);
@@ -124,8 +122,6 @@ export default function Accommodations() {
    const handleSearchClick = () => {
       console.log("카테고리:", selectedCategory, "검색어:", searchTerm);
    };
-
-   
 
    if (loading) return <div>Loading...</div>;
 
@@ -171,7 +167,7 @@ export default function Accommodations() {
                   </ul>
 
                   {/* 지역 필터 */}
-                  <div className="mt-2 flex">
+                  <div className="mt-1 flex">
                      <div className="w-[150px] mr-2">
                         <p className="text-neutral-500 text-sm pb-2">지역</p>
                         <select className="w-full bg-transparent focus:outline-none border-b border-sky-500">
@@ -295,7 +291,7 @@ export default function Accommodations() {
                   </div>
                ))}
             </div>
-            </div>
+         </div>
          {/* 숙소 리스트 */}
          <div className="max-w-[1409px] mx-auto">
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
@@ -320,4 +316,3 @@ export default function Accommodations() {
       </div>
    );
 }
-

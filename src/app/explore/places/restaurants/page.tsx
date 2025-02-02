@@ -163,7 +163,7 @@ export default function Restaurants() {
                   </ul>
 
                   {/* 지역 필터 */}
-                  <div className="mt-2 flex">
+                  <div className="mt-1 flex">
                      <div className="w-[150px] mr-2">
                         <p className="text-neutral-500 text-sm pb-2">지역</p>
                         <select className="w-full bg-transparent focus:outline-none border-b border-sky-500">
