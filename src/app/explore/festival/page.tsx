@@ -4,9 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import FestivalCard from "@/components/fetival/FestivalCard";
 import { SelectedParam } from "@/types/types";
 import { useSearchParams, useRouter } from "next/navigation";
+import FestivalCard from "@/components/fetival/FestivalCard";
 
 export default function Festival() {
    // URL에서 파라미터 읽어오기
