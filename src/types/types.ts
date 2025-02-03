@@ -188,17 +188,26 @@ export interface SelectedChildParam {
 
 // 축제 데이터 타입
 export interface Festival {
-   addr1: string;
-   addr2: string;
-   cat1: string;
-   cat2: string;
-   cat3: string;
-   contentId: string;
-   contentTypeId: string;
-   createdtime: string;
-   eventstartdate: string;
-   eventenddate: string;
-   firstimage: string;
-   firstimage2: string;
+   addr1?: string;
+   addr2?: string;
+   areacode?: string;
+   booktour?: string;
+   cat1?: string; // 대분류
+   cat2?: string; // 중분류
+   cat3?: string; // 소분류
+   contentid: string;
+   contenttypeid: string;
+   cpyrhtDivCd?: string;
+   createdtime?: string;
+   eventenddate?: string;
+   eventstartdate?: string;
+   firstimage?: string;
+   firstimage2?: string;
+   mapx?: string;
+   mapy?: string;
+   mlevel?: string;
+   modifiedtime?: string;
+   sigungucode?: string;
+   tel?: string;
    title: string;
 }

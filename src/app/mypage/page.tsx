@@ -1,19 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Edit } from "lucide-react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import FavoritePlaces from "./favorites/page";
+import VisitedPlaces from "./visited/page";
 
 const Sidebar = ({ setActiveSection, activeSection }) => (
    <nav className="bg-gray-100 p-4 rounded-lg w-full max-w-[240px] max-h-[300px]">
       <ul className="space-y-3">
          {[
-            { label: "📌 내 프로필", key: "profile" },
+            { label: "내 프로필", key: "profile" },
             { label: "나의 리뷰 및 후기", key: "reviews" },
-            { label: "찜한 관광지", key: "savedPlaces" },
-            { label: "다녀온 관광지", key: "visitedPlaces" },
+            { label: "📌 찜한 관광지", key: "savedPlaces" },
+            { label: "✅ 다녀온 관광지", key: "visitedPlaces" },
          ].map((item) => (
             <li
                key={item.key}
@@ -80,6 +82,26 @@ export default function MyPage() {
    });
    const [activeSection, setActiveSection] = useState("profile");
 
+   // ✅ `localStorage`에서 찜한 관광지 & 다녀온 관광지 개수를 가져오기
+   const updateCounts = () => {
+      const savedPlaces = JSON.parse(localStorage.getItem("favorites") || "[]").length;
+      const visitedPlaces = JSON.parse(localStorage.getItem("visited") || "[]").length;
+
+      setProfile((prev) => ({
+         ...prev,
+         savedPlaces,
+         companions: visitedPlaces, // ✅ companions → 다녀온 관광지 개수로 사용
+      }));
+   };
+
+   useEffect(() => {
+      updateCounts(); // ✅ 초기 로드 시 개수 업데이트
+
+      // ✅ localStorage 변경 감지 → 숫자 자동 업데이트
+      window.addEventListener("storage", updateCounts);
+      return () => window.removeEventListener("storage", updateCounts);
+   }, []);
+
    const handleEdit = () => {
       alert("프로필 수정 기능은 개발 중");
    };
@@ -91,11 +113,18 @@ export default function MyPage() {
             <Sidebar setActiveSection={setActiveSection} activeSection={activeSection} />
             <div className="flex flex-col flex-1">
                {activeSection === "profile" && <ProfileCard profile={profile} onEdit={handleEdit} />}
-               <div className="flex flex-wrap justify-start gap-6 mt-6">
-                  <StatsCard label="찜한 관광지" count={profile.savedPlaces} />
+
+               {/* ✅ StatsCard가 localStorage 반영하여 즉시 업데이트됨 */}
+               <div className="flex flex-wrap justify-start gap-6 mt-6 mb-10">
+                  <StatsCard label="📌 찜한 관광지" count={profile.savedPlaces} />
                   <StatsCard label="나의 여행 코스" count={profile.travelCourses} />
-                  <StatsCard label="다녀온 관광지" count={profile.companions} />
+                  <StatsCard label="✅ 다녀온 관광지" count={profile.companions} />
                   <StatsCard label="작성한 리뷰" count={profile.reviews} />
+               </div>
+
+               <div className="mt-10">
+                  {activeSection === "savedPlaces" && <FavoritePlaces updateCounts={updateCounts} />}
+                  {activeSection === "visitedPlaces" && <VisitedPlaces updateCounts={updateCounts} />}
                </div>
             </div>
          </div>
@@ -103,3 +132,4 @@ export default function MyPage() {
       </div>
    );
 }
+

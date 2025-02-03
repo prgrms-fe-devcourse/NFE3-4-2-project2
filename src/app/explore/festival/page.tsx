@@ -4,9 +4,9 @@ import { useState } from "react";
 import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import FestivalCard from "@/components/fetival/FestivalCard";
 import { SelectedParam } from "@/types/types";
 import { useSearchParams, useRouter } from "next/navigation";
+import FestivalCard from "@/components/fetival/FestivalCard";
 
 export default function Festival() {
    // URL에서 파라미터 읽어오기
@@ -22,24 +22,36 @@ export default function Festival() {
       page: nowPage,
    });
 
+   const festivalCategories = [
+      { name: "전체", value: "festival", cat2: null }, // 전체 리스트 보기
+      { name: "축제", value: "festivalList", cat2: "A0207" },
+      { name: "공연/행사", value: "performancEventList", cat2: "A0208" },
+   ];
+
+   // 선택된 카테고리에 해당하는 cat2 값 찾기
+   const selectedCategory = festivalCategories.find((category) => category.value === selected.cat);
+   const selectedCat2 = selectedCategory?.cat2 || null; // 전체 선택 시 null 설정
+
    // URL 변경 함수
    const handleUrlChange = (selectedParam: SelectedParam) => {
-      const queryString = `?cat=${selectedParam.cat}&page=${selectedParam.page}`;
+      const selectedCategory = festivalCategories.find((category) => category.value === selectedParam.cat);
+      const selectedCat2 = selectedCategory?.cat2 || null; // 전체 선택 시 null
+
+      console.log("🔗 변경될 URL:", `?cat=${selectedParam.cat}&page=${selectedParam.page}&cat2=${selectedCat2}`);
+
+      const queryString = selectedCat2
+         ? `?cat=${selectedParam.cat}&page=${selectedParam.page}&cat2=${selectedCat2}`
+         : `?cat=${selectedParam.cat}&page=${selectedParam.page}`; // 전체 선택 시 cat2 제거
+
       router.push(queryString, { scroll: false });
       setSelected(selectedParam);
    };
 
-   // 카테고리 리스트
-   const festivalCategories = [
-      // { name: "전체", value: "festival" },
-      { name: "축제", value: "festival" },
-      { name: "공연/행사", value: "performancEvent" },
-   ];
+   console.log("📌 선택된 cat2 값:", selectedCat2);
 
    return (
       <div className="min-h-screen">
          <Header />
-
          {/* 배너 이미지 */}
          <div className="relative mb-40">
             <Image
@@ -144,9 +156,8 @@ export default function Festival() {
                </div>
             </div>
          </div>
-
-         <FestivalCard selected={selected} changeUrl={handleUrlChange} />
-
+         {/* FestivalCard에 selectedCat2 전달 */}
+         <FestivalCard selected={selected} cat2={selectedCat2} changeUrl={handleUrlChange} />
          <Footer />
       </div>
    );
