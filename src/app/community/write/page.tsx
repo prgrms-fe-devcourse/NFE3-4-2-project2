@@ -14,6 +14,10 @@ export default function WritePage() {
    const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40";
    const [title, setTitle] = useState("");
    const [content, setContent] = useState("");
+   const [fee, setFee] = useState<number | "">(""); // 참여요금
+   const [people, setPeople] = useState<number>(1); // 기본 인원수 1명
+   const [date, setDate] = useState<string>(""); // 날짜
+   const [status, setStatus] = useState<string>("모집중"); // 모집 상태 (모집중, 모집마감)
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
    const [loading, setLoading] = useState(false);
@@ -34,22 +38,58 @@ export default function WritePage() {
       }
    };
 
+   const handleFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value === "" ? "" : Number(e.target.value);
+      setFee(value);
+   };
+
+   const handlePeopleIncrease = () => {
+      setPeople((prevPeople) => prevPeople + 1);
+   };
+
+   const handlePeopleDecrease = () => {
+      if (people > 1) {
+         setPeople((prevPeople) => prevPeople - 1);
+      }
+   };
+
+   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setDate(e.target.value);
+   };
+
+   const handleStatusChange = (status: string) => {
+      setStatus(status);
+   };
+
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!title || !content || loading) return;
+      if (!title || !content || loading || fee === "" || !date) return;
 
       setLoading(true);
       try {
          const token = localStorage.getItem("accessToken");
          if (!token) throw new Error("로그인이 필요합니다.");
 
-         const response: AxiosResponse<{ _id: string }> = await createPost(title, image, channelId, token);
+         const response: AxiosResponse<{ _id: string }> = await createPost(
+            title,
+            image,
+            channelId,
+            content,
+            fee,
+            people,
+            status, // 추가된 모집 상태
+            date, // 추가된 날짜
+            token,
+         );
          console.log("📌 서버 응답:", response.data);
 
          if (response.data && response.data._id) {
             alert("글이 성공적으로 작성되었습니다.");
             setTitle("");
             setContent("");
+            setFee("");
+            setPeople(1);
+            setDate("");
             setImage(null);
             setPreview(null);
             router.push(`/community/post/${response.data._id}`);
@@ -57,7 +97,7 @@ export default function WritePage() {
             throw new Error("게시글 ID를 찾을 수 없습니다.");
          }
       } catch (error) {
-         const axiosError = error as AxiosError;
+         const axiosError = error as AxiosError<{ message?: string }>;
          console.error("❌ 오류:", axiosError);
          alert(axiosError.response?.data?.message || axiosError.message || "게시글 작성 중 오류가 발생했습니다.");
       } finally {
@@ -106,6 +146,66 @@ export default function WritePage() {
                />
             </div>
             <div className="mb-4">
+               <label className="block text-lg font-semibold">참여 요금 *</label>
+               <input
+                  type="number"
+                  value={fee}
+                  onChange={handleFeeChange}
+                  className="w-full p-3 border border-gray-300 rounded-md"
+                  required
+               />
+            </div>
+            <div className="mb-4">
+               <label className="block text-lg font-semibold">인원 수 *</label>
+               <div className="flex items-center space-x-4">
+                  <button
+                     type="button"
+                     onClick={handlePeopleDecrease}
+                     className="w-10 h-10 text-white bg-sky-300 rounded-full text-xl flex items-center justify-center">
+                     -
+                  </button>
+                  <span className="text-lg font-semibold">{people}</span>
+                  <button
+                     type="button"
+                     onClick={handlePeopleIncrease}
+                     className="w-10 h-10 text-white bg-sky-300 rounded-full text-xl flex items-center justify-center">
+                     +
+                  </button>
+                  <span className="text-lg font-semibold">명</span>
+               </div>
+            </div>
+            <div className="mb-4">
+               <label className="block text-lg font-semibold">날짜 *</label>
+               <input
+                  type="date"
+                  value={date}
+                  onChange={handleDateChange}
+                  className="w-full p-3 border border-gray-300 rounded-md"
+                  required
+               />
+            </div>
+            <div className="mb-4">
+               <label className="block text-lg font-semibold">모집 상태 *</label>
+               <div className="flex space-x-4">
+                  <button
+                     type="button"
+                     onClick={() => handleStatusChange("모집중")}
+                     className={`${
+                        status === "모집중" ? "bg-sky-500 text-white" : "bg-gray-300 text-gray-700"
+                     } w-full p-3 rounded-md`}>
+                     모집중
+                  </button>
+                  <button
+                     type="button"
+                     onClick={() => handleStatusChange("모집마감")}
+                     className={`${
+                        status === "모집마감" ? "bg-red-500 text-white" : "bg-gray-300 text-gray-700"
+                     } w-full p-3 rounded-md`}>
+                     모집마감
+                  </button>
+               </div>
+            </div>
+            <div className="mb-4">
                <label className="block text-lg font-semibold">사진 첨부 (선택)</label>
                <input
                   type="file"
@@ -117,7 +217,7 @@ export default function WritePage() {
             </div>
             <button
                onClick={handleSubmit}
-               disabled={!title || !content || loading}
+               disabled={!title || !content || !fee || !people || !date || loading}
                className={`w-full p-4 text-lg font-semibold rounded-md ${
                   loading ? "bg-gray-300 cursor-not-allowed" : "bg-sky-500 text-white"
                }`}>
