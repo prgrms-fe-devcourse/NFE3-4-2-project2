@@ -13,7 +13,6 @@ import { usePathname } from "next/navigation";
 const ITEMS_PER_PAGE = 12;
 
 const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
-
    const nowPath = usePathname();
 
    const [allTourData, setAllTourData] = useState<TourItem[]>([]);
@@ -22,21 +21,20 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    const [totalPages, setTotalPages] = useState<number>(1);
 
    useEffect(() => {
-      //API관련
       const fetchData = async () => {
-         // setLoading(true);
+         setLoading(true);
          try {
             setTourData([])
             setAllTourData([]);
             let response: TourItem[] = [];
-            let regionRes; //region의 경우 12개씩만 API에서 호출
+            let regionRes;
 
             console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
             console.log(
                `📌 선택된 카테고리: ${selected.cat}, 선택된 필터: ${selected.filter ? selected.filter : "없음"}`,
             );
-            if (selected.cat == "season") {
-               //계절별
+
+            if (selected.cat === "season") {
                if (selected.filter) {
                   console.log(`🚧 [계절별 관광지] ${selected.filter} 리스트 요청`);
                   response = await APIConnect.getSeasonTourList(
@@ -47,31 +45,21 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                   response = await APIConnect.getSeasonTourList(null);
                }
             }
-            if (selected.cat == "region") {
-               //지역별
-               console.log(nowPath)
-               if(nowPath == "/explore/leisure"){
-                  if (selected.filter) {
-                     regionRes = await APIConnect.getLeisureList(selected.filter, selected.page || 1);
-                     response = regionRes.items;
-                  } else {
-                     regionRes = await APIConnect.getLeisureList("", selected.page || 1);
-                     response = regionRes.items;
-                  }
+
+            if (selected.cat === "region") {
+               console.log(nowPath);
+               if (nowPath === "/explore/leisure") {
+                  regionRes = await APIConnect.getLeisureList(selected.filter || "", selected.page || 1);
+                  response = regionRes.items;
                   setTotalPages(Number(regionRes.totalLength));
-               }else if(nowPath == "/explore/travel"){
-                  if (selected.filter) {
-                     regionRes = await APIConnect.getTourAreaList(selected.filter, selected.page || 1);
-                     response = regionRes.items;
-                  } else {
-                     regionRes = await APIConnect.getTourAreaList("", selected.page || 1);
-                     response = regionRes.items;
-                  }
+               } else if (nowPath === "/explore/travel") {
+                  regionRes = await APIConnect.getTourAreaList(selected.filter || "", selected.page || 1);
+                  response = regionRes.items;
                   setTotalPages(Number(regionRes.totalLength));
                }
             }
-            if (selected.cat == "culture") {
-               //문화별
+
+            if (selected.cat === "culture") {
                if (!selected.filter) {
                   response = await APIConnect.getHistoricalTourList(1);
                } else {
@@ -90,20 +78,27 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                         break;
                      default:
                         response = [];
+                        break;
                   }
                }
             }
-            if (selected.cat == "nature") {
-               //자연별
-               console.log("🚧 자연별 관광지 API 개발 중");
-               response = [];
+
+            if (selected.cat === "nature") {
+               console.log("🚧 [자연별 관광지] 리스트 요청 중");
+               if (selected.filter && ["beach", "mountain", "lake", "forest"].includes(selected.filter)) {
+                  response = await APIConnect.getNatureTourList(
+                     selected.filter as "beach" | "mountain" | "lake" | "forest",
+                     selected.page || 1,
+                  );
+               } else {
+                  // 아무것도 선택되지 않았을 때 전체 리스트를 불러옵니다
+                  response = await APIConnect.getNatureTourList(null, selected.page || 1); // null로 전체 데이터 요청
+               }
             }
 
-            console.log(`🔍 API 응답 데이터 개수: ${regionRes?.totalLength || response.length}`);
+            console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
             setAllTourData(response);
-            if (selected.cat !== "region") {
-               setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
-            }
+            setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
             setLoading(false);
          } catch (err) {
             console.log("❌ API 요청 실패:", err);
@@ -111,10 +106,9 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
          }
       };
       fetchData();
-   }, [selected, nowPath]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
+   }, [selected, nowPath]);
 
    useEffect(() => {
-      //페이지네이션 관련
       if (selected.cat !== "region") {
          const paginatedData = allTourData.slice((selected.page - 1) * ITEMS_PER_PAGE, selected.page * ITEMS_PER_PAGE);
          setTourData(
@@ -126,23 +120,18 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                contentTypeId: item.contenttypeid,
             })),
          );
-      }else{ //cat=region 일 때
-         const paginatedData = allTourData;
+      } else {
          setTourData(
-            paginatedData.map((item)=>({
+            allTourData.map((item) => ({
                imageUrl: item.firstimage || "/images/ready.png",
                title: item.title || "",
                area: item.addr1 || "",
                contentId: item.contentid,
-               contentTypeId: item.contenttypeid
-            }))
+               contentTypeId: item.contenttypeid,
+            })),
          );
       }
    }, [selected, allTourData]);
-
-   // useEffect(() => {
-   //    setCurrentPage(1);
-   // }, [selected]);
 
    if (loading) {
       return (
