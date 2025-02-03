@@ -47,7 +47,6 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             }
 
             if (selected.cat === "region") {
-               console.log(nowPath);
                if (nowPath === "/explore/leisure") {
                   regionRes = await APIConnect.getLeisureList(selected.filter || "", selected.page || 1);
                   response = regionRes.items;
@@ -96,9 +95,11 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                }
             }
 
-            console.log(`🔍 API 응답 데이터 개수: ${response.length}`);
+            console.log(`🔍 API 응답 데이터 개수: ${regionRes?.totalLength || response.length}`);
             setAllTourData(response);
-            setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
+            if (selected.cat !== "region") {
+               setTotalPages(Math.max(1, Math.ceil(response.length / ITEMS_PER_PAGE)));
+            }
             setLoading(false);
          } catch (err) {
             console.log("❌ API 요청 실패:", err);
