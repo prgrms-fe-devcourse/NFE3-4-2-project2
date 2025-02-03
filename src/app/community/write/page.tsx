@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -18,7 +18,7 @@ export default function WritePage() {
    const [people, setPeople] = useState<number>(1); // 기본 인원수 1명
    const [date, setDate] = useState<string>(""); // 모집 날짜
    const [endDate, setEndDate] = useState<string>(""); // 모집 마감일
-   const [status, setStatus] = useState<string>("모집중"); // 모집 상태 (모집중, 모집마감)
+   const [status, setStatus] = useState<string>(""); // 모집 상태
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
    const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -32,6 +32,21 @@ export default function WritePage() {
       }
    }, [router]);
 
+   useEffect(() => {
+      // 마감일에 따른 모집 상태 자동 변경
+      if (endDate) {
+         const today = new Date();
+         const end = new Date(endDate);
+
+         if (today > end) {
+            setStatus("모집마감");
+         } else {
+            setStatus("모집중");
+         }
+      }
+   }, [endDate]);
+
+   // 이미지 업로드 처리
    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
       if (file) {
@@ -39,20 +54,24 @@ export default function WritePage() {
          const objectUrl = URL.createObjectURL(file);
          setPreview(objectUrl);
 
-         // 이미지 크기 계산
          const img = new Image();
          img.onload = () => {
             setImageDimensions({ width: img.width, height: img.height });
          };
-         img.src = objectUrl; // onload 핸들러를 설정한 후에 src를 설정해야 합니다.
+         img.src = objectUrl;
       }
    };
 
+   // 참여 요금 처리
    const handleFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value === "" ? "" : Number(e.target.value);
-      setFee(value);
+      const value = e.target.value;
+
+      if (/^\d*$/.test(value)) {
+         setFee(value === "" ? "" : Number(value)); // 숫자만 허용
+      }
    };
 
+   // 인원 수 증가/감소
    const handlePeopleIncrease = () => {
       setPeople((prevPeople) => prevPeople + 1);
    };
@@ -63,21 +82,20 @@ export default function WritePage() {
       }
    };
 
+   // 날짜 입력 처리
    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       setDate(e.target.value);
    };
 
+   // 모집 마감일 입력 처리
    const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setEndDate(e.target.value); // 모집 마감일 변경 처리
+      setEndDate(e.target.value);
    };
 
-   const handleStatusChange = (status: string) => {
-      setStatus(status);
-   };
-
+   // 제출 버튼 클릭 시 처리
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!title || !content || loading || fee === "" || !date || !endDate) return; // 모집 마감일도 체크
+      if (!title || !content || loading || fee === "" || !date || !endDate) return;
 
       setLoading(true);
       try {
@@ -91,11 +109,12 @@ export default function WritePage() {
             content,
             fee,
             people,
-            status, // 추가된 모집 상태
+            status, // 자동 설정된 모집 상태
             date, // 모집 시작일
-            endDate, // 추가된 모집 마감일
-            token,
+            endDate, // 모집 마감일
+            token
          );
+
          console.log("📌 서버 응답:", response.data);
 
          if (response.data && response.data._id) {
@@ -167,7 +186,7 @@ export default function WritePage() {
             <div className="mb-4">
                <label className="block text-lg font-semibold">참여 요금 *</label>
                <input
-                  type="number"
+                  type="text"
                   value={fee}
                   onChange={handleFeeChange}
                   className="w-full p-3 border border-gray-300 rounded-md"
@@ -212,27 +231,6 @@ export default function WritePage() {
                   className="w-full p-3 border border-gray-300 rounded-md"
                   required
                />
-            </div>
-            <div className="mb-4">
-               <label className="block text-lg font-semibold">모집 상태 *</label>
-               <div className="flex space-x-4">
-                  <button
-                     type="button"
-                     onClick={() => handleStatusChange("모집중")}
-                     className={`${
-                        status === "모집중" ? "bg-sky-500 text-white" : "bg-gray-300 text-gray-700"
-                     } w-full p-3 rounded-md`}>
-                     모집중
-                  </button>
-                  <button
-                     type="button"
-                     onClick={() => handleStatusChange("모집마감")}
-                     className={`${
-                        status === "모집마감" ? "bg-red-500 text-white" : "bg-gray-300 text-gray-700"
-                     } w-full p-3 rounded-md`}>
-                     모집마감
-                  </button>
-               </div>
             </div>
             <div className="mb-4">
                <label className="block text-lg font-semibold">사진 첨부 (선택)</label>

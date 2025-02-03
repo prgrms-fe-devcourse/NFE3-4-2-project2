@@ -5,7 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import { getPostById, deletePost } from "@/utils/postapi"; // deletePost 함수 추가
+import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
 import { checkAuthUser } from "@/utils/authapi";
 
@@ -15,7 +15,7 @@ interface Post {
    content: string;
    fee: number | string;
    people: number;
-   status: string;
+   status: string; // 모집 상태 (모집중, 모집마감)
    date: string;
    endDate: string;
    createdAt: string;
@@ -25,6 +25,14 @@ interface Post {
       fullName: string;
       email: string;
    };
+   comments?: Comment[];
+}
+
+interface CommentResponse {
+   _id: string;
+   author: { fullName: string };
+   coment: string;
+   createdAt: string;
 }
 
 export default function PostDetail() {
@@ -35,6 +43,8 @@ export default function PostDetail() {
    const [post, setPost] = useState<Post | null>(null);
    const [loading, setLoading] = useState(true);
    const [isAuthor, setIsAuthor] = useState(false);
+   const [comments, setComments] = useState<CommentResponse []>([]);
+   const [commentContent, setCommentContent] = useState<string>("");
 
    // 로그인된 사용자와 게시글 작성자 비교하는 useEffect
    useEffect(() => {
@@ -60,7 +70,7 @@ export default function PostDetail() {
       }
    }, [post]);
 
-   // 게시글 데이터 가져오기
+   // 게시글 데이터와 댓글 가져오기
    useEffect(() => {
       if (!postId) return;
 
@@ -68,6 +78,7 @@ export default function PostDetail() {
          try {
             const response: AxiosResponse<Post> = await getPostById(postId);
             setPost(response.data);
+            setComments(response.data.comments || []); // 댓글 가져오기
          } catch (error) {
             console.error("❌ 게시글 불러오기 실패:", error);
          } finally {
@@ -85,7 +96,7 @@ export default function PostDetail() {
 
    const parseTitle = (title: string) => {
       try {
-         return JSON.parse(title);
+         return JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
       } catch (error) {
          console.error("Error parsing title:", error);
          return {
@@ -96,13 +107,13 @@ export default function PostDetail() {
             status: "정보 없음",
             date: "",
             endDate: "",
-         };
+         }; // 파싱 실패 시 기본 값 반환
       }
    };
 
    const parsedTitle = post ? parseTitle(post.title) : null;
 
-   const getFieldValue = (value: any, fallback: string | number = "정보 없음") => {
+   const getFieldValue = (value: string | number | undefined, fallback: string | number = "정보 없음") => {
       if (value === undefined || value === null || value === "") return fallback;
       return value;
    };
@@ -131,6 +142,77 @@ export default function PostDetail() {
       } catch (error) {
          console.error("❌ 게시글 삭제 실패:", error);
          alert("게시글 삭제에 실패했습니다.");
+      }
+   };
+
+   const handleCommentSubmit = async () => {
+      if (commentContent.trim()) {
+         const token = localStorage.getItem("accessToken");
+
+         if (!token) {
+            alert("로그인이 필요합니다.");
+            router.push("/auth/login");
+            return;
+         }
+
+         try {
+            // AxiosResponse 타입을 정확히 지정
+            const response: AxiosResponse<CommentResponse> = await createComment(commentContent, postId, token);
+
+            if (!response.data) {
+               alert("댓글 저장에 실패했습니다.");
+               return;
+            }
+
+            console.log("서버 응답:", response.data); // 서버 응답 확인
+
+            setCommentContent(""); // 입력창 초기화
+
+            // 서버에서 받은 댓글 정보를 직접 리스트에 추가
+            setComments((prevComments) => [
+               ...prevComments,
+               {
+                  _id: response.data._id,
+                  author: { fullName: response.data.author.fullName }, // 댓글 작성자 이름
+                  comment: response.data.comment, // 댓글 내용은 `comment` 필드를 사용
+                  createdAt: response.data.createdAt, // 댓글 작성 시간
+               },
+            ]);
+         } catch (error) {
+            console.error("❌ 댓글 작성 실패:", error);
+            alert("댓글 작성에 실패했습니다.");
+         }
+      } else {
+         alert("댓글 내용을 입력해주세요.");
+      }
+   };
+
+   // 삭제 버튼을 본인만 사용할 수 있게
+   const handleDeleteComment = async (commentId: string, commentAuthorId: string) => {
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+         alert("로그인이 필요합니다.");
+         return;
+      }
+
+      // 현재 로그인된 사용자 ID를 가져옴
+      const currentUserId = JSON.parse(localStorage.getItem("userId") || "{}");
+
+      if (currentUserId !== commentAuthorId) {
+         alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
+         return;
+      }
+
+      try {
+         // 댓글 삭제 API 호출
+         await deleteComment(commentId, token);
+
+         // 삭제된 댓글 목록에서 제거
+         setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+      } catch (error) {
+         console.error("❌ 댓글 삭제 실패:", error);
+         alert("댓글 삭제에 실패했습니다.");
       }
    };
 
@@ -206,7 +288,7 @@ export default function PostDetail() {
                               className={`${
                                  parsedTitle?.status === "모집중" ? "text-green-600" : "text-red-600"
                               } font-semibold`}>
-                              {getFieldValue(parsedTitle?.status, "모집 상태 없음")}
+                              {parsedTitle?.status}
                            </span>
                         </div>
                         <div className="flex justify-between text-gray-900 font-semibold">
@@ -226,13 +308,7 @@ export default function PostDetail() {
                   </div>
 
                   {/* 돌아가기 버튼 */}
-                  <div className="flex justify-between items-center">
-                     <button
-                        onClick={() => router.push("/community")} // /community로 이동
-                        className="bg-gray-300 text-gray-800 px-5 py-2 rounded-lg shadow hover:bg-gray-400 transition">
-                        목록보기
-                     </button>
-
+                  <div className="flex justify-between items-center mb-4">
                      {/* 수정, 삭제 버튼 (작성자만 보이게) */}
                      {isAuthor && (
                         <div className="flex gap-4">
@@ -247,6 +323,52 @@ export default function PostDetail() {
                               삭제
                            </button>
                         </div>
+                     )}
+
+                     {/* 목록 보기 버튼 */}
+                     <button
+                        onClick={() => router.push("/community")} // /community로 이동
+                        className="bg-gray-300 text-gray-800 px-5 py-2 rounded-lg shadow hover:bg-gray-400 transition">
+                        목록보기
+                     </button>
+                  </div>
+
+                  <hr className="my-8 border-t-2 border-gray-300" />
+
+                  {/* 댓글 입력 */}
+                  <div className="mt-14">
+                     <label className="block text-lg font-semibold mb-2">Message</label>
+                     <div className="flex flex-col gap-4">
+                        <textarea
+                           value={commentContent}
+                           onChange={(e) => setCommentContent(e.target.value)}
+                           placeholder="댓글을 입력하세요..."
+                           className="w-full p-3 border border-gray-300 rounded-md mb-2"
+                        />
+                        <button
+                           onClick={handleCommentSubmit}
+                           className="bg-sky-500 text-white px-6 py-2 rounded-3xl ml-auto">
+                           댓글 달기
+                        </button>
+                     </div>
+                  </div>
+
+                  {/* 댓글 목록 */}
+                  <div className="mt-6">
+                     {comments.length > 0 ? (
+                        comments.map((comment) => (
+                           <div key={comment._id} className="mb-4">
+                              <div className="font-semibold text-gray-700">
+                                 {typeof comment.author === "object" && comment.author.fullName
+                                    ? comment.author.fullName
+                                    : comment.author}
+                              </div>
+                              <p className="text-gray-600">{comment.comment}</p> {/* content -> comment */}
+                              <span className="text-sm text-gray-400">{formatDate(comment.createdAt)}</span>
+                           </div>
+                        ))
+                     ) : (
+                        <p>댓글이 없습니다.</p>
                      )}
                   </div>
                </>

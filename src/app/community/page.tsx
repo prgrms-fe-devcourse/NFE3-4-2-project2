@@ -10,11 +10,12 @@ import { AxiosResponse } from "axios";
 
 interface Post {
    _id: string;
-   title: string; // title은 JSON 문자열이므로 파싱해야 함
+   title: string; // title은 실제 텍스트
    image?: string;
    content: string;
    createdAt: string;
    status: string; // 모집 상태 (모집중, 모집마감)
+   endDate: string; // 마감일
 }
 
 export default function Community() {
@@ -44,12 +45,24 @@ export default function Community() {
       setIsLoggedIn(!!token);
    }, []);
 
+   // title에서 status만 추출하는 함수
    const parseTitle = (title: string) => {
       try {
-         return JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
+         const parsed = JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
+         return parsed.status; // status 값만 리턴
       } catch (error) {
          console.error("Error parsing title:", error);
-         return { title: "제목 없음", body: "내용 없음", status: "정보 없음" }; // 파싱 실패 시 기본 값 반환
+         return "정보 없음"; // 파싱 실패 시 기본값
+      }
+   };
+
+   const getTitle = (title: string) => {
+      try {
+         const parsed = JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
+         return parsed.title; // 실제 제목만 리턴
+      } catch (error) {
+         console.error("Error parsing title:", error);
+         return "제목 없음"; // 파싱 실패 시 기본값
       }
    };
 
@@ -91,7 +104,8 @@ export default function Community() {
                   <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
                ) : currentPosts.length > 0 ? (
                   currentPosts.map((post, index) => {
-                     const parsedTitle = parseTitle(post.title); // title 파싱
+                     const postStatus = parseTitle(post.title); // title에서 status만 추출
+                     const postTitle = getTitle(post.title);
                      return (
                         <div
                            key={`${post._id}-${index}`}
@@ -99,35 +113,33 @@ export default function Community() {
                            <div className="w-full h-[200px] relative mb-4">
                               <Image
                                  src={post.image || "/images/break.png"}
-                                 alt={parsedTitle.title}
+                                 alt={post.title}
                                  layout="fill"
                                  objectFit="cover"
                                  className="rounded-md"
                               />
                            </div>
-                           <h3 className="text-xl font-bold text-gray-900 mb-2">{parsedTitle.title}</h3>
+                           <h3 className="text-xl font-bold text-gray-900 mb-2">{postTitle}</h3>
                            <p className="text-gray-500 text-sm mb-2">
                               작성일 {new Date(post.createdAt).toLocaleDateString()}
                            </p>
-                           <p className="text-gray-700 text-sm line-clamp-2 mb-4">{parsedTitle.body}</p>
+                           <p className="text-gray-700 text-sm line-clamp-2 mb-4">{post.content}</p>
 
                            {/* 모집 상태 버튼과 자세히 보기 버튼 나란히 */}
                            <div className="flex justify-between items-center mb-4 gap-4">
-                              <button
-                                 disabled={true} // 클릭 불가
-                                 className={`w-[48%] py-1 px-3 rounded-md ${
-                                    parsedTitle.status === "모집중"
-                                       ? "bg-green-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
-                                       : parsedTitle.status === "모집마감"
-                                       ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
-                                       : "bg-gray-200 text-gray-500"
-                                 } font-semibold`}>
-                                 {parsedTitle.status === "모집중"
-                                    ? "모집중"
-                                    : parsedTitle.status === "모집마감"
-                                    ? "모집마감"
-                                    : "상태 미정"}
-                              </button>
+                              {postStatus && (
+                                 <button
+                                    disabled={true} // 클릭 불가
+                                    className={`w-[48%] py-1 px-3 rounded-md ${
+                                       postStatus === "모집중"
+                                          ? "bg-green-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
+                                          : postStatus === "모집마감"
+                                          ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
+                                          : "bg-gray-200 text-gray-500"
+                                    } font-semibold`}>
+                                    {postStatus}
+                                 </button>
+                              )}
 
                               <button
                                  onClick={() => router.push(`/community/post/${post._id}`)}
