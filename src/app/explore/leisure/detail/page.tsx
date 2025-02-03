@@ -16,9 +16,15 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+import { useSearchParams } from "next/navigation";
+
 const catList = catListJson as CatList;
 
 const LeisureDetailPage: React.FC = () => {
+
+  const params = useSearchParams();
+  const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+  
   const swiperRef = useRef<any>(null);
   const prevBtnRef = useRef<HTMLButtonElement | null>(null);
   const nextBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -27,7 +33,7 @@ const LeisureDetailPage: React.FC = () => {
   const [imgList, setImgList] = useState<TourImg[]>([]);
   useEffect(() => {
     const loadData = async () => {
-      const key = 3083085; // 레저 고유 ID (예제)
+      const key = Number(params.get("contentId"));
       const infoList: TourDetailInfo = await APIConnect.getLeisureInfo(key);
       const img = await APIConnect.getTourImg(key);
 
@@ -45,7 +51,7 @@ const LeisureDetailPage: React.FC = () => {
     }
   }, []);
 
-  const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+  
   const parseAnchors = (htmlString: string) => {
     const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
     const anchors = [];

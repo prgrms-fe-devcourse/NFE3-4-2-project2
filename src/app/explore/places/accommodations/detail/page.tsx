@@ -16,18 +16,18 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+
+// import { useRouter, useSearchParams } from "next/navigation";
 
 const catList = catListJson as CatList;
 
 const AccommodationDetailPage: React.FC = () => {
-   const router = useRouter();
+   // const router = useRouter();
    const params = useSearchParams();
-   
-   const contentId = params.get("contentId");
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
-
+   
    const swiperRef = useRef<any>(null);
    const prevBtnRef = useRef<HTMLButtonElement | null>(null);
    const nextBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -37,17 +37,12 @@ const AccommodationDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-         if (!contentId) return;
+         const key = Number(params.get("contentId"));
+         const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(contentId);
+         const img = await APIConnect.getTourImg(key);
 
-         try {
-            const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(contentId);
-            const img = await APIConnect.getTourImg(contentId);
-
-            setAccommodationInfo(info);
-            setImgList(img);
-         } catch (error) {
-            console.error("데이터 로딩 오류:", error);
-         }
+         setAccommodationInfo(info);
+         setImgList(img);
       };
 
       loadData();
