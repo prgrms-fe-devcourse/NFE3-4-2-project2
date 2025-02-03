@@ -17,9 +17,16 @@ import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
 
+import { useSearchParams } from "next/navigation";
+
 const catList = catListJson as CatList;
 
 const FestivalDetailPage: React.FC = () => {
+
+  const params = useSearchParams();
+
+  const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+
   const swiperRef = useRef<any>(null); // 🔥 Swiper 인스턴스 저장
   const prevBtnRef = useRef<HTMLButtonElement | null>(null);
   const nextBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -29,9 +36,8 @@ const FestivalDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-         // 예제용 key 설정 (축제 데이터 불러오기)
-         const key = 2541883; // 축제 고유 ID (예제)
-
+      
+         const key = Number(params.get("contentId"));
          const infoList: TourDetailInfo = await APIConnect.getFestivalInfo(key);
          const img = await APIConnect.getTourImg(key);
 
@@ -40,8 +46,6 @@ const FestivalDetailPage: React.FC = () => {
 
          console.log("infoList:", infoList);
          console.log("imgList:", imgList);
-
-         
       };
 
       loadData();
@@ -53,10 +57,6 @@ const FestivalDetailPage: React.FC = () => {
         swiperRef.current.navigation.update();
       }
    }, []);
-
-   const blankbox = (
-      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-   );
 
    const parseAnchors = (htmlString: string) => {
       const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
