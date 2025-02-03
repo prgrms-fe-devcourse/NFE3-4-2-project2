@@ -5,12 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import { getPostsByChannel } from "@/utils/postapi";
+import { getPostsByChannel, deletePost } from "@/utils/postapi"; // deletePost 추가
 import { AxiosResponse } from "axios";
 
 interface Post {
    _id: string;
-   title: string;
+   title: string;  // title은 JSON 문자열로 전달됨
    image?: string;
    content: string;
    createdAt: string;
@@ -46,6 +46,34 @@ export default function Community() {
       }
    }, []);
 
+   // Helper function to parse title
+   const parseTitle = (title: string) => {
+      try {
+         const parsedTitle = JSON.parse(title);
+         return parsedTitle; // return the parsed object
+      } catch (error) {
+         console.error("Error parsing title:", error);
+         return { title: "제목 없음", body: "내용 없음" }; // default values in case of error
+      }
+   };
+
+   // 삭제 함수
+   const handleDelete = async (postId: string) => {
+      const token = localStorage.getItem("accessToken");
+      if (token) {
+         try {
+            await deletePost(postId, token);
+            setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId)); // 삭제된 포스트를 목록에서 제거
+            alert("게시글이 삭제되었습니다.");
+         } catch (error) {
+            console.error("❌ 삭제 실패:", error);
+            alert("게시글 삭제에 실패했습니다.");
+         }
+      } else {
+         alert("로그인이 필요합니다.");
+      }
+   };
+
    return (
       <div className="min-h-screen flex flex-col">
          <Header />
@@ -78,31 +106,41 @@ export default function Community() {
                {loadingPosts ? (
                   <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
                ) : posts.length > 0 ? (
-                  posts.map((post, index) => (
-                     <div
-                        key={`${post._id}-${index}`}
-                        className="border rounded-lg shadow-lg p-6 bg-white hover:shadow-xl transition">
-                        {post.image && (
-                           <Image
-                              src={post.image || "/images/break.png"}
-                              alt={post.title}
-                              width={350}
-                              height={150}
-                              className="rounded-lg w-full object-cover"
-                           />
-                        )}
-                        <h3 className="text-xl font-bold mt-4 text-gray-900">{post.title}</h3>
-                        <p className="text-gray-500 text-sm mt-2">
-                           작성일 {new Date(post.createdAt).toLocaleDateString()}
-                        </p>
-                        <p className="mt-3 text-gray-700 line-clamp-2">{post.content}</p>
-                        <button
-                           onClick={() => router.push(`/community/post/${post._id}`)}
-                           className="mt-6 block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
-                           자세히 보기
-                        </button>
-                     </div>
-                  ))
+                  posts.map((post, index) => {
+                     const parsedTitle = parseTitle(post.title); // Parse the title field
+                     return (
+                        <div
+                           key={`${post._id}-${index}`}
+                           className="border rounded-lg shadow-lg p-6 bg-white hover:shadow-xl transition">
+                           {post.image && (
+                              <Image
+                                 src={post.image || "/images/break.png"}
+                                 alt={parsedTitle.title}
+                                 width={350}
+                                 height={150}
+                                 className="rounded-lg w-full object-cover"
+                              />
+                           )}
+                           <h3 className="text-xl font-bold mt-4 text-gray-900">{parsedTitle.title}</h3>
+                           <p className="text-gray-500 text-sm mt-2">
+                              작성일 {new Date(post.createdAt).toLocaleDateString()}
+                           </p>
+                           <p className="mt-3 text-gray-700 line-clamp-2">{parsedTitle.body}</p>
+                           <div className="mt-6 flex justify-between">
+                              <button
+                                 onClick={() => router.push(`/community/post/${post._id}`)}
+                                 className="block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
+                                 자세히 보기
+                              </button>
+                              <button
+                                 onClick={() => handleDelete(post._id)} // 삭제 버튼 클릭 시 삭제
+                                 className="block text-center bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
+                                 삭제
+                              </button>
+                           </div>
+                        </div>
+                     );
+                  })
                ) : (
                   <p className="text-gray-500 text-center w-full">등록된 게시글이 없습니다.</p>
                )}

@@ -52,6 +52,7 @@ export const createPost = async (
    people: number,
    status: string,
    date: string,
+   endDate: string, // 추가된 모집 마감일
    token: string,
 ) => {
    const formData = new FormData();
@@ -63,6 +64,7 @@ export const createPost = async (
       people,
       status, // 모집 상태
       date, // 날짜
+      endDate, // 모집 마감일 추가
    };
 
    formData.append("title", JSON.stringify(postData));

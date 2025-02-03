@@ -1,12 +1,12 @@
-"use client";
+"use client"
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { createPost } from "@/utils/postapi";
 import { AxiosResponse, AxiosError } from "axios";
+import Image from "next/image";
 
 export default function WritePage() {
    const router = useRouter();
@@ -16,10 +16,12 @@ export default function WritePage() {
    const [content, setContent] = useState("");
    const [fee, setFee] = useState<number | "">(""); // 참여요금
    const [people, setPeople] = useState<number>(1); // 기본 인원수 1명
-   const [date, setDate] = useState<string>(""); // 날짜
+   const [date, setDate] = useState<string>(""); // 모집 날짜
+   const [endDate, setEndDate] = useState<string>(""); // 모집 마감일
    const [status, setStatus] = useState<string>("모집중"); // 모집 상태 (모집중, 모집마감)
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
+   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
@@ -34,7 +36,15 @@ export default function WritePage() {
       const file = e.target.files?.[0];
       if (file) {
          setImage(file);
-         setPreview(URL.createObjectURL(file));
+         const objectUrl = URL.createObjectURL(file);
+         setPreview(objectUrl);
+
+         // 이미지 크기 계산
+         const img = new Image();
+         img.onload = () => {
+            setImageDimensions({ width: img.width, height: img.height });
+         };
+         img.src = objectUrl; // onload 핸들러를 설정한 후에 src를 설정해야 합니다.
       }
    };
 
@@ -57,13 +67,17 @@ export default function WritePage() {
       setDate(e.target.value);
    };
 
+   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setEndDate(e.target.value); // 모집 마감일 변경 처리
+   };
+
    const handleStatusChange = (status: string) => {
       setStatus(status);
    };
 
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
-      if (!title || !content || loading || fee === "" || !date) return;
+      if (!title || !content || loading || fee === "" || !date || !endDate) return; // 모집 마감일도 체크
 
       setLoading(true);
       try {
@@ -78,7 +92,8 @@ export default function WritePage() {
             fee,
             people,
             status, // 추가된 모집 상태
-            date, // 추가된 날짜
+            date, // 모집 시작일
+            endDate, // 추가된 모집 마감일
             token,
          );
          console.log("📌 서버 응답:", response.data);
@@ -90,8 +105,12 @@ export default function WritePage() {
             setFee("");
             setPeople(1);
             setDate("");
+            setEndDate(""); // 마감일 초기화
             setImage(null);
             setPreview(null);
+            setImageDimensions(null);
+
+            // 작성된 게시글 상세 페이지로 이동
             router.push(`/community/post/${response.data._id}`);
          } else {
             throw new Error("게시글 ID를 찾을 수 없습니다.");
@@ -175,11 +194,21 @@ export default function WritePage() {
                </div>
             </div>
             <div className="mb-4">
-               <label className="block text-lg font-semibold">날짜 *</label>
+               <label className="block text-lg font-semibold">여행 날짜 *</label>
                <input
                   type="date"
                   value={date}
                   onChange={handleDateChange}
+                  className="w-full p-3 border border-gray-300 rounded-md"
+                  required
+               />
+            </div>
+            <div className="mb-4">
+               <label className="block text-lg font-semibold">모집 마감일 *</label>
+               <input
+                  type="date"
+                  value={endDate}
+                  onChange={handleEndDateChange}
                   className="w-full p-3 border border-gray-300 rounded-md"
                   required
                />
@@ -213,11 +242,19 @@ export default function WritePage() {
                   onChange={handleImageUpload}
                   className="w-full p-2 border border-gray-300 rounded-md"
                />
-               {preview && <Image src={preview} alt="미리보기" className="mt-2 w-full h-48 object-cover rounded-md" />}
+               {preview && imageDimensions && (
+                  <Image
+                     src={preview}
+                     alt="미리보기"
+                     width={imageDimensions.width}
+                     height={imageDimensions.height}
+                     className="mt-2 w-full h-48 object-cover rounded-md"
+                  />
+               )}
             </div>
             <button
                onClick={handleSubmit}
-               disabled={!title || !content || !fee || !people || !date || loading}
+               disabled={!title || !content || !fee || !people || !date || !endDate || loading}
                className={`w-full p-4 text-lg font-semibold rounded-md ${
                   loading ? "bg-gray-300 cursor-not-allowed" : "bg-sky-500 text-white"
                }`}>
