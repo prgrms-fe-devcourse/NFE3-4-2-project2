@@ -10,7 +10,7 @@ import { AxiosResponse } from "axios";
 
 interface Post {
    _id: string;
-   title: string;  // title은 JSON 문자열로 전달됩니다
+   title: string;
    content: string;
    fee: number | string;
    people: number;
@@ -39,6 +39,7 @@ export default function PostDetail() {
       const fetchPost = async () => {
          try {
             const response: AxiosResponse<Post> = await getPostById(postId);
+            console.log("📌 API 응답 데이터:", response.data); // 콘솔에서 응답 확인
             setPost(response.data);
          } catch (error) {
             console.error("❌ 게시글 불러오기 실패:", error);
@@ -49,25 +50,27 @@ export default function PostDetail() {
       fetchPost();
    }, [postId]);
 
-   // Helper function to format date safely
    const formatDate = (date: string | undefined) => {
-      if (!date) return "날짜 없음";  
+      if (!date) return "날짜 정보 없음";  
       const parsedDate = new Date(date);
-      return isNaN(parsedDate.getTime()) ? "날짜 오류" : parsedDate.toLocaleDateString();
+      return isNaN(parsedDate.getTime()) ? "유효하지 않은 날짜" : parsedDate.toLocaleDateString();
    };
 
-   // Parsing title to extract its data
    const parseTitle = (title: string) => {
       try {
-         const parsedTitle = JSON.parse(title); // title을 JSON으로 파싱
-         return parsedTitle; 
+         return JSON.parse(title); 
       } catch (error) {
          console.error("Error parsing title:", error);
-         return { title: "제목 없음", content: "내용 없음" }; // 기본값 반환
+         return { title: "제목 없음", content: "내용 없음", fee: "정보 없음", people: 1, status: "정보 없음", date: "", endDate: "" };
       }
    };
 
    const parsedTitle = post ? parseTitle(post.title) : null;
+
+   const getFieldValue = (value: any, fallback: string | number = "정보 없음") => {
+      if (value === undefined || value === null || value === "") return fallback;
+      return value;
+   };
 
    return (
       <div className="min-h-screen flex flex-col">
@@ -92,93 +95,49 @@ export default function PostDetail() {
                      <p><strong>작성일:</strong> {formatDate(post.createdAt)}</p>
                   </div>
 
-                  <div className="flex flex-wrap gap-8">
+                  {/* 이미지 & 정보 섹션 */}
+                  <div className="flex flex-wrap md:flex-nowrap gap-6">
                      {/* 이미지 */}
-                     {post.image && (
-                        <div className="w-full sm:w-[40%] h-[400px] overflow-hidden rounded-lg">
-                           <Image
-                              src={post.image}
-                              alt={parsedTitle ? parsedTitle.title : "게시글 이미지"}
-                              width={600}
-                              height={400}
-                              className="w-full h-full object-cover rounded-lg"
-                           />
-                        </div>
-                     )}
+                     <div className="w-full md:w-[40%] h-[400px] overflow-hidden rounded-lg">
+                        <Image
+                           src={post.image || "/images/default-placeholder.png"}
+                           alt={parsedTitle ? parsedTitle.title : "게시글 이미지"}
+                           width={600}
+                           height={400}
+                           className="w-full h-full object-cover rounded-lg"
+                        />
+                     </div>
 
-                     {/* 내용 */}
-                     <div className="w-full sm:w-[55%]">
-                        <div className="text-gray-700 leading-relaxed whitespace-pre-line mb-4">
-                           {parsedTitle ? parsedTitle.content : post.content}
+                     {/* 모집 정보 */}
+                     <div className="w-full md:w-[55%] space-y-4">
+                        <div className="flex justify-between text-gray-900 font-semibold">
+                           <span>참여 요금:</span>
+                           <span>{getFieldValue(parsedTitle?.fee, "무료")} 원</span>
                         </div>
-
-                        {/* 요금, 인원수, 상태, 날짜 */}
-                        <div className="space-y-2">
-                           <div className="flex justify-between text-gray-900 font-semibold">
-                              <span>참여 요금:</span>
-                              <span>{typeof post.fee === 'number' ? post.fee.toLocaleString() : '정보 없음'} 원</span>
-                           </div>
-                           <div className="flex justify-between text-gray-900 font-semibold">
-                              <span>인원 수:</span>
-                              <span>{post.people ? post.people : '정보 없음'} 명</span>
-                           </div>
-                           <div className="flex justify-between text-gray-900 font-semibold">
-                              <span>모집 상태:</span>
-                              <span
-                                 className={`${
-                                    post.status === "모집중" ? "text-green-600" : "text-red-600"
-                                 } font-semibold`}
-                              >
-                                 {post.status || '정보 없음'}
-                              </span>
-                           </div>
-                           <div className="flex justify-between text-gray-900 font-semibold">
-                              <span>모집 시작일:</span>
-                              <span>{formatDate(post.date) || '날짜 없음'}</span>
-                           </div>
-                           <div className="flex justify-between text-gray-900 font-semibold">
-                              <span>모집 마감일:</span>
-                              <span>{formatDate(post.endDate) || '날짜 없음'}</span>
-                           </div>
+                        <div className="flex justify-between text-gray-900 font-semibold">
+                           <span>인원 수:</span>
+                           <span>{getFieldValue(parsedTitle?.people, 1)} 명</span>
+                        </div>
+                        <div className="flex justify-between text-gray-900 font-semibold">
+                           <span>모집 상태:</span>
+                           <span className={`${parsedTitle?.status === "모집중" ? "text-green-600" : "text-red-600"} font-semibold`}>
+                              {getFieldValue(parsedTitle?.status, "모집 상태 없음")}
+                           </span>
+                        </div>
+                        <div className="flex justify-between text-gray-900 font-semibold">
+                           <span>모집 시작일:</span>
+                           <span>{formatDate(parsedTitle?.date)}</span>
+                        </div>
+                        <div className="flex justify-between text-gray-900 font-semibold">
+                           <span>모집 마감일:</span>
+                           <span>{formatDate(parsedTitle?.endDate)}</span>
                         </div>
                      </div>
                   </div>
 
-                  {/* 댓글 작성 및 목록 */}
-                  <div className="mt-6">
-                     <h3 className="text-lg font-semibold">댓글</h3>
-                     <textarea
-                        placeholder="댓글을 남겨주세요..."
-                        className="w-full p-3 border border-gray-300 rounded-md mt-2"
-                     />
-                     <button
-                        onClick={() => {}}
-                        className="mt-2 bg-sky-500 text-white px-4 py-2 rounded-md shadow hover:bg-sky-600 transition">
-                        댓글 작성
-                     </button>
-
-                     {/* 댓글 목록 */}
-                     <div className="mt-6">
-                        <div className="border-t pt-4">
-                           <div className="flex items-start gap-3">
-                              <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                              <div>
-                                 <p className="text-sm font-semibold text-gray-900">사용자1</p>
-                                 <p className="text-sm text-gray-700">댓글 내용입니다.</p>
-                              </div>
-                           </div>
-                        </div>
-
-                        <div className="border-t pt-4">
-                           <div className="flex items-start gap-3">
-                              <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
-                              <div>
-                                 <p className="text-sm font-semibold text-gray-900">사용자2</p>
-                                 <p className="text-sm text-gray-700">다른 댓글 내용입니다.</p>
-                              </div>
-                           </div>
-                        </div>
-                     </div>
+                  {/* 본문 내용 */}
+                  <div className="mt-8 text-gray-700 leading-relaxed whitespace-pre-line">
+                     {parsedTitle ? parsedTitle.content : post.content}
                   </div>
 
                   {/* 돌아가기 버튼 */}
