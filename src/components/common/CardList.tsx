@@ -26,6 +26,8 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       const fetchData = async () => {
          // setLoading(true);
          try {
+            setTourData([])
+            setAllTourData([]);
             let response: TourItem[] = [];
             let regionRes; //region의 경우 12개씩만 API에서 호출
 
@@ -109,7 +111,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
          }
       };
       fetchData();
-   }, [selected]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
+   }, [selected, nowPath]); // ✅ `selected state`가 변경될 때마다 다시 실행됨
 
    useEffect(() => {
       //페이지네이션 관련
@@ -124,11 +126,12 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
                contentTypeId: item.contenttypeid,
             })),
          );
-      }else{
+      }else{ //cat=region 일 때
+         const paginatedData = allTourData;
          setTourData(
-            allTourData.map((item)=>({
+            paginatedData.map((item)=>({
                imageUrl: item.firstimage || "/images/ready.png",
-               title: item.title ,
+               title: item.title || "",
                area: item.addr1 || "",
                contentId: item.contentid,
                contentTypeId: item.contenttypeid
