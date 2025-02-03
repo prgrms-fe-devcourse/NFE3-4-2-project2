@@ -62,12 +62,12 @@ export default function Login() {
    return (
       <div className="min-h-screen">
          <Header />
-         <div className="space-y-16 mt-20">
+         <div className="space-y-16 mt-20 max-w-screen-xl mx-auto">
             <div className="mx-auto max-w-460px text-center">
                <div className="text-3xl font-bold text-neutral-800">로그인</div>
             </div>
 
-            <div className="mx-auto max-w-460px">
+            <div className="mx-auto max-w-screen-sm">
                <form onSubmit={handleSubmit} className="grid grid-cols-1 gap-y-4">
                   {/* 이메일 */}
                   <div>
