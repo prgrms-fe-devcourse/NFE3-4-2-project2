@@ -5,12 +5,12 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import { getPostsByChannel, deletePost } from "@/utils/postapi"; // deletePost 추가
+import { getPostsByChannel } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
 
 interface Post {
    _id: string;
-   title: string;  // title은 JSON 문자열로 전달됨
+   title: string;
    image?: string;
    content: string;
    createdAt: string;
@@ -21,6 +21,8 @@ export default function Community() {
    const [posts, setPosts] = useState<Post[]>([]);
    const [loadingPosts, setLoadingPosts] = useState(false);
    const [isLoggedIn, setIsLoggedIn] = useState(false);
+   const [currentPage, setCurrentPage] = useState(1);
+   const postsPerPage = 9;
    const channelId = "679f3aba7cd28d7700f70f40";
 
    useEffect(() => {
@@ -36,43 +38,24 @@ export default function Community() {
          }
       };
       fetchPosts();
-
-      // 로그인 여부 확인 (localStorage 사용 예시)
+      
       const token = localStorage.getItem("accessToken");
-      if (token) {
-         setIsLoggedIn(true);
-      } else {
-         setIsLoggedIn(false);
-      }
+      setIsLoggedIn(!!token);
    }, []);
 
-   // Helper function to parse title
    const parseTitle = (title: string) => {
       try {
-         const parsedTitle = JSON.parse(title);
-         return parsedTitle; // return the parsed object
+         return JSON.parse(title);
       } catch (error) {
          console.error("Error parsing title:", error);
-         return { title: "제목 없음", body: "내용 없음" }; // default values in case of error
+         return { title: "제목 없음", body: "내용 없음" };
       }
    };
 
-   // 삭제 함수
-   const handleDelete = async (postId: string) => {
-      const token = localStorage.getItem("accessToken");
-      if (token) {
-         try {
-            await deletePost(postId, token);
-            setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId)); // 삭제된 포스트를 목록에서 제거
-            alert("게시글이 삭제되었습니다.");
-         } catch (error) {
-            console.error("❌ 삭제 실패:", error);
-            alert("게시글 삭제에 실패했습니다.");
-         }
-      } else {
-         alert("로그인이 필요합니다.");
-      }
-   };
+   const indexOfLastPost = currentPage * postsPerPage;
+   const indexOfFirstPost = indexOfLastPost - postsPerPage;
+   const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+   const totalPages = Math.ceil(posts.length / postsPerPage);
 
    return (
       <div className="min-h-screen flex flex-col">
@@ -102,12 +85,12 @@ export default function Community() {
                   </button>
                )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                {loadingPosts ? (
                   <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
-               ) : posts.length > 0 ? (
-                  posts.map((post, index) => {
-                     const parsedTitle = parseTitle(post.title); // Parse the title field
+               ) : currentPosts.length > 0 ? (
+                  currentPosts.map((post, index) => {
+                     const parsedTitle = parseTitle(post.title);
                      return (
                         <div
                            key={`${post._id}-${index}`}
@@ -116,28 +99,19 @@ export default function Community() {
                               <Image
                                  src={post.image || "/images/break.png"}
                                  alt={parsedTitle.title}
-                                 width={350}
-                                 height={150}
-                                 className="rounded-lg w-full object-cover"
+                                 width={300}
+                                 height={200}
+                                 className="rounded-lg object-cover w-full"
                               />
                            )}
                            <h3 className="text-xl font-bold mt-4 text-gray-900">{parsedTitle.title}</h3>
-                           <p className="text-gray-500 text-sm mt-2">
-                              작성일 {new Date(post.createdAt).toLocaleDateString()}
-                           </p>
+                           <p className="text-gray-500 text-sm mt-2">작성일 {new Date(post.createdAt).toLocaleDateString()}</p>
                            <p className="mt-3 text-gray-700 line-clamp-2">{parsedTitle.body}</p>
-                           <div className="mt-6 flex justify-between">
-                              <button
-                                 onClick={() => router.push(`/community/post/${post._id}`)}
-                                 className="block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
-                                 자세히 보기
-                              </button>
-                              <button
-                                 onClick={() => handleDelete(post._id)} // 삭제 버튼 클릭 시 삭제
-                                 className="block text-center bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-lg w-full font-medium transition">
-                                 삭제
-                              </button>
-                           </div>
+                           <button
+                              onClick={() => router.push(`/community/post/${post._id}`)}
+                              className="block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition mt-4">
+                              자세히 보기
+                           </button>
                         </div>
                      );
                   })
@@ -145,6 +119,19 @@ export default function Community() {
                   <p className="text-gray-500 text-center w-full">등록된 게시글이 없습니다.</p>
                )}
             </div>
+            {totalPages > 1 && (
+               <div className="flex justify-center mt-8 space-x-4">
+                  {[...Array(totalPages)].map((_, i) => (
+                     <button
+                        key={i}
+                        onClick={() => setCurrentPage(i + 1)}
+                        className={`px-4 py-2 rounded-lg ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                     >
+                        {i + 1}
+                     </button>
+                  ))}
+               </div>
+            )}
          </div>
          <Footer />
       </div>
