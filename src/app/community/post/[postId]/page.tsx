@@ -158,7 +158,9 @@ export default function PostDetail() {
                <>
                   {/* 제목, 작성자 정보, 작성일 */}
                   <div className="flex justify-between items-center mb-6">
-                     <h1 className="text-3xl font-semibold text-gray-800">{parsedTitle ? parsedTitle.title : "제목 없음"}</h1>
+                     <h1 className="text-3xl font-semibold text-gray-800">
+                        {parsedTitle ? parsedTitle.title : "제목 없음"}
+                     </h1>
                   </div>
 
                   {/* 작성자 정보 */}
@@ -219,14 +221,14 @@ export default function PostDetail() {
                   </div>
 
                   {/* 본문 내용 */}
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-line mb-8">
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-line mb-12">
                      {parsedTitle ? parsedTitle.content : post.content}
                   </div>
 
                   {/* 돌아가기 버튼 */}
                   <div className="flex justify-between items-center">
                      <button
-                        onClick={() => router.back()}
+                        onClick={() => router.push("/community")} // /community로 이동
                         className="bg-gray-300 text-gray-800 px-5 py-2 rounded-lg shadow hover:bg-gray-400 transition">
                         목록보기
                      </button>

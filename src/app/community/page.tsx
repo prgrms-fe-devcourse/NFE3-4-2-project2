@@ -10,10 +10,11 @@ import { AxiosResponse } from "axios";
 
 interface Post {
    _id: string;
-   title: string;
+   title: string; // title은 JSON 문자열이므로 파싱해야 함
    image?: string;
    content: string;
    createdAt: string;
+   status: string; // 모집 상태 (모집중, 모집마감)
 }
 
 export default function Community() {
@@ -38,17 +39,17 @@ export default function Community() {
          }
       };
       fetchPosts();
-      
+
       const token = localStorage.getItem("accessToken");
       setIsLoggedIn(!!token);
    }, []);
 
    const parseTitle = (title: string) => {
       try {
-         return JSON.parse(title);
+         return JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
       } catch (error) {
          console.error("Error parsing title:", error);
-         return { title: "제목 없음", body: "내용 없음" };
+         return { title: "제목 없음", body: "내용 없음", status: "정보 없음" }; // 파싱 실패 시 기본 값 반환
       }
    };
 
@@ -74,14 +75,14 @@ export default function Community() {
                <h2 className="text-[48px] font-semibold mt-2">강원도 여행 동행 모집</h2>
             </div>
          </div>
-         <div className="max-w-[1280px] w-full mx-auto px-4 py-10">
+         <div className="max-w-[1280px] w-full mx-auto px-4 py-16">
             <div className="flex justify-between items-center mb-8">
                <h3 className="text-[32px] font-semibold text-gray-800">📌 여행 동행 모집 게시판</h3>
                {isLoggedIn && (
                   <button
                      onClick={() => router.push(`/community/write?channelId=${channelId}`)}
-                     className="w-[200px] h-[50px] bg-orange-500 hover:bg-orange-600 transition text-white text-[18px] font-semibold rounded-xl shadow-md">
-                     ✏️ 글 작성하기
+                     className="w-[200px] h-[50px] bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md">
+                     ✏️ 동행 모집 글 작성하기
                   </button>
                )}
             </div>
@@ -90,28 +91,50 @@ export default function Community() {
                   <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
                ) : currentPosts.length > 0 ? (
                   currentPosts.map((post, index) => {
-                     const parsedTitle = parseTitle(post.title);
+                     const parsedTitle = parseTitle(post.title); // title 파싱
                      return (
                         <div
                            key={`${post._id}-${index}`}
-                           className="border rounded-lg shadow-lg p-6 bg-white hover:shadow-xl transition">
-                           {post.image && (
+                           className="flex flex-col bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition border border-gray-300 hover:border-sky-500">
+                           <div className="w-full h-[200px] relative mb-4">
                               <Image
                                  src={post.image || "/images/break.png"}
                                  alt={parsedTitle.title}
-                                 width={300}
-                                 height={200}
-                                 className="rounded-lg object-cover w-full"
+                                 layout="fill"
+                                 objectFit="cover"
+                                 className="rounded-md"
                               />
-                           )}
-                           <h3 className="text-xl font-bold mt-4 text-gray-900">{parsedTitle.title}</h3>
-                           <p className="text-gray-500 text-sm mt-2">작성일 {new Date(post.createdAt).toLocaleDateString()}</p>
-                           <p className="mt-3 text-gray-700 line-clamp-2">{parsedTitle.body}</p>
-                           <button
-                              onClick={() => router.push(`/community/post/${post._id}`)}
-                              className="block text-center bg-sky-500 hover:bg-sky-600 text-white px-5 py-3 rounded-lg w-full font-medium transition mt-4">
-                              자세히 보기
-                           </button>
+                           </div>
+                           <h3 className="text-xl font-bold text-gray-900 mb-2">{parsedTitle.title}</h3>
+                           <p className="text-gray-500 text-sm mb-2">
+                              작성일 {new Date(post.createdAt).toLocaleDateString()}
+                           </p>
+                           <p className="text-gray-700 text-sm line-clamp-2 mb-4">{parsedTitle.body}</p>
+
+                           {/* 모집 상태 버튼과 자세히 보기 버튼 나란히 */}
+                           <div className="flex justify-between items-center mb-4 gap-4">
+                              <button
+                                 disabled={true} // 클릭 불가
+                                 className={`w-[48%] py-1 px-3 rounded-md ${
+                                    parsedTitle.status === "모집중"
+                                       ? "bg-green-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
+                                       : parsedTitle.status === "모집마감"
+                                       ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
+                                       : "bg-gray-200 text-gray-500"
+                                 } font-semibold`}>
+                                 {parsedTitle.status === "모집중"
+                                    ? "모집중"
+                                    : parsedTitle.status === "모집마감"
+                                    ? "모집마감"
+                                    : "상태 미정"}
+                              </button>
+
+                              <button
+                                 onClick={() => router.push(`/community/post/${post._id}`)}
+                                 className="w-[48%] py-1 px-3 rounded-md text-white text-lg font-semibold transition bg-sky-500 hover:bg-sky-600">
+                                 자세히 보기
+                              </button>
+                           </div>
                         </div>
                      );
                   })
@@ -125,8 +148,9 @@ export default function Community() {
                      <button
                         key={i}
                         onClick={() => setCurrentPage(i + 1)}
-                        className={`px-4 py-2 rounded-lg ${currentPage === i + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
-                     >
+                        className={`px-4 py-2 rounded-lg ${
+                           currentPage === i + 1 ? "bg-blue-500 text-white" : "bg-gray-200"
+                        }`}>
                         {i + 1}
                      </button>
                   ))}
