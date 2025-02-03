@@ -15,9 +15,9 @@ export interface TourItem {
    contenttypeid: number;
 }
 
-export interface TourItemRegion{
-   totalLength : string,
-   items : TourItem[];
+export interface TourItemRegion {
+   totalLength: string;
+   items: TourItem[];
 }
 
 export interface TourDetailInfo {
@@ -100,7 +100,7 @@ export interface RestaurantDetailInfo {
 export interface AccommodationItem {
    cat2: string;
    cat3: string;
-   cat3Text?: string | undefined; 
+   cat3Text?: string | undefined;
    contentid: number;
    title: string;
    addr1: string;
@@ -179,9 +179,26 @@ export interface RestaurantListResponse {
 export interface SelectedParam {
    cat: string | null;
    filter?: string | null;
-   page:number;
+   page: number;
 }
 export interface SelectedChildParam {
    selected: SelectedParam;
    changeUrl: (url: SelectedParam) => void;
+}
+
+// 축제 데이터 타입
+export interface Festival {
+   addr1: string;
+   addr2: string;
+   cat1: string;
+   cat2: string;
+   cat3: string;
+   contentId: string;
+   contentTypeId: string;
+   createdtime: string;
+   eventstartdate: string;
+   eventenddate: string;
+   firstimage: string;
+   firstimage2: string;
+   title: string;
 }
