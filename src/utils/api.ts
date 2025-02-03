@@ -323,17 +323,26 @@ export default class APIConnect {
                areaCode: 32, // 강원도 지역 코드
                sigunguCode,
                listYN: "Y",
+               numOfRows: 50,
             },
          });
 
-         console.log("📩 API 응답:", response.data);
+         console.log("📩 API 응답 데이터:", response.data);
 
          if (!response.data || !response.data.response || !response.data.response.body) {
             console.warn("⚠️ 응답 데이터 구조가 다릅니다:", response.data);
             return [];
          }
 
-         return response.data.response.body.items?.item || [];
+         // API에서 받아온 데이터 중 cat2 값이 존재하는지 확인
+         const festivalList = response.data.response.body.items?.item || [];
+         console.log("📢 필터링 전 전체 데이터 개수:", festivalList.length);
+         console.log(
+            "🧐 모든 cat2 값 출력:",
+            festivalList.map((item) => item.cat2),
+         );
+
+         return festivalList;
       } catch (err) {
          console.error("❌ API 요청 실패:", err);
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
