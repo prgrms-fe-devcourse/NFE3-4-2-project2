@@ -18,7 +18,6 @@ export default function WritePage() {
    const [people, setPeople] = useState<number>(1); // 기본 인원수 1명
    const [date, setDate] = useState<string>(""); // 모집 날짜
    const [endDate, setEndDate] = useState<string>(""); // 모집 마감일
-   const [status, setStatus] = useState<string>(""); // 모집 상태
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
    const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
@@ -31,20 +30,6 @@ export default function WritePage() {
          router.push("/auth/login");
       }
    }, [router]);
-
-   useEffect(() => {
-      // 마감일에 따른 모집 상태 자동 변경
-      if (endDate) {
-         const today = new Date();
-         const end = new Date(endDate);
-
-         if (today > end) {
-            setStatus("모집마감");
-         } else {
-            setStatus("모집중");
-         }
-      }
-   }, [endDate]);
 
    // 이미지 업로드 처리
    const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,10 +49,13 @@ export default function WritePage() {
 
    // 참여 요금 처리
    const handleFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      // 입력값이 숫자인지 확인
       const value = e.target.value;
 
+      // 숫자만 허용하는 정규식
       if (/^\d*$/.test(value)) {
-         setFee(value === "" ? "" : Number(value)); // 숫자만 허용
+         // 숫자만 허용
+         setFee(value === "" ? "" : Number(value)); // 빈 문자열도 허용
       }
    };
 
@@ -92,10 +80,27 @@ export default function WritePage() {
       setEndDate(e.target.value);
    };
 
+   // 모집 상태 자동 설정 함수
+   const getStatus = (endDate: string) => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 00:00:00으로 설정
+
+      const end = new Date(endDate);
+      end.setHours(0, 0, 0, 0); // 마감일의 시간을 00:00:00으로 설정
+
+      if (today > end) {
+         return "모집마감";
+      } else {
+         return "모집중";
+      }
+   };
+
    // 제출 버튼 클릭 시 처리
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!title || !content || loading || fee === "" || !date || !endDate) return;
+
+      const status = getStatus(endDate); // 모집 상태 자동 설정
 
       setLoading(true);
       try {
@@ -112,9 +117,8 @@ export default function WritePage() {
             status, // 자동 설정된 모집 상태
             date, // 모집 시작일
             endDate, // 모집 마감일
-            token
+            token,
          );
-
          console.log("📌 서버 응답:", response.data);
 
          if (response.data && response.data._id) {
@@ -186,7 +190,7 @@ export default function WritePage() {
             <div className="mb-4">
                <label className="block text-lg font-semibold">참여 요금 *</label>
                <input
-                  type="text"
+                  type="text" // "text"로 변경하여 숫자만 입력되도록 정규식으로 제한
                   value={fee}
                   onChange={handleFeeChange}
                   className="w-full p-3 border border-gray-300 rounded-md"

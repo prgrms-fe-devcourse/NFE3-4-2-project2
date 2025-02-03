@@ -43,7 +43,7 @@ export default function PostDetail() {
    const [post, setPost] = useState<Post | null>(null);
    const [loading, setLoading] = useState(true);
    const [isAuthor, setIsAuthor] = useState(false);
-   const [comments, setComments] = useState<CommentResponse []>([]);
+   const [comments, setComments] = useState<CommentResponse[]>([]);
    const [commentContent, setCommentContent] = useState<string>("");
 
    // 로그인된 사용자와 게시글 작성자 비교하는 useEffect
@@ -187,34 +187,46 @@ export default function PostDetail() {
       }
    };
 
-   // 삭제 버튼을 본인만 사용할 수 있게
-   const handleDeleteComment = async (commentId: string, commentAuthorId: string) => {
+   // 댓글 삭제
+   const handleDeleteComment = async (commentId: string, authorId: string) => {
       const token = localStorage.getItem("accessToken");
-
+   
       if (!token) {
          alert("로그인이 필요합니다.");
          return;
       }
-
+   
       // 현재 로그인된 사용자 ID를 가져옴
-      const currentUserId = JSON.parse(localStorage.getItem("userId") || "{}");
-
-      if (currentUserId !== commentAuthorId) {
+      const storedUserId = localStorage.getItem("userId");
+   
+      if (!storedUserId) {
+         alert("사용자 정보가 없습니다.");
+         return;
+      }
+   
+      const currentUserId = storedUserId;
+   
+      if (authorId !== currentUserId) {
          alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
          return;
       }
-
+   
       try {
          // 댓글 삭제 API 호출
-         await deleteComment(commentId, token);
-
-         // 삭제된 댓글 목록에서 제거
-         setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+         const response = await deleteComment(commentId, token);
+   
+         // 댓글 삭제 성공 후 목록에서 제거
+         if (response.status === 200) {
+            setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
+         } else {
+            alert("댓글 삭제에 실패했습니다.");
+         }
       } catch (error) {
-         console.error("❌ 댓글 삭제 실패:", error);
+         console.error("❌ 댓글 삭제 실패:", error.response ? error.response.data : error.message);
          alert("댓글 삭제에 실패했습니다.");
       }
    };
+   
 
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -358,17 +370,22 @@ export default function PostDetail() {
                      {comments.length > 0 ? (
                         comments.map((comment) => (
                            <div key={comment._id} className="mb-4">
-                              <div className="font-semibold text-gray-700">
-                                 {typeof comment.author === "object" && comment.author.fullName
-                                    ? comment.author.fullName
-                                    : comment.author}
-                              </div>
-                              <p className="text-gray-600">{comment.comment}</p> {/* content -> comment */}
+                              <div className="font-semibold text-gray-700">{comment.author.fullName}</div>
+                              <p className="text-gray-600">{comment.comment}</p>
                               <span className="text-sm text-gray-400">{formatDate(comment.createdAt)}</span>
+
+                              {/* 댓글 삭제 버튼: 본인 작성 댓글만 보이게 */}
+                              {comment.author._id === localStorage.getItem("userId") && (
+                                 <button
+                                    onClick={() => handleDeleteComment(comment._id, comment.author._id)}
+                                    className="text-red-500 text-sm mt-2">
+                                    삭제
+                                 </button>
+                              )}
                            </div>
                         ))
                      ) : (
-                        <p>댓글이 없습니다.</p>
+                        <p className="text-center">댓글이 없습니다.</p>
                      )}
                   </div>
                </>
