@@ -23,7 +23,6 @@ const catList = catListJson as CatList;
 const RestaurantDetailPage: React.FC = () => {
 
    const params = useSearchParams();
-   const contentId = params.get("contentId"); // 쿼리 파라미터에서 `contentId` 가져오기
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
    
@@ -36,17 +35,16 @@ const RestaurantDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-         if (!contentId) return; // contentId가 없으면 API 호출하지 않음
+      
+         const key = Number(params.get("contentId"));
+         const infoList: RestaurantDetailInfo = await APIConnect.getRestaurantInfo(key);
+         const img = await APIConnect.getTourImg(key);
 
-         try {
-            const infoList: RestaurantDetailInfo = await APIConnect.getRestaurantInfo(contentId);
-            const img = await APIConnect.getTourImg(contentId);
-
-            setRestaurantInfo(infoList);
-            setImgList(img);
-         } catch (error) {
-            console.error("데이터 로딩 오류:", error);
-         }
+         setRestaurantInfo(infoList);
+         setImgList(img);
+         console.log("infoList : ", infoList);
+         console.log("imgList : ", imgList);
+         
       };
 
       loadData();

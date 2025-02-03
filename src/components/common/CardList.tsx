@@ -35,14 +35,26 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             );
 
             if (selected.cat === "season") {
-               if (selected.filter) {
-                  console.log(`🚧 [계절별 관광지] ${selected.filter} 리스트 요청`);
-                  response = await APIConnect.getSeasonTourList(
-                     selected.filter as "spring" | "summer" | "autumn" | "winter",
-                  );
-               } else {
-                  console.log(`🚧 [계절별 관광지] 전체 계절 리스트 요청`);
-                  response = await APIConnect.getSeasonTourList(null);
+               if (nowPath === "/explore/leisure"){
+                  if (selected.filter) {
+                     console.log(`🚧 [계절별 레저] ${selected.filter} 리스트 요청`);
+                     response = await APIConnect.getSeasonLeisureList(
+                        selected.filter as "spring" | "summer" | "autumn" | "winter",
+                     );
+                  } else {
+                     console.log(`🚧 [계절별 레저] 전체 계절 리스트 요청`);
+                     response = await APIConnect.getSeasonLeisureList(null);
+                  }
+               } else if (nowPath === "/explore/travel"){
+                  if (selected.filter) {
+                     console.log(`🚧 [계절별 관광지] ${selected.filter} 리스트 요청`);
+                     response = await APIConnect.getSeasonTourList(
+                        selected.filter as "spring" | "summer" | "autumn" | "winter",
+                     );
+                  } else {
+                     console.log(`🚧 [계절별 관광지] 전체 계절 리스트 요청`);
+                     response = await APIConnect.getSeasonTourList(null);
+                  }
                }
             }
 
