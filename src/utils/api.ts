@@ -32,6 +32,7 @@ export default class APIConnect {
       _type: "json",
    };
 
+   //Travel Page
    /**
     * TourAPI에서 지역별 List를 가지고오는 메서드입니다.
     * @param {string} code - 시군구 코드
@@ -168,6 +169,132 @@ export default class APIConnect {
          return response.data.response.body.items.item;
       } catch (err) {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+      }
+   }
+
+   /**
+    * TourAPI에서 계절별 관광지 리스트를 가져오는 메서드
+    *
+    * @param {string | null} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
+    * @param {number} page
+    * @returns {Promise<TourItem[]>}
+    */
+   static async getSeasonTourList(
+      season: "spring" | "summer" | "autumn" | "winter" | null,
+      page: number = 1,
+   ): Promise<TourItem[]> {
+      try {
+         console.log(
+            `📌 [API 요청] ${season ? `${season} 관광지` : "전체 계절 관광지"} 리스트 가져오기, 페이지: ${page}`,
+         );
+
+         // 선택된 계절이 없으면 모든 계절 데이터 병합
+         const selectedSeasons: Array<keyof typeof seasonList> = season
+            ? [season]
+            : ["spring", "summer", "autumn", "winter"];
+
+         const cat3List = selectedSeasons.flatMap((seasonKey) => seasonList[seasonKey] || []);
+
+         if (cat3List.length === 0) {
+            console.warn(`⚠️ ${season ? season : "전체"} 시즌 관광지 데이터가 없습니다.`);
+            return [];
+         }
+
+         // API 요청 리스트 생성
+         const requests = cat3List.map(({ cat1, cat2, cat3 }) =>
+            axios
+               .get(this._tourDefaultURL + "areaBasedList1", {
+                  params: {
+                     ...this._tourDefaultOption,
+                     pageNo: page,
+                     areaCode: 32,
+                     listYN: "Y",
+                     cat1,
+                     cat2,
+                     cat3,
+                  },
+               })
+               .then((response) => response.data?.response?.body?.items?.item || [])
+               .catch((error) => {
+                  console.error(`❌ [API 요청 실패] cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`, error);
+                  return [];
+               }),
+         );
+
+         const results = await Promise.allSettled(requests);
+         const mergedResults = results
+            .filter((result) => result.status === "fulfilled")
+            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
+
+         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
+         return mergedResults;
+      } catch (err) {
+         console.error(`❌ [API 요청 실패]`, err);
+         throw new Error(`API 요청 실패: ${err}`);
+      }
+   }
+
+   /**
+    * TourAPI에서 자연별 관광지 리스트를 가져오는 메서드
+    *
+    * @param {keyof typeof natureList} natureCategory - 불러올 자연 카테고리 ("beach", "mountain", "lake", "forest") | null (전체)
+    * @param {number} page
+    * @returns {Promise<TourItem[]>}
+    */
+   static async getNatureTourList(
+      natureCategory: keyof typeof natureList | null,
+      page: number = 1,
+   ): Promise<TourItem[]> {
+      try {
+         console.log(
+            `📌 [API 요청] ${
+               natureCategory ? `${natureCategory} 관광지` : "전체 자연 관광지"
+            } 리스트 가져오기, 페이지: ${page}`,
+         );
+
+         // 선택된 카테고리가 없으면 모든 자연 데이터 병합
+         const selectedCategories: Array<keyof typeof natureList> = natureCategory
+            ? [natureCategory]
+            : ["beach", "mountain", "lake", "forest"];
+
+         const cat3List = selectedCategories.flatMap((category) => natureList[category] || []);
+
+         if (cat3List.length === 0) {
+            console.warn(`⚠️ ${natureCategory ? natureCategory : "전체"} 자연별 관광지 데이터가 없습니다.`);
+            return [];
+         }
+
+         // API 요청 리스트 생성
+         const requests = cat3List.map(({ cat1, cat2, cat3 }) =>
+            axios
+               .get(this._tourDefaultURL + "areaBasedList1", {
+                  params: {
+                     ...this._tourDefaultOption,
+                     pageNo: page,
+                     areaCode: 32,
+                     listYN: "Y",
+                     cat1,
+                     cat2,
+                     cat3,
+                  },
+               })
+               .then((response) => response.data?.response?.body?.items?.item || [])
+               .catch((error) => {
+                  console.error(`❌ [API 요청 실패] cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`, error);
+                  return [];
+               }),
+         );
+
+         const results = await Promise.allSettled(requests);
+         const mergedResults = results
+            .filter((result) => result.status === "fulfilled")
+            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
+
+         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
+         return mergedResults;
+      } catch (err) {
+         console.error(`❌ [API 요청 실패]`, err);
+         throw new Error(`API 요청 실패: ${err}`);
       }
    }
 
@@ -491,7 +618,8 @@ export default class APIConnect {
    }
 
    /**
-    * 레저 리스트를 가져오는 메서드
+    * 지역기반 레저 리스트를 가져오는 메서드
+    * @param {number} code - 불러올 페이지 (기본값: 1)
     * @param {number} page - 불러올 페이지 (기본값: 1)
     * @returns {Promise<TourItem[]>} 레저 리스트를 반환
     */
@@ -528,6 +656,70 @@ export default class APIConnect {
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
    }
+
+   /**
+    * TourAPI에서 계절별 레저 리스트를 가져오는 메서드
+    *
+    * @param {string | null} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
+    * @param {number} page
+    * @returns {Promise<TourItem[]>}
+    */
+   static async getSeasonLeisureList(
+      season: "spring" | "summer" | "autumn" | "winter" | null,
+      page: number = 1,
+   ): Promise<TourItem[]> {
+      try {
+         console.log(
+            `📌 [API 요청] ${season ? `${season} 관광지` : "전체 계절 관광지"} 리스트 가져오기, 페이지: ${page}`,
+         );
+
+         // 선택된 계절이 없으면 모든 계절 데이터 병합
+         const selectedSeasons: Array<keyof typeof seasonList> = season
+            ? [season]
+            : ["spring", "summer", "autumn", "winter"];
+
+         const cat3List = selectedSeasons.flatMap((seasonKey) => seasonList[seasonKey] || []);
+
+         if (cat3List.length === 0) {
+            console.warn(`⚠️ ${season ? season : "전체"} 시즌 관광지 데이터가 없습니다.`);
+            return [];
+         }
+
+         // API 요청 리스트 생성
+         const requests = cat3List.map(({ cat2, cat3 }) =>
+            axios
+               .get(this._tourDefaultURL + "areaBasedList1", {
+                  params: {
+                     ...this._tourDefaultOption,
+                     pageNo: page,
+                     areaCode: 32,
+                     listYN: "Y",
+                     cat1: "A03",
+                     cat2,
+                     cat3,
+                  },
+               })
+               .then((response) => response.data?.response?.body?.items?.item || [])
+               .catch((error) => {
+                  console.error(`❌ [API 요청 실패] cat2=${cat2}, cat3=${cat3}`, error);
+                  return [];
+               }),
+         );
+
+         const results = await Promise.allSettled(requests);
+         const mergedResults = results
+            .filter((result) => result.status === "fulfilled")
+            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
+
+         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
+         return mergedResults;
+      } catch (err) {
+         console.error(`❌ [API 요청 실패]`, err);
+         throw new Error(`API 요청 실패: ${err}`);
+      }
+   }
+
+
    /**
     * 특정 레저 정보(개별 상세 정보)를 가져오는 메서드
     * @param {number} contentId - 레저 고유 ID
@@ -934,132 +1126,6 @@ export default class APIConnect {
          } else {
             throw new Error(`알 수 없는 오류가 발생했습니다.`);
          }
-      }
-   }
-
-   /**
-    * TourAPI에서 계절별 관광지 리스트를 가져오는 메서드
-    *
-    * @param {string | null} season - 불러올 계절 ("spring", "summer", "autumn", "winter") | null (전체)
-    * @param {number} page
-    * @returns {Promise<TourItem[]>}
-    */
-   static async getSeasonTourList(
-      season: "spring" | "summer" | "autumn" | "winter" | null,
-      page: number = 1,
-   ): Promise<TourItem[]> {
-      try {
-         console.log(
-            `📌 [API 요청] ${season ? `${season} 관광지` : "전체 계절 관광지"} 리스트 가져오기, 페이지: ${page}`,
-         );
-
-         // 선택된 계절이 없으면 모든 계절 데이터 병합
-         const selectedSeasons: Array<keyof typeof seasonList> = season
-            ? [season]
-            : ["spring", "summer", "autumn", "winter"];
-
-         const cat3List = selectedSeasons.flatMap((seasonKey) => seasonList[seasonKey] || []);
-
-         if (cat3List.length === 0) {
-            console.warn(`⚠️ ${season ? season : "전체"} 시즌 관광지 데이터가 없습니다.`);
-            return [];
-         }
-
-         // API 요청 리스트 생성
-         const requests = cat3List.map(({ cat1, cat2, cat3 }) =>
-            axios
-               .get(this._tourDefaultURL + "areaBasedList1", {
-                  params: {
-                     ...this._tourDefaultOption,
-                     pageNo: page,
-                     areaCode: 32,
-                     listYN: "Y",
-                     cat1,
-                     cat2,
-                     cat3,
-                  },
-               })
-               .then((response) => response.data?.response?.body?.items?.item || [])
-               .catch((error) => {
-                  console.error(`❌ [API 요청 실패] cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`, error);
-                  return [];
-               }),
-         );
-
-         const results = await Promise.allSettled(requests);
-         const mergedResults = results
-            .filter((result) => result.status === "fulfilled")
-            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
-
-         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
-         return mergedResults;
-      } catch (err) {
-         console.error(`❌ [API 요청 실패]`, err);
-         throw new Error(`API 요청 실패: ${err}`);
-      }
-   }
-
-   /**
-    * TourAPI에서 자연별 관광지 리스트를 가져오는 메서드
-    *
-    * @param {keyof typeof natureList} natureCategory - 불러올 자연 카테고리 ("beach", "mountain", "lake", "forest") | null (전체)
-    * @param {number} page
-    * @returns {Promise<TourItem[]>}
-    */
-   static async getNatureTourList(
-      natureCategory: keyof typeof natureList | null,
-      page: number = 1,
-   ): Promise<TourItem[]> {
-      try {
-         console.log(
-            `📌 [API 요청] ${
-               natureCategory ? `${natureCategory} 관광지` : "전체 자연 관광지"
-            } 리스트 가져오기, 페이지: ${page}`,
-         );
-
-         // 선택된 카테고리가 없으면 모든 자연 데이터 병합
-         const selectedCategories: Array<keyof typeof natureList> = natureCategory
-            ? [natureCategory]
-            : ["beach", "mountain", "lake", "forest"];
-
-         const cat3List = selectedCategories.flatMap((category) => natureList[category] || []);
-
-         if (cat3List.length === 0) {
-            console.warn(`⚠️ ${natureCategory ? natureCategory : "전체"} 자연별 관광지 데이터가 없습니다.`);
-            return [];
-         }
-
-         // API 요청 리스트 생성
-         const requests = cat3List.map(({ cat1, cat2, cat3 }) =>
-            axios
-               .get(this._tourDefaultURL + "areaBasedList1", {
-                  params: {
-                     ...this._tourDefaultOption,
-                     pageNo: page,
-                     areaCode: 32,
-                     listYN: "Y",
-                     cat1,
-                     cat2,
-                     cat3,
-                  },
-               })
-               .then((response) => response.data?.response?.body?.items?.item || [])
-               .catch((error) => {
-                  console.error(`❌ [API 요청 실패] cat1=${cat1}, cat2=${cat2}, cat3=${cat3}`, error);
-                  return [];
-               }),
-         );
-
-         const results = await Promise.allSettled(requests);
-         const mergedResults = results
-            .filter((result) => result.status === "fulfilled")
-            .flatMap((result) => (result as PromiseFulfilledResult<TourItem[]>).value);
-
-         console.log(`📩 [API 응답 완료] ${mergedResults.length}개의 관광지 데이터 반환`);
-         return mergedResults;
-      } catch (err) {
-         console.error(`❌ [API 요청 실패]`, err);
-         throw new Error(`API 요청 실패: ${err}`);
       }
    }
 }
