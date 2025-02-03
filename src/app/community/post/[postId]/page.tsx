@@ -25,13 +25,13 @@ interface Post {
       fullName: string;
       email: string;
    };
-   comments?: Comment[];
+   comments?: CommentResponse[];
 }
 
 interface CommentResponse {
    _id: string;
-   author: { fullName: string };
-   coment: string;
+   author: { _id: string; fullName: string };
+   comment: string;
    createdAt: string;
 }
 
@@ -190,31 +190,31 @@ export default function PostDetail() {
    // 댓글 삭제
    const handleDeleteComment = async (commentId: string, authorId: string) => {
       const token = localStorage.getItem("accessToken");
-   
+
       if (!token) {
          alert("로그인이 필요합니다.");
          return;
       }
-   
+
       // 현재 로그인된 사용자 ID를 가져옴
       const storedUserId = localStorage.getItem("userId");
-   
+
       if (!storedUserId) {
          alert("사용자 정보가 없습니다.");
          return;
       }
-   
+
       const currentUserId = storedUserId;
-   
+
       if (authorId !== currentUserId) {
          alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
          return;
       }
-   
+
       try {
          // 댓글 삭제 API 호출
          const response = await deleteComment(commentId, token);
-   
+
          // 댓글 삭제 성공 후 목록에서 제거
          if (response.status === 200) {
             setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
@@ -226,7 +226,6 @@ export default function PostDetail() {
          alert("댓글 삭제에 실패했습니다.");
       }
    };
-   
 
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
