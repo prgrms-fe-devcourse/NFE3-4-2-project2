@@ -313,7 +313,7 @@ export default class APIConnect {
       sigunguCode: string = "",
    ): Promise<object[]> {
       try {
-         // 요청 보내기 (축제 A0207)
+         console.log("🔍 API 요청 중...");
          const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
             params: {
                ...this._tourDefaultOption,
@@ -323,18 +323,19 @@ export default class APIConnect {
                areaCode: 32, // 강원도 지역 코드
                sigunguCode,
                listYN: "Y",
-               cat1: "A02", // 대분류: 행사/공연/축제
-               cat2: "A0207", // 중분류: 축제
             },
          });
 
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+         console.log("📩 API 응답:", response.data);
+
+         if (!response.data || !response.data.response || !response.data.response.body) {
+            console.warn("⚠️ 응답 데이터 구조가 다릅니다:", response.data);
+            return [];
          }
 
-         return response.data.response.body.items.item || [];
+         return response.data.response.body.items?.item || [];
       } catch (err) {
-         console.error("getFestivalList 요청 실패:", err);
+         console.error("❌ API 요청 실패:", err);
          throw new Error(`Axios 요청이 실패했습니다: ${err}`);
       }
    }
@@ -718,7 +719,6 @@ export default class APIConnect {
          throw new Error(`API 요청 실패: ${err}`);
       }
    }
-
 
    /**
     * 특정 레저 정보(개별 상세 정보)를 가져오는 메서드
