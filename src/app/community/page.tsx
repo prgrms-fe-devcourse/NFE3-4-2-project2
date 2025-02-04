@@ -32,7 +32,17 @@ export default function Community() {
          setLoadingPosts(true);
          try {
             const response: AxiosResponse<Post[]> = await getPostsByChannel(channelId);
-            setPosts(response.data);
+            const sortedPosts = response.data.sort((a, b) => {
+               const statusA = parseTitle(a.title);
+               const statusB = parseTitle(b.title);
+
+               // "모집중" 상태가 먼저 오도록 정렬
+               if (statusA === "모집중" && statusB !== "모집중") return -1;
+               if (statusB === "모집중" && statusA !== "모집중") return 1;
+               return 0;
+            });
+
+            setPosts(sortedPosts);
          } catch (error) {
             console.error("❌ 게시글 불러오기 실패:", error);
          } finally {
@@ -109,7 +119,8 @@ export default function Community() {
                      return (
                         <div
                            key={`${post._id}-${index}`}
-                           className="flex flex-col bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition border border-gray-300 hover:border-sky-500">
+                           onClick={() => router.push(`/community/post/${post._id}`)} // 카드 클릭 시 바로 상세 페이지로 이동
+                           className="flex flex-col bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition border border-gray-300 hover:border-sky-500 cursor-pointer">
                            <div className="w-full h-[200px] relative mb-4">
                               <Image
                                  src={post.image || "/images/no_img.jpg"}
@@ -125,27 +136,21 @@ export default function Community() {
                            </p>
                            <p className="text-gray-700 text-sm line-clamp-2 mb-4">{post.content}</p>
 
-                           <div className="flex justify-between items-center mb-4 gap-4">
-                              {postStatus && (
+                           {/* 모집 상태 버튼을 카드 우측 아래에 배치 */}
+                           {postStatus && (
+                              <div className="flex justify-end mt-auto">
                                  <button
-                                    disabled={true} // 클릭 불가
-                                    className={`w-[48%] py-1 px-3 rounded-md ${
+                                    className={`py-1 px-3 rounded-md text-sm font-semibold ${
                                        postStatus === "모집중"
                                           ? "bg-green-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
                                           : postStatus === "모집마감"
                                           ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
                                           : "bg-gray-200 text-gray-500"
-                                    } font-semibold`}>
+                                    }`}>
                                     {postStatus}
                                  </button>
-                              )}
-
-                              <button
-                                 onClick={() => router.push(`/community/post/${post._id}`)}
-                                 className="w-[48%] py-1 px-3 rounded-md text-white text-lg font-semibold transition bg-sky-500 hover:bg-sky-600">
-                                 자세히 보기
-                              </button>
-                           </div>
+                              </div>
+                           )}
                         </div>
                      );
                   })
@@ -155,6 +160,7 @@ export default function Community() {
                   </div>
                )}
             </div>
+
             {totalPages > 1 && (
                <div className="flex justify-center mt-8 space-x-4">
                   {[...Array(totalPages)].map((_, i) => (

@@ -145,7 +145,7 @@ const MyPage: React.FC = () => {
                            {/* 프로필 이미지 미리보기 */}
                            <div className="w-full h-full rounded-full border-2 border-gray-500 mb-6">
                               <img
-                                 src={profileImagePreview || user.image || "default-profile.png"} // 업로드된 이미지 미리보기 또는 기본 이미지
+                                 src={profileImagePreview || user.image || "/images/default_profile.png"} // 업로드된 이미지 미리보기 또는 기본 이미지
                                  alt="Profile"
                                  className="w-full h-full object-cover rounded-full"
                               />
@@ -156,7 +156,9 @@ const MyPage: React.FC = () => {
                         <div className="flex-grow">
                            <h2 className="text-2xl font-semibold text-gray-800 mb-6">
                               {user.fullName}님{/* 수정 버튼 */}
-                              <button className="ml-4 mt-4 px-2 py-2 hover:shadow-md rounded-md" onClick={handleEditClick}>
+                              <button
+                                 className="ml-4 mt-4 px-2 py-2 hover:shadow-md rounded-md"
+                                 onClick={handleEditClick}>
                                  <img src="/images/Edit.png" alt="수정" className="w-6 h-6" />
                               </button>
                            </h2>
