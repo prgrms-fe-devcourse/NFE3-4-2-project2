@@ -4,8 +4,8 @@ import React, { useEffect, useState } from "react";
 import {ListProps, SelectedChildParam, SelectedParam } from "@/types/types";
 import ListCard from "./ListCard";
 import Pagination from "./Pagination";
-import EmptyListCard from "./EmptyListCard";
-import EmptyData from "./EmptyData";
+import EmptyListCard from "@/components/common/EmptyListCard";
+import EmptyData from "@/components/common/EmptyData";
 import Link from "next/link";
 import { usePathname} from "next/navigation";
 
