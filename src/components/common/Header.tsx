@@ -68,7 +68,7 @@ export default function Header() {
       { name: "주요 관광지", href: "/explore/travel" },
       { name: "축제·공연·행사", href: "/explore/festival" },
       { name: "레저 및 체험", href: "/explore/leisure" },
-      { name: "식당 및 숙소", href: "/explore/places/restaurants" },
+      { name: "식당 및 숙소", href: "/explore/places" },
       { name: "커뮤니티", href: "/community" },
    ];
 
