@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import catList from "@/utils/catList.json";
+import Link from "next/link";
+
 
 const getCategoryName = (cat3) => {
    return catList[cat3]?.cat3 || "카테고리 없음";
@@ -31,25 +33,27 @@ const VisitedPlaces = ({ updateCounts }) => { // ✅ updateCounts를 props로 �
             <ul className="space-y-3">
                {visited.map((place) => (
                   <li key={place.contentid} className="border p-4 rounded-md flex items-center gap-4">
+                     <Link href={`/explore/travel/detail?contentId=${place.contentid}`} className="flex-1 flex gap-4">
                      {/* 대표 이미지 */}
-                     <div className="w-24 h-24 bg-gray-200 rounded-md overflow-hidden relative">
-                        {place.firstimage ? (
-                           <Image 
-                              src={place.firstimage} 
-                              alt={place.title} 
-                              layout="fill" 
-                              objectFit="cover"
-                           />
-                        ) : (
-                           <div className="flex items-center justify-center h-full text-gray-500">No Image</div>
-                        )}
-                     </div>
+                        <div className="w-24 h-24 bg-gray-200 rounded-md overflow-hidden relative">
+                           {place.firstimage ? (
+                              <Image 
+                                 src={place.firstimage} 
+                                 alt={place.title} 
+                                 layout="fill" 
+                                 objectFit="cover"
+                              />
+                           ) : (
+                              <div className="flex items-center justify-center h-full text-gray-500">No Image</div>
+                           )}
+                        </div>
 
-                     {/* 여행지 정보 */}
-                     <div className="flex-1">
-                        <h3 className="text-lg font-semibold">{place.title}</h3>
-                        <p className="text-gray-600">{place.addr} | {getCategoryName(place.cat3)}</p>
-                     </div>
+                        {/* 여행지 정보 */}
+                        <div className="flex-1">
+                           <h3 className="text-lg font-semibold">{place.title}</h3>
+                           <p className="text-gray-600">{place.addr} | {getCategoryName(place.cat3)}</p>
+                        </div>
+                     </Link>
 
                      {/* 다녀온 관광지 삭제 버튼 */}
                      <button 
