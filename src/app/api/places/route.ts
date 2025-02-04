@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
-import { Culture, ListProps, Season, Nature } from "@/types/types";
+import { Culture, ListProps, Season, Nature, Restaurant, Accommodtaion } from "@/types/types";
 import seasonList from "@/utils/seasonList.json";
 import cultureList from "@/utils/cultureList.json";
 import natureList from "@/utils/natureList.json";
+import restaurantList from "@/utils/restaurantList.json";
+import accommodationList from "@/utils/accommodationList.json";
 
 const MONGO_URI = "mongodb://127.0.0.1:27017/gangwonGo";
 const DB_NAME = "gangwonGo";
@@ -70,10 +72,20 @@ export async function GET(req: Request) {
                
                break;
             case "restaurant":
-               
+               if(filter){params.sigungucode = filter;}
+               if (["korean", "western", "chinese", "japanese", "cafe", "etc"].includes(detail)){
+                  const selectedFilter = restaurantList.filter(item => item.type === detail);
+                  const cat3Values = selectedFilter.map(item => item.cat3);
+                  params.cat3 = { $in: cat3Values };
+                }
                break;
             case "accommodation":
-               
+               if(filter){params.sigungucode = filter;}
+               if (["hotel", "pension", "motel", "inn", "geusthouse", "hanok", "homestay"].includes(detail)) {
+                  const selectedFilter = accommodationList.filter(item => item.type === detail);
+                  const cat3Values = selectedFilter.map(item => item.cat3);
+                  params.cat3 = { $in: cat3Values };
+                }
                break;
             default:
                break;
@@ -90,7 +102,8 @@ export async function GET(req: Request) {
         title: place.title,
         area: place.addr1,
         contentId: place.contentid,
-        contentTypeId: place.contenttypeid
+        contentTypeId: place.contenttypeid,
+        cat3 : place.cat3
       }));
       
       // 페이지네이션 처리된 결과 반환

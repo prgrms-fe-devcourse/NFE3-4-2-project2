@@ -2,31 +2,37 @@
     {
         "src":  "/images/places/restaurants/korean.png",
         "text": "한식",
+        "type" : "korean",
         "cat3": "A05020100"
      },
      {
         "src":  "/images/places/restaurants/pasta.png",
         "text": "양식",
+        "type" : "western",
         "cat3": "A05020200"
      },
      {
         "src":  "/images/places/restaurants/chinese.png",
         "text": "중식",
-        "cat3": "A05020300"
+        "type" : "chinese",
+        "cat3": "A05020400"
      },
      {
         "src":  "/images/places/restaurants/japanese.png",
         "text": "일식",
-        "cat3": "A05020400"
+        "type" : "japanese",
+        "cat3": "A05020300"
      },
      {
         "src":  "/images/places/restaurants/coffee.png",
         "text": "카페/전통찻집",
-        "cat3": "A05020700"
+        "type" : "cafe",
+        "cat3": "A05020900"
      },
      {
         "src":  "/images/places/restaurants/taco.png",
         "text": "기타",
-        "cat3": "A05020900"
+        "type" : "etc",
+        "cat3": "A05020700"
      }
 ]

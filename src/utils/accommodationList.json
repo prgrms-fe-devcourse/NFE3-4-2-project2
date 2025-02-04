@@ -2,36 +2,43 @@
    {
       "src": "/images/places/accommodations/hotel.png",
       "text": "호텔",
+      "type" : "hotel",
       "cat3" : "B02010100"
    },
    {
       "src": "/images/places/accommodations/pension.png",
       "text": "펜션",
+      "type":"pension",
       "cat3" : "B02010700"
    },
    {
       "src": "/images/places/accommodations/motel.png",
       "text": "모텔",
+      "type":"motel",
       "cat3" : "B02010900"
    },
    {
       "src": "/images/places/accommodations/inn.png",
       "text": "민박",
+      "type": "inn",
       "cat3" : "B02011000"
    },
    {
       "src": "/images/places/accommodations/guestHouse.png",
       "text": "게스트하우스",
+      "type": "geusthouse",
       "cat3" : "B02011100"
    },
    {
       "src": "/images/places/accommodations/hanok.png",
       "text": "한옥",
+      "type": "hanok",
       "cat3" : "B02011600"
    },
    {
       "src": "/images/places/accommodations/homestay.png",
       "text": "홈스테이",
+      "type": "homestay",
       "cat3" : "B02011200"
    }
 ]

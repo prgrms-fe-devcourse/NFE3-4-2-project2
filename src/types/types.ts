@@ -4,6 +4,7 @@ export interface ListProps {
    area: string;
    contentId: number;
    contentTypeId: number;
+   cat3?:string;
 }
 
 export interface TourItem {
@@ -165,7 +166,7 @@ export interface AccommodationRoom {
 export type SeasonType = "spring" | "summer" | "autumn" | "winter" | null;
 
 // 식당 데이터 타입
-export interface Restaurant {
+export interface RestaurantInfo {
    contentid: string; // 음식점 고유 ID
    title: string; // 음식점 상호명
    addr1: string; // 주소
@@ -235,3 +236,5 @@ export interface Festival {
 export type Season = "spring" | "summer" | "autumn" | "winter";
 export type Culture = "museum" | "historic" | "religion" | "etc";
 export type Nature = "beach" | "mountain" | "river" | "forest";
+export type Restaurant = "korean" | "western" | "chinese" | "japanese" | "cafe" | "etc";
+export type Accommodtaion = "hotel" | "pension" | "motel" | "inn" | "geusthouse" | "hanok" | "homestay";

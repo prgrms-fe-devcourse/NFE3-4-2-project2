@@ -10,7 +10,8 @@ import Image from "next/image";
 interface PlaceType{
     src:string,
     text:string,
-    cat3:string
+    cat3:string,
+    type:string,
 }
 
 
@@ -27,13 +28,13 @@ const PlaceDetailBar:React.FC<PlaceSelectedChildParam>=({selected, changeUrl})=>
         }
     }, [selected.cat]);
     
-    return(<div className="max-w-screen-xl mx-auto">
-        <div className="flex gap-6 justify-center items-center mb-[145px]">
-           {nowList.map(({src,text,cat3}) => (
+    return(<div className="max-w-screen-xl mx-auto mt-10 mb-16">
+        <div className="flex gap-6 justify-center items-center">
+           {nowList.map(({src,text,type,cat3}) => (
               <button 
                     key={cat3} 
-                    className={`${style.button} ${selected.detail === cat3 ? style.active : ""}`}
-                    onClick={()=>{changeUrl({...selected, page:1, detail:cat3})}}
+                    className={`${style.button} ${selected.detail === type ? style.active : ""}`}
+                    onClick={()=>{changeUrl({...selected, page:1, detail:type})}}
                 >
                  <div className="items-center justify-center bg-neutral-100">
                     <Image src={src} alt={text} width={128} height={128} />
