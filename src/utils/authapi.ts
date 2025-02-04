@@ -20,6 +20,8 @@ interface User {
    id: string;
    email: string;
    fullName: string;
+   username?: string;
+   profileImage?: string;
 }
 
 /** API 응답 타입 */
@@ -76,37 +78,93 @@ export const checkAuthUser = async (): Promise<ApiResponse<User>> => {
    }
 };
 
-/** 사용자 프로필 저장 API */
-export const saveUserProfile = async (userId: string, profileData: object): Promise<ApiResponse<void>> => {
+/** 사용자 목록 API */
+export const getUsers = async (offset?: number, limit?: number): Promise<ApiResponse<User[]>> => {
    try {
-      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
-      const response: AxiosResponse<void> = await axios.put(`${baseURL}/api/user/profile`, {
-         userId,
-         profile: profileData,
-      }, {
+      const params = {
+         offset,
+         limit,
+      };
+      const response: AxiosResponse<User[]> = await axios.get(`${baseURL}/users/get-users`, { params });
+      return { data: response.data };
+   } catch (error) {
+      throw new Error(`사용자 목록 요청 실패: ${error}`);
+   }
+};
+
+/** 현재 접속 중인 사용자 목록 API */
+export const getOnlineUsers = async (): Promise<ApiResponse<User[]>> => {
+   try {
+      const response: AxiosResponse<User[]> = await axios.get(`${baseURL}/users/online-users`);
+      return { data: response.data };
+   } catch (error) {
+      throw new Error(`현재 접속 중인 사용자 목록 요청 실패: ${error}`);
+   }
+};
+
+/** 특정 사용자 정보 조회 API */
+export const getUserInfo = async (userId: string): Promise<ApiResponse<User>> => {
+   try {
+      const response: AxiosResponse<User> = await axios.get(`${baseURL}/users/${userId}`);
+      return { data: response.data };
+   } catch (error) {
+      throw new Error(`사용자 정보 조회 요청 실패: ${error}`);
+   }
+};
+
+/** 프로필 이미지 변경 API */
+export const uploadProfilePhoto = async (formData: FormData): Promise<ApiResponse<User>> => {
+   try {
+      const response: AxiosResponse<User> = await axios.post(`${baseURL}/users/upload-photo`, formData, {
          headers: {
-            Authorization: `Bearer ${token}`, // 인증 헤더 포함
+            "Content-Type": "multipart/form-data", // 파일 전송을 위한 Content-Type 설정
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`, // JWT 토큰
          },
       });
       return { data: response.data };
    } catch (error) {
-      throw new Error(`프로필 저장 실패: ${error}`);
+      console.error("프로필 이미지 변경 요청 실패", error);
+      throw error; // 에러 던지기
    }
 };
 
-/** 사용자 프로필 불러오기 API */
-export const getUserProfile = async (userId: string): Promise<ApiResponse<{ profile: object }>> => {
+/** 내 정보 변경 API */
+export const updateUserInfo = async (fullName: string, username: string): Promise<ApiResponse<User>> => {
    try {
-      const token = localStorage.getItem("accessToken"); // 토큰 가져오기
-      const response: AxiosResponse<{ profile: object }> = await axios.get(`${baseURL}/api/user/profile?userId=${userId}`, {
-         headers: {
-            Authorization: `Bearer ${token}`,
+      const response: AxiosResponse<User> = await axios.put(
+         `${baseURL}/settings/update-user`,
+         {
+            fullName,
+            username,
          },
-      });
+         {
+            headers: {
+               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+         },
+      );
       return { data: response.data };
    } catch (error) {
-      console.error("❌ 프로필 불러오기 실패:", error);
-      throw new Error(`프로필 불러오기 실패: ${error}`);
+      throw new Error(`내 정보 변경 요청 실패: ${error}`);
    }
 };
 
+/** 비밀번호 변경 API */
+export const updatePassword = async (password: string): Promise<ApiResponse<User>> => {
+   try {
+      const response: AxiosResponse<User> = await axios.put(
+         `${baseURL}/settings/update-password`,
+         {
+            password,
+         },
+         {
+            headers: {
+               Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            },
+         },
+      );
+      return { data: response.data };
+   } catch (error) {
+      throw new Error(`비밀번호 변경 요청 실패: ${error}`);
+   }
+};
