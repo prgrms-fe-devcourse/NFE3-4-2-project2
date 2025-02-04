@@ -156,6 +156,7 @@ export default function Festival() {
                </div>
             </div>
          </div>
+
          {/* FestivalCard에 selectedCat2 전달 */}
          <FestivalCard selected={selected} cat2={selectedCat2} changeUrl={handleUrlChange} />
          <Footer />

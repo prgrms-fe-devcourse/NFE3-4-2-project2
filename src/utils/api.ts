@@ -39,7 +39,11 @@ export default class APIConnect {
     * @param {number} page - 불러올 페이지. 기본값은 1입니다.
     * @returns {Array} 인덱스 이미지, 시군구 정보, 제목으로 구성된 12개의 정보 리스트를 반환합니다.
     */
-   static async getTourAreaList(code: string | undefined, page: number = 1): Promise<TourItemRegion> {
+   static async getTourAreaList(
+      code: string | undefined,
+      page: number = 1,
+      limit: number = 12,
+   ): Promise<TourItemRegion> {
       try {
          const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
             params: {
@@ -311,19 +315,43 @@ export default class APIConnect {
       eventEndDate?: string,
       page: number = 1,
       sigunguCode: string = "",
-   ): Promise<object[]> {
+   ): Promise<{ totalLength: number; items: object[] }> {
       try {
-         console.log("🔍 API 요청 중...");
+         console.log(`🔍 API 요청 중 (페이지: ${page})`);
+
+         // 1차 요청: 전체 개수를 가져오기 위해 한 개만 요청
+         const firstResponse = await axios.get(this._tourDefaultURL + "searchFestival1", {
+            params: {
+               ...this._tourDefaultOption,
+               eventStartDate,
+               eventEndDate,
+               pageNo: 1,
+               areaCode: 32,
+               sigunguCode,
+               listYN: "Y",
+               numOfRows: 1, // -> 1개만 가져와서 totalLength 확인
+            },
+         });
+
+         if (!firstResponse.data || !firstResponse.data.response || !firstResponse.data.response.body) {
+            console.warn("⚠️ API 응답 데이터가 올바르지 않음:", firstResponse.data);
+            return { totalLength: 0, items: [] };
+         }
+
+         const totalLength = firstResponse.data.response.body.totalCount || 0;
+         console.log(`📢 전체 데이터 개수: ${totalLength}`);
+
+         // 2차 요청: totalLength 만큼 데이터를 가져오기
          const response = await axios.get(this._tourDefaultURL + "searchFestival1", {
             params: {
                ...this._tourDefaultOption,
                eventStartDate,
                eventEndDate,
-               pageNo: page,
-               areaCode: 32, // 강원도 지역 코드
+               pageNo: 1, // -> 1페이지에서 전체 데이터 가져오기
+               areaCode: 32,
                sigunguCode,
                listYN: "Y",
-               numOfRows: 50,
+               numOfRows: totalLength, // -> API가 지원하는 최대 데이터 개수만큼 요청
             },
          });
 
@@ -331,24 +359,17 @@ export default class APIConnect {
 
          if (!response.data || !response.data.response || !response.data.response.body) {
             console.warn("⚠️ 응답 데이터 구조가 다릅니다:", response.data);
-            return [];
+            return { totalLength: 0, items: [] };
          }
 
-         // API에서 받아온 데이터 중 cat2 값이 존재하는지 확인
          const festivalList = response.data.response.body.items?.item || [];
-         console.log("📢 필터링 전 전체 데이터 개수:", festivalList.length);
-         console.log(
-            "🧐 모든 cat2 값 출력:",
-            festivalList.map((item) => item.cat2),
-         );
 
-         return festivalList;
+         return { totalLength, items: festivalList };
       } catch (err) {
          console.error("❌ API 요청 실패:", err);
-         throw new Error(`Axios 요청이 실패했습니다: ${err}`);
+         return { totalLength: 0, items: [] };
       }
    }
-
    /**
     * 개별 축제 정보를 가져오는 API
     */

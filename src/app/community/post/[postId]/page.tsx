@@ -8,6 +8,7 @@ import Footer from "@/components/common/Footer";
 import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
 import { checkAuthUser } from "@/utils/authapi";
+import { useSearchParams } from "next/navigation"; // useSearchParams 추가
 
 interface Post {
    _id: string;
@@ -26,6 +27,7 @@ interface Post {
       email: string;
    };
    comments?: CommentResponse[];
+   channelId?: string;
 }
 
 interface CommentResponse {
@@ -39,6 +41,8 @@ export default function PostDetail() {
    const router = useRouter();
    const params = useParams();
    const postId = params?.postId as string;
+   const searchParams = useSearchParams(); // searchParams를 사용하여 URL 파라미터 가져오기
+   const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40"; // 기본값 설정
 
    const [post, setPost] = useState<Post | null>(null);
    const [loading, setLoading] = useState(true);
@@ -156,7 +160,7 @@ export default function PostDetail() {
          }
 
          try {
-            // AxiosResponse 타입을 정확히 지정
+            // 댓글 작성 API 호출
             const response: AxiosResponse<CommentResponse> = await createComment(commentContent, postId, token);
 
             if (!response.data) {
@@ -166,15 +170,16 @@ export default function PostDetail() {
 
             console.log("서버 응답:", response.data); // 서버 응답 확인
 
-            setCommentContent(""); // 입력창 초기화
+            // 댓글 내용 초기화
+            setCommentContent("");
 
-            // 서버에서 받은 댓글 정보를 직접 리스트에 추가
+            // 새로 작성된 댓글을 댓글 목록에 바로 추가
             setComments((prevComments) => [
                ...prevComments,
                {
                   _id: response.data._id,
-                  author: { fullName: response.data.author.fullName }, // 댓글 작성자 이름
-                  comment: response.data.comment, // 댓글 내용은 `comment` 필드를 사용
+                  author: { _id: response.data.author._id, fullName: response.data.author.fullName }, // 댓글 작성자 ID 추가
+                  comment: response.data.comment, // 댓글 내용
                   createdAt: response.data.createdAt, // 댓글 작성 시간
                },
             ]);
@@ -275,7 +280,7 @@ export default function PostDetail() {
                      {/* 이미지 */}
                      <div className="w-full md:w-[40%] h-[300px] overflow-hidden rounded-lg">
                         <Image
-                           src={post.image || "/images/default-placeholder.png"}
+                           src={post.image || "/images/no_img.jpg"}
                            alt={parsedTitle ? parsedTitle.title : "게시글 이미지"}
                            width={600}
                            height={400}
@@ -324,10 +329,11 @@ export default function PostDetail() {
                      {isAuthor && (
                         <div className="flex gap-4">
                            <button
-                              onClick={() => router.push(`/community/edit/${post._id}`)}
+                              onClick={() => router.push(`/community/edit/${post._id}?channelId=${channelId}`)} // 수정 페이지로 이동
                               className="bg-transparent border-2 border-sky-500 text-sky-500 px-4 py-2 rounded-lg shadow hover:bg-sky-500 hover:text-white transition">
                               수정
                            </button>
+
                            <button
                               onClick={handleDelete}
                               className="bg-transparent border-2 border-red-500 text-red-500 px-4 py-2 rounded-lg shadow hover:bg-red-500 hover:text-white transition">
@@ -377,7 +383,7 @@ export default function PostDetail() {
                               {comment.author._id === localStorage.getItem("userId") && (
                                  <button
                                     onClick={() => handleDeleteComment(comment._id, comment.author._id)}
-                                    className="text-red-500 text-sm mt-2">
+                                    className="text-red-500 text-sm mt-2 mx-2">
                                     삭제
                                  </button>
                               )}
