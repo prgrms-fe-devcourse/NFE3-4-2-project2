@@ -14,8 +14,11 @@ import { Swiper, SwiperSlide } from "swiper/react";
 // import { FreeMode, Pagination } from "swiper/modules";
 import SwiperCard from "@/components/main/SwiperCard";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+   const router = useRouter(); // useRouter 사용
+
    return (
       <div className="min-h-screen">
          {/* Header 컴포넌트 추가 */}
@@ -60,7 +63,7 @@ export default function Home() {
                      <button
                         type="button"
                         className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        onClick={() => router.push("/explore/travel?cat=region")}>
                         더보기
                         <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
                      </button>
@@ -73,38 +76,37 @@ export default function Home() {
                         src: "/images/main/circle_Chuncheon.png",
                         alt: "춘천",
                         text: "춘천",
-                        code: 13
+                        code: 13,
                      },
                      {
                         src: "/images/main/circle_Gangneung.png",
                         alt: "강릉",
                         text: "강릉",
-                        code:"1"
+                        code: "1",
                      },
                      {
                         src: "/images/main/circle_Sokcho.png",
                         alt: "속초",
                         text: "속초",
-                        code:"5",
+                        code: "5",
                      },
                      {
                         src: "/images/main/circle_Yangyang.png",
                         alt: "양양",
                         text: "양양",
-                        code:"7",
+                        code: "7",
                      },
                      {
                         src: "/images/main/circle_Jeongseon.png",
                         alt: "정선",
                         text: "정선",
-                        code:"11",
+                        code: "11",
                      },
                   ].map(({ src, alt, text, code }) => (
                      <Link
                         href={`/explore/travel?cat=region&filter=${code}`}
                         key={alt}
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none"
-                        >
+                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none">
                         <Image src={src} alt={alt} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-30">
                            <span className="text-white text-2xl font-semibold">{text}</span>
@@ -127,7 +129,7 @@ export default function Home() {
                      <button
                         type="button"
                         className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        onClick={() => router.push("/explore/places/restaurants")}>
                         더보기
                         <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
                      </button>
@@ -189,7 +191,7 @@ export default function Home() {
                      <button
                         type="button"
                         className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => alert("더보기 버튼 클릭됨")}>
+                        onClick={() => router.push("/community")}>
                         더보기
                         <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
                      </button>

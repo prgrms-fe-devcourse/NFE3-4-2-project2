@@ -1,248 +1,164 @@
 "use client";
 
-import SvgMap from "@/components/main/SvgMap";
-import Footer from "@/components/common/Footer";
-import Header from "@/components/common/Header";
+import { useState } from "react";
 import Image from "next/image";
-import CommunityCard from "@/components/travel/CommunityCard";
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
+import { SelectedParam } from "@/types/types";
+import { useSearchParams, useRouter } from "next/navigation";
+import FestivalCard from "@/components/fetival/FestivalCard";
 
-// Swiper 관련 import
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
-// import { FreeMode, Pagination } from "swiper/modules";
-import SwiperCard from "@/components/main/SwiperCard";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+export default function Festival() {
+   // URL에서 파라미터 읽어오기
+   const searchParams = useSearchParams();
+   const router = useRouter();
 
-export default function Home() {
-   const router = useRouter(); // useRouter 사용
+   const nowCategory = searchParams.get("cat") || "festival"; // 기본값 'festival'
+   const nowPage = Number(searchParams.get("page")) || 1;
+
+   // 상태 관리
+   const [selected, setSelected] = useState<SelectedParam>({
+      cat: nowCategory,
+      page: nowPage,
+   });
+
+   const festivalCategories = [
+      { name: "전체", value: "festival", cat2: null }, // 전체 리스트 보기
+      { name: "축제", value: "festivalList", cat2: "A0207" },
+      { name: "공연/행사", value: "performancEventList", cat2: "A0208" },
+   ];
+
+   // 선택된 카테고리에 해당하는 cat2 값 찾기
+   const selectedCategory = festivalCategories.find((category) => category.value === selected.cat);
+   const selectedCat2 = selectedCategory?.cat2 || null; // 전체 선택 시 null 설정
+
+   // URL 변경 함수
+   const handleUrlChange = (selectedParam: SelectedParam) => {
+      const selectedCategory = festivalCategories.find((category) => category.value === selectedParam.cat);
+      const selectedCat2 = selectedCategory?.cat2 || null; // 전체 선택 시 null
+
+      console.log("🔗 변경될 URL:", `?cat=${selectedParam.cat}&page=${selectedParam.page}&cat2=${selectedCat2}`);
+
+      const queryString = selectedCat2
+         ? `?cat=${selectedParam.cat}&page=${selectedParam.page}&cat2=${selectedCat2}`
+         : `?cat=${selectedParam.cat}&page=${selectedParam.page}`; // 전체 선택 시 cat2 제거
+
+      router.push(queryString, { scroll: false });
+      setSelected(selectedParam);
+   };
+
+   console.log("📌 선택된 cat2 값:", selectedCat2);
 
    return (
       <div className="min-h-screen">
-         {/* Header 컴포넌트 추가 */}
          <Header />
-         {/* ////////////////////////////////// */}
-         <SvgMap />
-         {/* 메인페이지 */}
-         <div className="bg-white mx-auto">
+         {/* 배너 이미지 */}
+         <div className="relative mb-40">
+            <Image
+               width={0}
+               height={0}
+               sizes="100vw"
+               src="/images/festival/festivalBanner.png"
+               alt="banner"
+               className="w-full h-[392px] object-cover"
+            />
+            {/* 배너 텍스트 */}
+            <div className="absolute top-1/2 right-0 left-auto transform -translate-x-1/4 -translate-y-1/2 text-white">
+               <h2 className="text-5xl font-bold text-right">강원도 축제 · 공연 · 행사</h2>
+               <p className="mt-2 font-bold text-5xl text-right">모든 정보를 한곳에서!</p>
+            </div>
+
             {/* 검색창 */}
-            <div className="mb-24 mt-8 flex items-center justify-center w-full">
-               <div className="flex">
-                  <div className="relative w-[992px]">
-                     {/* 검색 입력창 */}
-                     <input
-                        type="text"
-                        placeholder="가을 캠핑 관광지"
-                        className="w-full h-[68px] border-2 text-2xl font-semibold border-sky-500 rounded-full placeholder:text-2xl placeholder:font-semibold focus:border-sky-500 focus:outline-none focus:outline-sky-50 pl-8 pr-12"
-                     />
-                     {/* 검색 버튼 */}
-                     <button
-                        className="absolute right-7 top-1/2 transform -translate-y-1/2"
-                        onClick={() => alert("검색 버튼 클릭됨")}>
-                        <Image src="/icons/main_search.svg" alt="search 아이콘" width={18} height={18} />
-                     </button>
-                  </div>
-               </div>
-            </div>
-
-            {/* 주요 관광지 소개 섹션 */}
-            <div className="max-w-screen-xl mx-auto">
-               <div className="flex w-full mb-[55px] ">
-                  <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
-                     각각의 매력이 살아있는{" "}
-                  </div>
-                  <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">강원도 주요 관광지 </div>
-                  <div className="flex items-center">
-                     <Image src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
-                  </div>
-
-                  {/* 더보기 버튼 */}
-                  <div className="ml-auto flex items-center">
-                     <button
-                        type="button"
-                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => router.push("/explore/travel?cat=region")}>
-                        더보기
-                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
-                     </button>
-                  </div>
-               </div>
-               {/* 이미지 버튼 */}
-               <div className="flex justify-between mb-[145px]">
-                  {[
-                     {
-                        src: "/images/main/circle_Chuncheon.png",
-                        alt: "춘천",
-                        text: "춘천",
-                        code: 13,
-                     },
-                     {
-                        src: "/images/main/circle_Gangneung.png",
-                        alt: "강릉",
-                        text: "강릉",
-                        code: "1",
-                     },
-                     {
-                        src: "/images/main/circle_Sokcho.png",
-                        alt: "속초",
-                        text: "속초",
-                        code: "5",
-                     },
-                     {
-                        src: "/images/main/circle_Yangyang.png",
-                        alt: "양양",
-                        text: "양양",
-                        code: "7",
-                     },
-                     {
-                        src: "/images/main/circle_Jeongseon.png",
-                        alt: "정선",
-                        text: "정선",
-                        code: "11",
-                     },
-                  ].map(({ src, alt, text, code }) => (
-                     <Link
-                        href={`/explore/travel?cat=region&filter=${code}`}
-                        key={alt}
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none">
-                        <Image src={src} alt={alt} fill className="object-cover" />
-                        <div className="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-30">
-                           <span className="text-white text-2xl font-semibold">{text}</span>
-                        </div>
-                     </Link>
-                  ))}
-               </div>
-            </div>
-
-            {/* 강원도 Hot한 식당 섹션 */}
-            <div className="bg-neutral-50 py-12 mb-12">
-               <div className="flex w-full mb-[55px] max-w-screen-xl mx-auto">
-                  <div className="flex items-center text-4xl font-bold text-neutral-800 mr-2">강원도 Hot한 식당 </div>
-                  <div className="flex items-center">
-                     <Image src="/icons/main_yellowPin.svg" alt="bluePin 아이콘" width={30} height={30} />
-                  </div>
-
-                  {/* 더보기 버튼 */}
-                  <div className="ml-auto flex items-center">
-                     <button
-                        type="button"
-                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => router.push("/explore/places/restaurants")}>
-                        더보기
-                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
-                     </button>
-                  </div>
-               </div>
-
-               {/* 스와이퍼 */}
-               <div className="text-center w-screen max-w-full mx-auto">
-                  <Swiper
-                     slidesPerView={4} // 1920px에서 5개 슬라이드 보이도록 설정
-                     centeredSlides={true}
-                     spaceBetween={24} // 슬라이드 간격 설정
-                     loop={true}
-                     className="w-full" // Swiper 전체에 overflow-hidden 추가
-                     breakpoints={{
-                        1920: {
-                           slidesPerView: 6,
-                        },
-                        640: {
-                           slidesPerView: 4,
-                           spaceBetween: 15,
-                        },
-                        320: {
-                           slidesPerView: 1.5,
-                           spaceBetween: 10,
-                        },
-                     }}>
-                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
-                        <SwiperSlide key={index}>
-                           <div
-                              className={`relative aspect-[3/4] rounded-lg overflow-hidden transition-opacity duration-300`}>
-                              <SwiperCard
-                                 imageUrl="/images/main/test.png"
-                                 title="P.E.I coffee"
-                                 name="양양군"
-                                 imageSrc="/images/region/양양군.png"
-                                 isActive={true}
-                                 onClick={() => alert(`버튼 클릭됨: 카드 ${index}`)}
-                                 hashtags={["분위기", "전망좋은카페"]}
-                              />
-                           </div>
-                        </SwiperSlide>
+            <div className="absolute inset-x-0 top-[100%] mx-auto w-[700px] p-7 shadow-xl bg-white rounded-lg z-10 transform -translate-y-1/2">
+               <div className="flex justify-between">
+                  {/* 카테고리 */}
+                  <ul className="flex gap-3 text-lg font-bold cursor-pointer">
+                     {festivalCategories.map((category) => (
+                        <li
+                           key={category.value}
+                           onClick={() =>
+                              handleUrlChange({
+                                 cat: category.value,
+                                 page: 1,
+                              })
+                           }
+                           className={
+                              selected.cat === category.value ? "text-sky-500" : "text-neutral-800 hover:text-sky-500"
+                           }>
+                           {category.name}
+                        </li>
                      ))}
-                  </Swiper>
-               </div>
-            </div>
-
-            {/* '강원도 같이 갈 사람' 섹션 */}
-            <div className="flex max-w-screen-xl mx-auto mb-[55px] flex-col">
-               <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
-                  같이 떠나면 두 배로 즐거운 여행{" "}
-               </div>
-
-               <div className="flex items-center justify-center w-full">
-                  <div className="text-4xl font-bold text-neutral-800">강원도 같이 갈 사람! </div>
-
-                  {/* 더보기 버튼 */}
-                  <div className="ml-auto flex items-center justify-between">
-                     <button
-                        type="button"
-                        className="w-[72px] h-[28.8px] flex items-center justify-center rounded-md bg-white text-sm font-normal text-neutral-500 outline outline-1 outline-neutral-300 hover:bg-neutral-200"
-                        onClick={() => router.push("/community")}>
-                        더보기
-                        <Image src="/icons/main_arrow.svg" alt="arrow 아이콘" width={6} height={12} className="ml-2" />
+                  </ul>
+                  {/* 검색 바 */}
+                  <div className="flex">
+                     <div className="relative">
+                        <input
+                           type="text"
+                           placeholder="검색어를 입력해 주세요."
+                           className="h-[32px] w-72 p-3 pr-10 border border-sky-500 rounded-lg placeholder:text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                        />
+                        <svg
+                           aria-hidden="true"
+                           fill="currentColor"
+                           viewBox="0 0 20 20"
+                           className="w-4 h-4 absolute top-1/2 right-3 transform -translate-y-1/2 text-sky-500">
+                           <path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
+                        </svg>
+                     </div>
+                     <button className="h-[32px] px-4 text-white bg-sky-500 text-sm font-medium rounded-lg ml-2">
+                        검색
                      </button>
                   </div>
                </div>
-            </div>
-
-            {/* 모집 카드 */}
-            <div className="flex justify-center items-center mb-44">
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                  <CommunityCard
-                     imageUrl="/images/community/surfing.png"
-                     title="3기 양양 서핑 동호회 모집"
-                     location="양양"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/galaxy.png"
-                     title="포토그래퍼와 함께 떠나는 강원도 밤하늘 여행"
-                     location="영월"
-                     buttonText="마감"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/climbing.png"
-                     title="인천에서 출발하는 설악산 당일치기"
-                     location="속초"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/dog.png"
-                     title="강릉 댕댕클럽카페 정기 모임 (누구나 환영!)"
-                     location="강릉"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/snow.png"
-                     title="2025 제32회 태백산 눈축제"
-                     location="태백"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/coffee.png"
-                     title="커피 투어 참가자 모집 (무료)"
-                     location="강릉"
-                     buttonText="마감"
-                  />
+               <div className="flex mt-4">
+                  <div className="w-[150px] mr-2">
+                     <p className="text-neutral-500 text-sm pb-2">지역</p>
+                     <select className="w-full bg-transparent focus:outline-none border-b border-sky-500">
+                        <option className="text-neutral-800">전체</option>
+                        <option className="text-neutral-800">원주시</option>
+                        <option className="text-neutral-800">춘천시</option>
+                        <option className="text-neutral-800">속초시</option>
+                        <option className="text-neutral-800">태백시</option>
+                        <option className="text-neutral-800">삼척시</option>
+                        <option className="text-neutral-800">동해시</option>
+                        <option className="text-neutral-800">강릉시</option>
+                        <option className="text-neutral-800">고성군</option>
+                        <option className="text-neutral-800">홍천군</option>
+                        <option className="text-neutral-800">영월군</option>
+                        <option className="text-neutral-800">철원군</option>
+                        <option className="text-neutral-800">인제군</option>
+                        <option className="text-neutral-800">횡성군</option>
+                        <option className="text-neutral-800">평창군</option>
+                        <option className="text-neutral-800">정선군</option>
+                        <option className="text-neutral-800">양양군</option>
+                        <option className="text-neutral-800">화천군</option>
+                        <option className="text-neutral-800">양구군</option>
+                     </select>
+                  </div>
+                  <div className="w-[150px]">
+                     <p className="text-neutral-500 text-sm pb-2">날짜</p>
+                     <select className="w-full bg-transparent focus:outline-none border-b border-sky-500">
+                        <option className="text-neutral-800">전체</option>
+                        <option className="text-neutral-800">1월</option>
+                        <option className="text-neutral-800">2월</option>
+                        <option className="text-neutral-800">3월</option>
+                        <option className="text-neutral-800">4월</option>
+                        <option className="text-neutral-800">5월</option>
+                        <option className="text-neutral-800">6월</option>
+                        <option className="text-neutral-800">7월</option>
+                        <option className="text-neutral-800">8월</option>
+                        <option className="text-neutral-800">9월</option>
+                        <option className="text-neutral-800">10월</option>
+                        <option className="text-neutral-800">11월</option>
+                        <option className="text-neutral-800">12월</option>
+                     </select>
+                  </div>
                </div>
             </div>
          </div>
-         {/* ////////////////////////////////// */}
-         {/* Footer 컴포넌트 추가 */}
+
+         {/* FestivalCard에 selectedCat2 전달 */}
+         <FestivalCard selected={selected} cat2={selectedCat2} changeUrl={handleUrlChange} />
          <Footer />
       </div>
    );
