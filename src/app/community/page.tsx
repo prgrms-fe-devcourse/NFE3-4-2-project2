@@ -88,23 +88,23 @@ export default function Community() {
                <h2 className="text-[48px] font-semibold mt-2">강원도 여행 동행 모집</h2>
             </div>
          </div>
-         <div className="max-w-[1280px] w-full mx-auto px-4 py-16">
+         <div className="max-w-[1280px] min-h-[700px] w-full mx-auto px-4 py-16 flex-1">
             <div className="flex justify-between items-center mb-8">
-               <h3 className="text-[32px] font-semibold text-gray-800">📌 여행 동행 모집 게시판</h3>
+               <h3 className="text-[32px] font-semibold text-gray-800">🌟 여행 동행 모집 게시판</h3>{" "}
                {isLoggedIn && (
                   <button
                      onClick={() => router.push(`/community/write?channelId=${channelId}`)}
-                     className="w-[200px] h-[50px] bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md">
-                     ✏️ 동행 모집 글 작성하기
+                     className="w-[200px] h-[50px] bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md transform hover:translate-y-1">
+                     ✏️ 동행 모집 글쓰기
                   </button>
                )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                {loadingPosts ? (
-                  <p className="text-gray-500 text-center w-full">게시글을 불러오는 중...</p>
+                  <p className="text-gray-500 text-center col-span-3">게시글을 불러오는 중...</p>
                ) : currentPosts.length > 0 ? (
                   currentPosts.map((post, index) => {
-                     const postStatus = parseTitle(post.title); // title에서 status만 추출
+                     const postStatus = parseTitle(post.title);
                      const postTitle = getTitle(post.title);
                      return (
                         <div
@@ -112,7 +112,7 @@ export default function Community() {
                            className="flex flex-col bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition border border-gray-300 hover:border-sky-500">
                            <div className="w-full h-[200px] relative mb-4">
                               <Image
-                                 src={post.image || "/images/break.png"}
+                                 src={post.image || "/images/no_img.jpg"}
                                  alt={post.title}
                                  layout="fill"
                                  objectFit="cover"
@@ -125,7 +125,6 @@ export default function Community() {
                            </p>
                            <p className="text-gray-700 text-sm line-clamp-2 mb-4">{post.content}</p>
 
-                           {/* 모집 상태 버튼과 자세히 보기 버튼 나란히 */}
                            <div className="flex justify-between items-center mb-4 gap-4">
                               {postStatus && (
                                  <button
@@ -151,7 +150,9 @@ export default function Community() {
                      );
                   })
                ) : (
-                  <p className="text-gray-500 text-center w-full">등록된 게시글이 없습니다.</p>
+                  <div className="flex flex-col items-center justify-center col-span-3 my-auto">
+                     <p className="text-gray-500 text-center mb-4">등록된 게시글이 없습니다.</p>
+                  </div>
                )}
             </div>
             {totalPages > 1 && (

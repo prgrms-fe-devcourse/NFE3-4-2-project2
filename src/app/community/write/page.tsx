@@ -114,9 +114,9 @@ export default function WritePage() {
             content,
             fee,
             people,
-            status, // 자동 설정된 모집 상태
-            date, // 모집 시작일
-            endDate, // 모집 마감일
+            status,
+            date,
+            endDate,
             token,
          );
          console.log("📌 서버 응답:", response.data);
@@ -192,6 +192,7 @@ export default function WritePage() {
                <input
                   type="text" // "text"로 변경하여 숫자만 입력되도록 정규식으로 제한
                   value={fee}
+                  placeholder="1원 이상 입력해 주세요"
                   onChange={handleFeeChange}
                   className="w-full p-3 border border-gray-300 rounded-md"
                   required

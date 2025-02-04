@@ -8,6 +8,7 @@ import Footer from "@/components/common/Footer";
 import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
 import { checkAuthUser } from "@/utils/authapi";
+import { useSearchParams } from "next/navigation"; // useSearchParams 추가
 
 interface Post {
    _id: string;
@@ -26,6 +27,7 @@ interface Post {
       email: string;
    };
    comments?: CommentResponse[];
+   channelId?: string;
 }
 
 interface CommentResponse {
@@ -39,6 +41,8 @@ export default function PostDetail() {
    const router = useRouter();
    const params = useParams();
    const postId = params?.postId as string;
+   const searchParams = useSearchParams(); // searchParams를 사용하여 URL 파라미터 가져오기
+   const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40"; // 기본값 설정
 
    const [post, setPost] = useState<Post | null>(null);
    const [loading, setLoading] = useState(true);
@@ -275,7 +279,7 @@ export default function PostDetail() {
                      {/* 이미지 */}
                      <div className="w-full md:w-[40%] h-[300px] overflow-hidden rounded-lg">
                         <Image
-                           src={post.image || "/images/default-placeholder.png"}
+                           src={post.image || "/images/no_img.jpg"}
                            alt={parsedTitle ? parsedTitle.title : "게시글 이미지"}
                            width={600}
                            height={400}
@@ -324,10 +328,11 @@ export default function PostDetail() {
                      {isAuthor && (
                         <div className="flex gap-4">
                            <button
-                              onClick={() => router.push(`/community/edit/${post._id}`)}
+                              onClick={() => router.push(`/community/edit/${post._id}?channelId=${channelId}`)} // 수정 페이지로 이동
                               className="bg-transparent border-2 border-sky-500 text-sky-500 px-4 py-2 rounded-lg shadow hover:bg-sky-500 hover:text-white transition">
                               수정
                            </button>
+
                            <button
                               onClick={handleDelete}
                               className="bg-transparent border-2 border-red-500 text-red-500 px-4 py-2 rounded-lg shadow hover:bg-red-500 hover:text-white transition">
