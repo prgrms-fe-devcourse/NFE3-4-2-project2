@@ -18,13 +18,13 @@ import "swiper/css/navigation";
 
 import { useSearchParams } from "next/navigation";
 
-// import { useRouter, useSearchParams } from "next/navigation";
-
 const catList = catListJson as CatList;
 
 const AccommodationDetailPage: React.FC = () => {
-   // const router = useRouter();
+   
    const params = useSearchParams();
+   const key = Number(params.get("contentId"));
+   
 
    const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
    
@@ -34,11 +34,13 @@ const AccommodationDetailPage: React.FC = () => {
 
    const [infoList, setAccommodationInfo] = useState<AccommodationDetailInfo | null>(null);
    const [imgList, setImgList] = useState<TourImg[]>([]);
+   const [isFavorite, setIsFavorite] = useState(false);
+   const [isVisited, setIsVisited] = useState(false);
 
    useEffect(() => {
       const loadData = async () => {
-         const key = Number(params.get("contentId"));
-         const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(contentId);
+         
+         const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(key);
          const img = await APIConnect.getTourImg(key);
 
          setAccommodationInfo(info);
@@ -47,6 +49,13 @@ const AccommodationDetailPage: React.FC = () => {
 
       loadData();
 
+      // 🔥 찜한 관광지 & 다녀온 관광지 상태 확인
+      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      setIsFavorite(favorites.some((place) => place.contentid === key));
+
+      const visited = JSON.parse(localStorage.getItem("visited") || "[]");
+      setIsVisited(visited.some((place) => place.contentid === key));
+
       if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
          swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
          swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
@@ -54,6 +63,39 @@ const AccommodationDetailPage: React.FC = () => {
          swiperRef.current.navigation.update();
       }
    }, []);
+
+   // ✅ 찜하기 버튼 핸들러 (토글 기능)
+   const handleFavoriteToggle = () => {
+      let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+      if (isFavorite) {
+         // 🔥 이미 찜한 경우 → 제거
+         favorites = favorites.filter((place) => place.contentid !== key);
+      } else {
+         // ✅ 찜 추가
+         favorites.push(infoList);
+      }
+
+      localStorage.setItem("favorites", JSON.stringify(favorites));
+      setIsFavorite(!isFavorite);
+   };
+
+   // ✅ 다녀온 관광지 버튼 핸들러 (토글 기능)
+   const handleVisitedToggle = () => {
+      let visited = JSON.parse(localStorage.getItem("visited") || "[]");
+
+      if (isVisited) {
+         // 🔥 이미 방문한 경우 → 제거
+         visited = visited.filter((place) => place.contentid !== key);
+      } else {
+         // ✅ 방문 추가
+         visited.push(infoList);
+      }
+
+      localStorage.setItem("visited", JSON.stringify(visited));
+      setIsVisited(!isVisited);
+   };
+
 
    const getContentCategory = (key: string | undefined) => {
       return (
@@ -168,14 +210,34 @@ const AccommodationDetailPage: React.FC = () => {
                   </div>
                {/* Buttons */}
                <div className="flex items-center space-x-4">
-                  <button className="w-52 h-13 bg-sky-500 text-white py-2 rounded-lg hover:bg-sky-600 border border-sky-500">
-                     <span className="font-semibold text-lg leading-7 tracking-normal">예매하기</span>
+                  {/* 다녀온 관광지 추가 버튼 */}
+                  <button
+                     className={`w-72 h-13 py-2 rounded-lg border ${
+                        isVisited ? "bg-gray-300 text-black" : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                     }`}
+                     onClick={handleVisitedToggle}
+                  >
+                     <span className="font-semibold text-lg leading-7 tracking-normal">
+                        {isVisited ? "다녀온 관광지" : "다녀온 관광지 추가"}
+                     </span>
                   </button>
+
+                  {/* 리뷰 작성 버튼 */}
                   <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
                      <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
                   </button>
-                  <button className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center">
-                     <Image src="/images/heart.png" alt="찜하기" width={24} height={24} />
+
+                  {/* 찜하기 버튼 */}
+                  <button
+                     className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
+                     onClick={handleFavoriteToggle}
+                  >
+                     <Image
+                        src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
+                        alt="찜하기"
+                        width={24}
+                        height={24}
+                     />
                      <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
                   </button>
                </div>

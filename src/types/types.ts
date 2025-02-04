@@ -181,9 +181,19 @@ export interface SelectedParam {
    filter?: string | null;
    page: number;
 }
+
+export interface PlaceParam extends SelectedParam{
+   detail?:string | null
+}
+
 export interface SelectedChildParam {
    selected: SelectedParam;
    changeUrl: (url: SelectedParam) => void;
+}
+
+export interface PlaceSelectedChildParam {
+   selected: PlaceParam;
+   changeUrl: (url: PlaceParam) => void;
 }
 
 // 축제 데이터 타입

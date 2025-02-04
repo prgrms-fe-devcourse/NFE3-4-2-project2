@@ -59,13 +59,12 @@ export default function Signup() {
    return (
       <div className="min-h-screen">
          <Header />
-         <div className="space-y-16 mt-20">
-            <div className="mx-auto max-w-460px text-center">
+         <div className="space-y-8 my-20 max-w-screen-xl mx-auto">
+            <div className="mx-auto text-center">
                <div className="text-3xl font-bold text-neutral-800">강원도 여행이 쉬워지는 첫걸음!</div>
                <div className="text-3xl font-bold text-neutral-800">Gangwon Go!</div>
             </div>
-
-            <form onSubmit={handleSubmit} className="mx-auto max-w-460px">
+            <form onSubmit={handleSubmit} className="mx-auto max-w-screen-sm">
                <div className="grid grid-cols-1 gap-y-4">
                   <input
                      id="email"
