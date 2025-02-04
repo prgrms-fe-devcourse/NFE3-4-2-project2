@@ -1,8 +1,6 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { checkAuthUser } from "@/utils/authapi";
+import { checkAuthUser, logout } from "@/utils/authapi"; // logout 함수 import
 
 export default function Header() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -45,13 +43,25 @@ export default function Header() {
       }
    }, []);
 
-   const handleLogout = () => {
-      localStorage.removeItem("accessToken");
-      localStorage.removeItem("nickname");
-      setIsLoggedIn(false);
-      setNickname(null);
-      alert("로그아웃 되었습니다.");
-      window.location.replace("/");
+   const handleLogout = async () => {
+      try {
+         // 서버에서 로그아웃 요청 처리
+         await logout(); // 서버 로그아웃 호출
+
+         // 클라이언트에서 로컬스토리지 항목 제거
+         localStorage.removeItem("accessToken");
+         localStorage.removeItem("nickname");
+
+         // 상태 업데이트
+         setIsLoggedIn(false);
+         setNickname(null);
+
+         alert("로그아웃 되었습니다.");
+         window.location.replace("/"); // 홈 화면으로 리다이렉션
+      } catch (error) {
+         console.error("로그아웃 실패:", error);
+         alert("로그아웃에 실패했습니다.");
+      }
    };
 
    const menus = [

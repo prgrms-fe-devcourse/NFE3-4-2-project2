@@ -12,6 +12,7 @@ interface LoginResponse {
    token: string;
    user: {
       fullName: string;
+      _id: string; // 사용자 ID 추가
    };
 }
 
@@ -26,6 +27,7 @@ export default function Login() {
       setFormData({ ...formData, [name]: value });
    };
 
+   // Login.tsx 수정
    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
 
@@ -38,9 +40,10 @@ export default function Login() {
          const data: LoginResponse = response.data;
          console.log("✅ 로그인 성공:", data);
 
-         // ✅ 토큰을 "accessToken"으로 저장하여 글 작성 시 정상적으로 인식되도록 수정
+         // ✅ 토큰과 사용자 ID를 로컬스토리지에 저장
          if (data.token) {
             localStorage.setItem("accessToken", data.token);
+            localStorage.setItem("userId", data.user._id); // 사용자 ID 저장
             localStorage.setItem("nickname", data.user.fullName || "사용자");
          }
 

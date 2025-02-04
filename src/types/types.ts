@@ -1,4 +1,3 @@
-import { SelectedParam } from './types';
 export interface ListProps {
    imageUrl: string;
    title: string;
@@ -16,9 +15,9 @@ export interface TourItem {
    contenttypeid: number;
 }
 
-export interface TourItemRegion{
-   totalLength : string,
-   items : TourItem[];
+export interface TourItemRegion {
+   totalLength: string;
+   items: TourItem[];
 }
 
 export interface TourDetailInfo {
@@ -101,7 +100,7 @@ export interface RestaurantDetailInfo {
 export interface AccommodationItem {
    cat2: string;
    cat3: string;
-   cat3Text?: string | undefined; 
+   cat3Text?: string | undefined;
    contentid: number;
    title: string;
    addr1: string;
@@ -180,7 +179,7 @@ export interface RestaurantListResponse {
 export interface SelectedParam {
    cat: string | null;
    filter?: string | null;
-   page:number;
+   page: number;
 }
 
 export interface PlaceParam extends SelectedParam{
@@ -195,4 +194,30 @@ export interface SelectedChildParam {
 export interface PlaceSelectedChildParam {
    selected: PlaceParam;
    changeUrl: (url: PlaceParam) => void;
+}
+
+// 축제 데이터 타입
+export interface Festival {
+   addr1?: string;
+   addr2?: string;
+   areacode?: string;
+   booktour?: string;
+   cat1?: string; // 대분류
+   cat2?: string; // 중분류
+   cat3?: string; // 소분류
+   contentid: string;
+   contenttypeid: string;
+   cpyrhtDivCd?: string;
+   createdtime?: string;
+   eventenddate?: string;
+   eventstartdate?: string;
+   firstimage?: string;
+   firstimage2?: string;
+   mapx?: string;
+   mapy?: string;
+   mlevel?: string;
+   modifiedtime?: string;
+   sigungucode?: string;
+   tel?: string;
+   title: string;
 }
