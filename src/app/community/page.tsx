@@ -93,6 +93,10 @@ export default function Community() {
                alt="banner"
                className="w-full h-[392px] object-cover"
             />
+
+            {/* 어두운 오버레이 */}
+            <div className="absolute inset-0 bg-black bg-opacity-50"></div>
+
             <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 text-white text-center">
                <p className="text-[36px] font-medium">함께하는 여행, 특별한 동행</p>
                <h2 className="text-[48px] font-semibold mt-2">강원도 여행 동행 모집</h2>
