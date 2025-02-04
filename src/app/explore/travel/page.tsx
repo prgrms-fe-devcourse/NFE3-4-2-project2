@@ -22,10 +22,11 @@ const TravelPage: React.FC = () => {
 
    // URL 변경 함수 (props로 전달)
    const handleUrlChange = (selectedParam: SelectedParam) => {
-      const queryString = selectedParam.filter
-         ? `?cat=${selectedParam.cat}&filter=${selectedParam.filter}&page=${selectedParam.page}`
-         : `?cat=${selectedParam.cat}&page=${selectedParam.page}`;
-      router.push(queryString, { scroll: false });
+      let queryString = `?cat=${selectedParam.cat}&page=${selectedParam.page}`
+      if(selectedParam.filter){
+            queryString += `&filter=${selectedParam.filter}`
+      }
+      router.replace(queryString, { scroll: false });
       setSelected(selectedParam);
    };
 

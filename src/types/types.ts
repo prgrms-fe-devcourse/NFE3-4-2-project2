@@ -70,6 +70,16 @@ export interface CatList {
    };
 }
 
+export interface PlaceItem{
+   addr1:string;
+   firstimage?: string;
+   firstimage2?: string;
+   title: string;
+   contentid: number;
+   contenttypeid: number;
+   cat3:string;
+}
+
 export interface RestaurantDetailInfo {
    contentid: string;
    cat2: string;
@@ -221,3 +231,7 @@ export interface Festival {
    tel?: string;
    title: string;
 }
+
+export type Season = "spring" | "summer" | "autumn" | "winter";
+export type Culture = "museum" | "historic" | "religion" | "etc";
+export type Nature = "beach" | "mountain" | "river" | "forest";
