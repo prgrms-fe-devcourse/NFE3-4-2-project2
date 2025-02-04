@@ -3,13 +3,15 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Edit } from "lucide-react";
+import { getUserProfile, saveUserProfile } from "@/utils/authapi"; // ✅ API 연동
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
+import ProfileEditModal from "@/components/common/ProfileEditModal";
 import FavoritePlaces from "./favorites/page";
 import VisitedPlaces from "./visited/page";
 
 const Sidebar = ({ setActiveSection, activeSection }) => (
-   <nav className="bg-gray-100 p-4 rounded-lg w-full max-w-[240px] max-h-[300px]">
+   <nav className="bg-gray-100 p-4 rounded-lg w-full max-w-[240px] max-h-[220px]">
       <ul className="space-y-3">
          {[
             { label: "내 프로필", key: "profile" },
@@ -28,11 +30,6 @@ const Sidebar = ({ setActiveSection, activeSection }) => (
                {item.label}
             </li>
          ))}
-         <li
-            className="text-gray-600 cursor-pointer p-2 rounded-md hover:text-red-500 hover:bg-gray-200"
-            onClick={() => alert("로그아웃 되었습니다.")}>
-            🚪 로그아웃
-         </li>
       </ul>
    </nav>
 );
@@ -41,7 +38,7 @@ const ProfileCard = ({ profile, onEdit }) => (
    <div className="p-6 shadow-md bg-white rounded-lg w-full max-w-[800px] min-h-[450px]">
       <div className="flex items-center justify-between">
          <div className="flex items-center space-x-4">
-            <div className="w-16 h-16 bg-gray-300 rounded-full" />
+            <img src={profile.image} alt="프로필" className="w-16 h-16 rounded-full object-cover" />
             <div>
                <h2 className="text-xl font-semibold">{profile.name}</h2>
                <p className="text-gray-600">{profile.email}</p>
@@ -63,7 +60,7 @@ const ProfileCard = ({ profile, onEdit }) => (
 );
 
 const StatsCard = ({ label, count }) => (
-   <div className="p-4 text-center shadow bg-white rounded-lg cursor-pointer hover:bg-gray-100 w-[180px] min-h-[120px]">
+   <div className="w-[180px] h-[120px] shadow bg-white rounded-lg cursor-pointer hover:bg-gray-100 flex flex-col items-center justify-center text-center">
       <p className="text-gray-500">{label}</p>
       <p className="text-xl font-bold">{count}개</p>
    </div>
@@ -71,18 +68,67 @@ const StatsCard = ({ label, count }) => (
 
 export default function MyPage() {
    const [profile, setProfile] = useState({
-      name: "홍길동",
-      email: "hongildong@email.com",
+      image: "/images/default-profile.png",
+      name: "",
+      email: "",
       travelStyle: "문화 체험, 편안한 여행",
       bio: "자기 소개를 입력해주세요.",
-      savedPlaces: 13,
+      savedPlaces: 0,
       travelCourses: 0,
       companions: 0,
       reviews: 0,
    });
-   const [activeSection, setActiveSection] = useState("profile");
 
-   // ✅ `localStorage`에서 찜한 관광지 & 다녀온 관광지 개수를 가져오기
+   const [activeSection, setActiveSection] = useState("profile");
+   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+   useEffect(() => {
+      const storedName = localStorage.getItem("nickname") || "사용자";
+      const storedEmail = localStorage.getItem("userEmail") || "example@email.com";
+      const userId = localStorage.getItem("userId");
+
+      if (userId) {
+         getUserProfile(userId).then((data) => {
+            if (data) {
+               setProfile((prev) => ({
+                  ...prev,
+                  travelStyle: data.profile.travelStyle || prev.travelStyle,
+                  bio: data.profile.bio || prev.bio,
+               }));
+            }
+         });
+      }
+
+      setProfile((prev) => ({
+         ...prev,
+         name: storedName,
+         email: storedEmail,
+      }));
+   }, []);
+
+   // ✅ 프로필 수정 버튼 클릭 시
+   const handleEdit = () => {
+      setIsEditModalOpen(true);
+   };
+
+   // ✅ 프로필 저장 핸들러 (API 호출)
+   const handleSaveProfile = async (updatedProfile) => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) {
+         alert("로그인이 필요합니다.");
+         return;
+      }
+
+      try {
+         await saveUserProfile(userId, updatedProfile);
+         setProfile(updatedProfile);
+         alert("프로필이 저장되었습니다!");
+      } catch (error) {
+         alert("프로필 저장에 실패했습니다.");
+      }
+   };
+
+   // ✅ 찜한 관광지 & 다녀온 관광지 개수 업데이트
    const updateCounts = () => {
       const savedPlaces = JSON.parse(localStorage.getItem("favorites") || "[]").length;
       const visitedPlaces = JSON.parse(localStorage.getItem("visited") || "[]").length;
@@ -101,10 +147,6 @@ export default function MyPage() {
       window.addEventListener("storage", updateCounts);
       return () => window.removeEventListener("storage", updateCounts);
    }, []);
-
-   const handleEdit = () => {
-      alert("프로필 수정 기능은 개발 중");
-   };
 
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
@@ -128,8 +170,20 @@ export default function MyPage() {
                </div>
             </div>
          </div>
+
+         {/* ✅ 프로필 수정 모달 */}
+         <ProfileEditModal 
+            isOpen={isEditModalOpen} 
+            onClose={() => setIsEditModalOpen(false)} 
+            profile={profile} 
+            onSave={handleSaveProfile} 
+         />
+
          <Footer />
       </div>
    );
 }
+
+
+
 
