@@ -1,0 +1,37 @@
+.button {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+}
+.button, .button *{
+    transition: all .3s;
+}
+.button div{
+    position: relative;
+    width: 110px;
+    aspect-ratio: 1/1;
+    border-radius: 9999px;
+    display: flex;
+    flex-flow: column;
+    justify-items: center;
+}
+.button:hover div, .button.active div{
+    border: 1px solid #0ea5e9;
+    background-color: white;
+    box-shadow: 0 4px 6px -1px #0000001a, 0 2px 4px -2px #0000001a;
+}
+
+.button div img{
+    max-width: 60px; max-height: 60px;
+    filter: brightness(0%) grayscale(100%);
+}
+.button:hover div img, .button.active div img{
+    filter: brightness(100%) grayscale(0%);
+}
+
+.button span{
+    font-weight: 600;
+}
+.button:hover span, .button.active span{
+    color:#0ea5e9;
+}
