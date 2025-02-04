@@ -32,7 +32,7 @@ interface Post {
 
 interface CommentResponse {
    _id: string;
-   author: { _id: string; fullName: string };
+   author: { _id: string; fullName: string; username: string };
    comment: string;
    createdAt: string;
 }
@@ -178,7 +178,7 @@ export default function PostDetail() {
                ...prevComments,
                {
                   _id: response.data._id,
-                  author: { _id: response.data.author._id, fullName: response.data.author.fullName }, // 댓글 작성자 ID 추가
+                  author: { _id: response.data.author._id, fullName: response.data.author.fullName, username: response.data.author.username }, // 댓글 작성자 ID 추가
                   comment: response.data.comment, // 댓글 내용
                   createdAt: response.data.createdAt, // 댓글 작성 시간
                },
@@ -260,21 +260,18 @@ export default function PostDetail() {
                         {parsedTitle ? parsedTitle.title : "제목 없음"}
                      </h1>
                   </div>
-
                   {/* 작성자 정보 */}
                   <div className="text-gray-500 text-sm mb-4">
                      <p>
                         <strong>작성자:</strong> {post.author.fullName} ({post.author.email})
                      </p>
                   </div>
-
                   {/* 게시글 작성일 */}
                   <div className="text-gray-500 text-sm mb-6">
                      <p>
                         <strong>작성일:</strong> {formatDate(post.createdAt)}
                      </p>
                   </div>
-
                   {/* 이미지 & 정보 섹션 */}
                   <div className="flex flex-wrap md:flex-nowrap gap-6 mb-8">
                      {/* 이미지 */}
@@ -317,12 +314,10 @@ export default function PostDetail() {
                         </div>
                      </div>
                   </div>
-
                   {/* 본문 내용 */}
                   <div className="text-gray-700 leading-relaxed whitespace-pre-line mb-12">
                      {parsedTitle ? parsedTitle.content : post.content}
                   </div>
-
                   {/* 돌아가기 버튼 */}
                   <div className="flex justify-between items-center mb-4">
                      {/* 수정, 삭제 버튼 (작성자만 보이게) */}
@@ -349,9 +344,7 @@ export default function PostDetail() {
                         목록보기
                      </button>
                   </div>
-
                   <hr className="my-8 border-t-2 border-gray-300" />
-
                   {/* 댓글 입력 */}
                   <div className="mt-14">
                      <label className="block text-lg font-semibold mb-2">Message</label>
@@ -370,12 +363,14 @@ export default function PostDetail() {
                      </div>
                   </div>
 
-                  {/* 댓글 목록 */}
                   <div className="mt-6">
                      {comments.length > 0 ? (
                         comments.map((comment) => (
                            <div key={comment._id} className="mb-4">
-                              <div className="font-semibold text-gray-700">{comment.author.fullName}</div>
+                              <div className="font-semibold text-gray-700">
+                                 {/* 댓글 작성자의 username을 표시 */}
+                                 {comment.author.username || comment.author.fullName}
+                              </div>
                               <p className="text-gray-600">{comment.comment}</p>
                               <span className="text-sm text-gray-400">{formatDate(comment.createdAt)}</span>
 
