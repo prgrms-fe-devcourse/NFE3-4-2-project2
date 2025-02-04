@@ -1,0 +1,32 @@
+[
+    {
+        "src":  "/images/places/restaurants/korean.png",
+        "text": "한식",
+        "cat3": "A05020100"
+     },
+     {
+        "src":  "/images/places/restaurants/pasta.png",
+        "text": "양식",
+        "cat3": "A05020200"
+     },
+     {
+        "src":  "/images/places/restaurants/chinese.png",
+        "text": "중식",
+        "cat3": "A05020300"
+     },
+     {
+        "src":  "/images/places/restaurants/japanese.png",
+        "text": "일식",
+        "cat3": "A05020400"
+     },
+     {
+        "src":  "/images/places/restaurants/coffee.png",
+        "text": "카페/전통찻집",
+        "cat3": "A05020700"
+     },
+     {
+        "src":  "/images/places/restaurants/taco.png",
+        "text": "이색음식점",
+        "cat3": "A05020900"
+     }
+]
