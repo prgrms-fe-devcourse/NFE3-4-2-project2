@@ -115,8 +115,8 @@ export default function WritePage() {
             fee,
             people,
             status,
-            date,
-            endDate,
+            date, 
+            endDate, 
             token,
          );
          console.log("📌 서버 응답:", response.data);
