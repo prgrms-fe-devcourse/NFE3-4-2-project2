@@ -1,8 +1,11 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { checkAuthUser, updateUserInfo, uploadProfilePhoto } from "@/utils/authapi"; // api 호출 함수
+import { getCookie } from "@/utils/cookie";
 import Header from "@/components/common/Header"; // 헤더 컴포넌트
 import Footer from "@/components/common/Footer"; // 푸터 컴포넌트
+import FavoritePlaces from "./favorites/page"; 
+import VisitedPlaces from "./visited/page";
 import axios from "axios";
 
 const MyPage: React.FC = () => {
@@ -12,6 +15,10 @@ const MyPage: React.FC = () => {
    const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
    const [isEditing, setIsEditing] = useState<boolean>(false); // 수정 모드 상태
    const [activeMenu, setActiveMenu] = useState<string>("내 프로필"); // 사이드바 메뉴 활성화 상태
+
+   // ✅ 찜한 여행지 & 다녀온 여행지 개수 상태
+   const [favoriteCount, setFavoriteCount] = useState<number>(0);
+   const [visitedCount, setVisitedCount] = useState<number>(0);
 
    // 현재 로그인한 사용자 정보 불러오기
    useEffect(() => {
@@ -26,6 +33,10 @@ const MyPage: React.FC = () => {
       };
 
       fetchUserInfo();
+
+      // ✅ 쿠키에서 찜한 여행지 & 다녀온 여행지 개수 가져오기
+      setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length);
+      setVisitedCount(JSON.parse(getCookie("visited") || "[]").length);
    }, []);
 
    // 사용자 닉네임 수정
@@ -117,14 +128,14 @@ const MyPage: React.FC = () => {
                            activeMenu === "찜한 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("찜한 여행지")}>
-                        찜한 여행지
+                        찜한 여행지 ({favoriteCount}) 
                      </li>
                      <li
                         className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
                            activeMenu === "다녀온 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("다녀온 여행지")}>
-                        다녀온 여행지
+                        다녀온 여행지 ({visitedCount}) 
                      </li>
                      <li
                         className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
@@ -224,6 +235,8 @@ const MyPage: React.FC = () => {
                   ) : (
                      <p>로그인 상태가 아닙니다. 로그인 후 다시 시도해 주세요.</p>
                   )}
+                  {activeMenu === "찜한 여행지" && <FavoritePlaces updateCounts={() => setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length)} />}
+                  {activeMenu === "다녀온 여행지" && <VisitedPlaces updateCounts={() => setVisitedCount(JSON.parse(getCookie("visited") || "[]").length)} />}
                </div>
             </main>
          </div>

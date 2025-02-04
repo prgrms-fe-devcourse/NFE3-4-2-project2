@@ -18,6 +18,8 @@ import "swiper/css/pagination";
 import "swiper/css/navigation";
 import { useSearchParams} from "next/navigation";
 
+import { getCookie, setCookie } from "@/utils/cookie";
+
 const catList = catListJson as CatList;
 
 const TravelListPage: React.FC = () => {
@@ -48,12 +50,12 @@ const TravelListPage: React.FC = () => {
       };
       loadData();
 
-      // 🔥 찜한 관광지 & 다녀온 관광지 상태 확인
-      const favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
-      setIsFavorite(favorites.some((place) => place.contentid === key));
+      // ✅ 쿠키에서 찜하기 & 방문한 관광지 데이터 읽어오기
+      const favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
+      setIsFavorite(favoritePlaces.includes(key));
 
-      const visited = JSON.parse(localStorage.getItem("visited") || "[]");
-      setIsVisited(visited.some((place) => place.contentid === key));
+      const visitedPlaces = JSON.parse(getCookie("visited") || "[]");
+      setIsVisited(visitedPlaces.includes(key));
 
       if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
          swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
@@ -64,35 +66,31 @@ const TravelListPage: React.FC = () => {
       
    }, []); // 빈 배열로 설정하여 마운트 시 한 번만 실행
 
-   // ✅ 찜하기 버튼 핸들러 (토글 기능)
+   // ✅ 찜하기 토글 (쿠키에 저장)
    const handleFavoriteToggle = () => {
-      let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+      let favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
 
       if (isFavorite) {
-         // 🔥 이미 찜한 경우 → 제거
-         favorites = favorites.filter((place) => place.contentid !== key);
+         favoritePlaces = favoritePlaces.filter((id) => id !== key);
       } else {
-         // ✅ 찜 추가
-         favorites.push(infoList);
+         favoritePlaces.push(key);
       }
 
-      localStorage.setItem("favorites", JSON.stringify(favorites));
+      setCookie("favorites", JSON.stringify(favoritePlaces), 7);
       setIsFavorite(!isFavorite);
    };
 
-   // ✅ 다녀온 관광지 버튼 핸들러 (토글 기능)
+   // ✅ 다녀온 관광지 토글 (쿠키에 저장)
    const handleVisitedToggle = () => {
-      let visited = JSON.parse(localStorage.getItem("visited") || "[]");
+      let visitedPlaces = JSON.parse(getCookie("visited") || "[]");
 
       if (isVisited) {
-         // 🔥 이미 방문한 경우 → 제거
-         visited = visited.filter((place) => place.contentid !== key);
+         visitedPlaces = visitedPlaces.filter((id) => id !== key);
       } else {
-         // ✅ 방문 추가
-         visited.push(infoList);
+         visitedPlaces.push(key);
       }
 
-      localStorage.setItem("visited", JSON.stringify(visited));
+      setCookie("visited", JSON.stringify(visitedPlaces), 7);
       setIsVisited(!isVisited);
    };
 
@@ -288,7 +286,7 @@ const TravelListPage: React.FC = () => {
             </section>
             <hr className="my-12" />
             {/* 위치 */}
-            <section>
+            {/* <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy ? (
                   <div className="h-[500]">
@@ -297,7 +295,7 @@ const TravelListPage: React.FC = () => {
                ) : (
                   ""
                )}
-            </section>
+            </section> */}
          </main>
          <Footer />
       </div>
