@@ -176,7 +176,7 @@ export default function SvgMap() {
                   style={{ filter: "drop-shadow(-8px 14px 0px var(--color-neutral-300, #D4D4D4))" }}>
                   {svgs.map((svg) => {
                      return (
-                        <Link key={svg.code} href={`/explore/travel?cat=region&filter=${svg.code}`}>
+                        <Link key={svg.code} href={`/explore/travel?cat=region&filter=${svg.code}&page=1`}>
                            <path
                               className="fill-white hover:fill-sky-500 cursor-pointer"
                               d={svg.d}

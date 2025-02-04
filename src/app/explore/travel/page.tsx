@@ -17,7 +17,7 @@ const TravelPage: React.FC = () => {
    // 파라미터 가져오기
    const nowCategory = searchParams.get("cat");
    const nowFilter = searchParams.get("filter");
-   const nowPage = Number(searchParams.get("page"));
+   const nowPage = Number(searchParams.get("page")) || 1;
    const [selected, setSelected] = useState<SelectedParam>({ cat: "", page: 1 });
 
    // URL 변경 함수 (props로 전달)
@@ -32,6 +32,7 @@ const TravelPage: React.FC = () => {
 
    // 기본 파라미터 설정 (cat이 없을 경우 season으로 설정)
    useEffect(() => {
+
       if (!nowCategory) {
          console.log("🔄 기본 카테고리 'season' 적용");
          setSelected({ cat: "season", page: 1 });
@@ -41,7 +42,7 @@ const TravelPage: React.FC = () => {
 
       // 올바른 카테고리 값인지 확인 후 설정
       if (["season", "region", "nature", "culture"].includes(nowCategory)) {
-         setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage });
+         setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1});
       }
    }, [nowCategory, nowFilter, nowPage, router]);
 
