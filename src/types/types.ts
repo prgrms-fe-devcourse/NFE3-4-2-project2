@@ -1,3 +1,4 @@
+import { SelectedParam } from './types';
 export interface ListProps {
    imageUrl: string;
    title: string;
@@ -181,7 +182,17 @@ export interface SelectedParam {
    filter?: string | null;
    page:number;
 }
+
+export interface PlaceParam extends SelectedParam{
+   detail?:string | null
+}
+
 export interface SelectedChildParam {
    selected: SelectedParam;
    changeUrl: (url: SelectedParam) => void;
+}
+
+export interface PlaceSelectedChildParam {
+   selected: PlaceParam;
+   changeUrl: (url: PlaceParam) => void;
 }
