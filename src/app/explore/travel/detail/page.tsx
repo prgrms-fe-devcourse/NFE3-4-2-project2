@@ -38,24 +38,30 @@ const TravelListPage: React.FC = () => {
    const [imgList, setImgList] = useState<TourImg[]>([]);
    const [isFavorite, setIsFavorite] = useState(false);
    const [isVisited, setIsVisited] = useState(false);
+   const [stateTrigger, setStateTrigger] = useState(0);
+   const storedUserId = getCookie("userId");
 
    useEffect(() => {
       const loadData = async () => {
-         
-         const infoList: TourDetailInfo = await APIConnect.getTourAreaInfo(key, 12);
-         const img = await APIConnect.getTourImg(key);
-         setInfoList(infoList);
-         setImgList(img); 
-
+         try {
+            const infoList: TourDetailInfo = await APIConnect.getTourAreaInfo(key, 12);
+            const img = await APIConnect.getTourImg(key);
+            setInfoList(infoList);
+            setImgList(img);
+         } catch (error) {
+            console.error("🚨 데이터 로드 실패:", error);
+         }
       };
       loadData();
 
-      // ✅ 쿠키에서 찜하기 & 방문한 관광지 데이터 읽어오기
-      const favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
-      setIsFavorite(favoritePlaces.includes(key));
+      if (storedUserId) {
+         // ✅ 사용자별 찜 & 다녀온 여행지 데이터 로드
+         const favoritePlaces = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
+         setIsFavorite(favoritePlaces.includes(key));
 
-      const visitedPlaces = JSON.parse(getCookie("visited") || "[]");
-      setIsVisited(visitedPlaces.includes(key));
+         const visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
+         setIsVisited(visitedPlaces.includes(key));
+      }
 
       if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
          swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
@@ -63,26 +69,36 @@ const TravelListPage: React.FC = () => {
          swiperRef.current.navigation.init();
          swiperRef.current.navigation.update();
       }
-      
-   }, []); // 빈 배열로 설정하여 마운트 시 한 번만 실행
+   }, [key, storedUserId, stateTrigger]); // ✅ 쿠키 변경 감지 (자동 반영)
 
-   // ✅ 찜하기 토글 (쿠키에 저장)
+   // ✅ 찜하기 토글
    const handleFavoriteToggle = () => {
-      let favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
-
-      if (isFavorite) {
-         favoritePlaces = favoritePlaces.filter((id) => id !== key);
-      } else {
-         favoritePlaces.push(key);
+      if (!storedUserId) {
+         console.warn("🚨 userId 없음. 찜 목록을 저장할 수 없음.");
+         return;
       }
 
-      setCookie("favorites", JSON.stringify(favoritePlaces), 7);
+      let favorites = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
+
+      if (isFavorite) {
+         favorites = favorites.filter((id) => id !== key);
+      } else {
+         favorites.push(key);
+      }
+
+      setCookie(`favorites_${storedUserId}`, JSON.stringify(favorites), 7);
       setIsFavorite(!isFavorite);
+      setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
 
-   // ✅ 다녀온 관광지 토글 (쿠키에 저장)
+   // ✅ 다녀온 관광지 토글
    const handleVisitedToggle = () => {
-      let visitedPlaces = JSON.parse(getCookie("visited") || "[]");
+      if (!storedUserId) {
+         console.warn("🚨 userId 없음. 다녀온 관광지 목록을 저장할 수 없음.");
+         return;
+      }
+
+      let visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
 
       if (isVisited) {
          visitedPlaces = visitedPlaces.filter((id) => id !== key);
@@ -90,9 +106,11 @@ const TravelListPage: React.FC = () => {
          visitedPlaces.push(key);
       }
 
-      setCookie("visited", JSON.stringify(visitedPlaces), 7);
+      setCookie(`visited_${storedUserId}`, JSON.stringify(visitedPlaces), 7);
       setIsVisited(!isVisited);
+      setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
+   
 
 
    const getContentCategory = (key: string) => {
@@ -286,7 +304,7 @@ const TravelListPage: React.FC = () => {
             </section>
             <hr className="my-12" />
             {/* 위치 */}
-            <section>
+            {/* <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy ? (
                   <div className="h-[500]">
@@ -295,7 +313,7 @@ const TravelListPage: React.FC = () => {
                ) : (
                   ""
                )}
-            </section> 
+            </section>  */}
          </main>
          <Footer />
       </div>

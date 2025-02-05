@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+import { getCookie, setCookie } from "@/utils/cookie";
 
 const baseURL = "http://13.209.75.182:5003"; // 서버 주소
 
@@ -43,7 +44,11 @@ export const signUp = async (userData: SignUpRequest): Promise<ApiResponse<User>
 export const login = async (userData: LoginRequest): Promise<ApiResponse<{ user: User; token: string }>> => {
    try {
       const response: AxiosResponse<{ user: User; token: string }> = await axios.post(`${baseURL}/login`, userData);
-      return { data: response.data }; // 로그인 성공 시 반환 데이터
+
+      // 로그인 성공 시 쿠키에 userId 저장
+      setCookie("userId", response.data.user.id, 7); // 7일 유지
+
+      return { data: response.data };
    } catch (error) {
       throw new Error(`로그인 요청 실패: ${error}`);
    }
@@ -55,6 +60,11 @@ export const logout = async (): Promise<void> => {
       // 로컬스토리지에서 사용자 정보 제거
       localStorage.removeItem("userId");
       localStorage.removeItem("accessToken");
+
+      // ✅ 쿠키에서도 사용자 데이터 삭제
+      setCookie("userId", "", -1);
+      setCookie(`favorites_${getCookie("userId")}`, "", -1);
+      setCookie(`visited_${getCookie("userId")}`, "", -1);
 
       // 서버에 로그아웃 요청
       await axios.post(`${baseURL}/logout`);

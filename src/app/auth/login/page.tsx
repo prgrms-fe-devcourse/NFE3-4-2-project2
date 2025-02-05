@@ -7,6 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { login } from "@/utils/authapi"; // authapi.ts의 login 함수를 가져옵니다.
 import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가
+import { setCookie } from "@/utils/cookie";
 
 interface LoginResponse {
    token: string;
@@ -45,6 +46,10 @@ export default function Login() {
             localStorage.setItem("accessToken", data.token);
             localStorage.setItem("userId", data.user._id); // 사용자 ID 저장
             localStorage.setItem("nickname", data.user.fullName || "사용자");
+
+            setCookie("userId", data.user._id, 7);
+
+            console.log("🍪 쿠키에 저장된 userId:", document.cookie); 
          }
 
          alert("로그인에 성공하였습니다! 메인 페이지로 이동합니다."); // ✅ 로그인 성공 알림
