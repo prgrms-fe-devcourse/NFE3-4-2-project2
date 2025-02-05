@@ -19,9 +19,9 @@ const PlaceDetailBar:React.FC<PlaceSelectedChildParam>=({selected, changeUrl})=>
     const [nowList, setNowList] = useState<PlaceType[]>([]);
 
     useEffect(() => {
-        if(selected.cat === "restaurant"){
+        if(selected.cat === "restaurants"){
             setNowList(restaurantList)
-        }else if(selected.cat === "accommodation"){
+        }else if(selected.cat === "accommodations"){
             setNowList(accommodationList)
         }else{
             setNowList(restaurantList)

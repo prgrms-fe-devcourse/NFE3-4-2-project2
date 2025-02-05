@@ -66,15 +66,20 @@ export async function GET(req: Request) {
                 }
                break;
             case "festival":
+               params.cat2 = "A0207"
                if(filter){params.sigungucode = filter;}
                break;
             case "event":
+               params.cat2 = "A0208"
                if(filter){params.sigungucode = filter;}
                break;
             case "total":{
+               params.cat2 = { $in: ["A0207", "A0208"] }
                if(filter){params.sigungucode = filter;}
+               break;
             }
-            case "restaurant":
+            case "restaurants":
+               params.contenttypeid = "39"
                if(filter){params.sigungucode = filter;}
                if (["korean", "western", "chinese", "japanese", "cafe", "etc"].includes(detail)){
                   const selectedFilter = restaurantList.filter(item => item.type === detail);
@@ -82,7 +87,8 @@ export async function GET(req: Request) {
                   params.cat3 = { $in: cat3Values };
                 }
                break;
-            case "accommodation":
+            case "accommodations":
+               params.contenttypeid = "32"
                if(filter){params.sigungucode = filter;}
                if (["hotel", "pension", "motel", "inn", "geusthouse", "hanok", "homestay"].includes(detail)) {
                   const selectedFilter = accommodationList.filter(item => item.type === detail);

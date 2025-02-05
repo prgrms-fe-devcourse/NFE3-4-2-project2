@@ -1,13 +1,10 @@
 import { PlaceSelectedChildParam } from "@/types/types";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 import regionList from "@/utils/regionList.json";
 
 const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl }) => {
-   const nowPath = usePathname();
    const categories = [
-      { name: "식당", link: "explore/places/restaurants", value: "restaurant" },
-      { name: "숙소", link: "explore/places/accommodations", value: "accommodation" },
+      { name: "식당", link: "explore/places/restaurants", value: "restaurants" },
+      { name: "숙소", link: "explore/places/accommodations", value: "accommodations" },
    ];
 
    return (
@@ -16,20 +13,12 @@ const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl
             {/* 식당 & 숙소 탭 */}
             <div className="flex gap-x-6 font-bold text-xl items-start">
                {categories.map((cat, idx) => (
-                  <Link
+                  <button
                      key={cat.value + idx}
-                     href={{
-                        pathname: nowPath,
-                        query: {
-                          cat: cat.value,
-                          page:1,
-                          ...(selected.filter ? { filter: selected.filter } : {})
-                        }                        
-                      }}
-                      scroll={false}
+                     onClick={()=>{changeUrl({...selected, cat:cat.value})}}
                      className={`hover:text-sky-500 ${selected.cat === cat.value ? "text-sky-500" : ""}`}>
                      {cat.name}
-                  </Link>
+                  </button>
                ))}
             </div>
             {/* 지역 필터 */}
