@@ -38,8 +38,8 @@ export default function Footer() {
             <div className="flex justify-between">
             <p className="text-sm text-neutral-500">© 2025 Gangwon GO All Rights Reserved.</p>
             <div className="flex justify-end items-center gap-x-4">
-               <Image className="mr-2" width={90} height={20} src="/images/tourapi.png" alt="tourAPI" />
-               <Image width={80} height={20} src="/images/ktoLogo.webp" alt="KTO Logo" />
+               <Image className="mr-2" width={90} height={20} style={{width:"auto", height:"auto"}} src="/images/tourapi.png" alt="tourAPI" />
+               <Image width={80} height={20} style={{width:"auto", height:"auto"}} src="/images/ktoLogo.webp" alt="KTO Logo" />
             </div>
             </div>
             
