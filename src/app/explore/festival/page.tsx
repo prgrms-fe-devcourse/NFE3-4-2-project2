@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { PlaceParam } from "@/types/types";
@@ -49,29 +48,15 @@ export default function Festival() {
    }, [nowCategory, nowFilter, nowPage, nowDetail, router]);
 
    return (
-      <div className="min-h-screen">
+      <div>
          <Header />
-         {/* 배너 이미지 */}
-         <div className="relative w-full h-[392px] flex justify-center items-center">
-            {/* 배경 이미지 */}
-            <Image
-               src="/images/festival/banner_festival.jpg"
-               alt="banner"
-               width={1920}
-               height={1080}
-               className="w-full h-full object-cover"
-            />
-            {/* 어두운 오버레이 */}
-            <div className="absolute inset-0 bg-black bg-opacity-40"></div>
-
-            {/* 배너 텍스트 & 검색창 */}
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-white px-4">
-               {/* 배너 텍스트 */}
-               <h2 className="text-4xl font-bold text-center">
+         <div className="relative py-20 bg-[url(/images/festival/banner_festival.png)] flex flex-col items-center justify-center gap-6">
+            <div className="text-white text-center">
+               <h2 className="text-4xl font-bold leading-normal">
                   강원도에서 즐기는 <br /> 다채로운 축제와 공연/행사!
                </h2>
-               <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
             </div>
+            <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
          </div>
 
          <FestivalCardList selected={selected} changeUrl={handleUrlChange} />
