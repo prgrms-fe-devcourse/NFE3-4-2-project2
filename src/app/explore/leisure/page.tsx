@@ -47,7 +47,11 @@ const TravelPage: React.FC = () => {
       <div className="min-h-screen">
          <Header />
          <LeisureSearchBar  selected={selected} changeUrl={handleUrlChange}/>
-         <CardList selected={selected} changeUrl={handleUrlChange} ></CardList>
+         <CardList 
+            key={`${selected.cat}-${selected.page}-${selected.filter}`} 
+            selected={selected} 
+            changeUrl={handleUrlChange} 
+         />
          <Footer />
       </div>
    );

@@ -44,13 +44,18 @@ const TravelPage: React.FC = () => {
       if (["season", "region", "nature", "culture"].includes(nowCategory)) {
          setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1});
       }
-   }, [nowCategory, nowFilter, nowPage, router]);
+   }, [nowCategory, nowFilter, nowPage]);
 
    return (
       <div className="min-h-screen">
          <Header />
          <TourSearchBar selected={selected} changeUrl={handleUrlChange} />
-         <CardList selected={selected} changeUrl={handleUrlChange} />
+         <CardList 
+            key={`${selected.cat}-${selected.page}-${selected.filter}`} 
+            selected={selected} 
+            changeUrl={handleUrlChange} 
+         />
+
          <Footer />
       </div>
    );

@@ -66,7 +66,11 @@ export default function Restaurants() {
          </div>
 
          <PlcaeDetailBar selected={selected} changeUrl={handleUrlChange} />
-         <PlaceCardList selected={selected} changeUrl={handleUrlChange} />
+         <PlaceCardList 
+            key={`${selected.cat ?? "restaurants"}-${selected.page ?? 1}-${selected.filter ?? "nofilter"}-${selected.detail ?? "nodetail"}`} 
+            selected={selected} 
+            changeUrl={handleUrlChange} 
+         />
 
          <Footer />
       </div>
