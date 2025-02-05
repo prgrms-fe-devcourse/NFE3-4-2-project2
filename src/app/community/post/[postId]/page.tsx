@@ -360,8 +360,12 @@ export default function PostDetail() {
                            </span>
                            <span
                               className={`${
-                                 parsedTitle?.status === "모집중" ? "text-green-600" : "text-red-600"
-                              } font-semibold`}>
+                                 parsedTitle?.status === "모집중"
+                                    ? "bg-sky-50 text-sky-500"
+                                    : parsedTitle?.status === "모집마감"
+                                    ? "bg-red-100 text-red-500"
+                                    : "bg-gray-200 text-gray-500"
+                              } font-semibold px-3 py-1 rounded-md`}>
                               {parsedTitle?.status}
                            </span>
                         </div>

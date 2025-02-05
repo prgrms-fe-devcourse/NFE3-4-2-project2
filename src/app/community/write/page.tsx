@@ -197,7 +197,7 @@ export default function WritePage() {
                </div>
             </div>
             <div className="mb-4">
-               <label className="block text-lg font-semibold">여행 날짜 *</label>
+               <label className="block text-lg font-semibold">여행 일자 *</label>
                <input
                   type="date"
                   value={date}
