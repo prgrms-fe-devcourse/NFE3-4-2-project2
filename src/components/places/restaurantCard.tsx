@@ -18,7 +18,7 @@ const RestaurantCard = ({ imageUrl, title, area, category, buttonText }: Restaur
    return (
       <div className="relative h-[288px] bg-white rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:transform hover:translate-y-[-5px] cursor-pointer flex flex-col border border-neutral-200">
          <div className="w-full h-3/5 relative">
-            <Image src={imageUrl} alt={title} fill style={{objectFit:"cover"}} />
+            <Image src={imageUrl} alt={title} fill sizes="(max-width: 768px) 100vw, 50vw" style={{objectFit:"cover"}} />
          </div>
 
          <div className="p-4 flex flex-col flex-grow">
