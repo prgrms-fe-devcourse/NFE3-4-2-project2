@@ -1,20 +1,19 @@
 "use client";
 
 import SvgMap from "@/components/main/SvgMap";
-import Footer from "../components/common/Footer";
-import Header from "../components/common/Header";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import Image from "next/image";
-import PostList from "../components/common/Community/PostList";
+import PostList from "@/components/common/Community/PostList";
 import { useState, useEffect } from "react";
 import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
-
-// Swiper 관련 import
+import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-import { Swiper, SwiperSlide } from "swiper/react";
-// import { FreeMode, Pagination } from "swiper/modules";
 import SwiperCard from "@/components/main/SwiperCard";
+import APIConnect from "@/utils/api"; // API 요청 모듈
+import { RestaurantDetailInfo } from "@/types/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -22,8 +21,25 @@ export default function Home() {
    const router = useRouter();
    const [posts, setPosts] = useState([]);
    const [loadingPosts, setLoadingPosts] = useState(false);
+   const [restaurantData, setRestaurantData] = useState<RestaurantDetailInfo[]>([]);
+   const [loadingRestaurant, setLoadingRestaurant] = useState<boolean>(true);
+
+   // 스와이퍼 카드에 가져올 음식점 contentId 리스트 (총 7개)
+   const contentIds = [2782092, 2991113, 2777869, 2777894, 2790453, 2789984, 2777718];
+
+   // 스와이퍼 카드에 보여줄 해시태그
+   const hashtagMapping: { [key: string]: string[] } = {
+      2782092: ["힐링카페", "자연속커피", "와플맛집"], // 별그리는 자작나무 (카페)
+      2991113: ["유럽풍", "로맨틱", "뷰좋은곳"], // 피오레토 (양식)
+      2777869: ["쭈꾸미삼겹살", "강변뷰", "가족모임"], // 강변식당 (한식)
+      2777894: ["정식전문", "한식정찬", "든든한식사"], // 고려회관 (한식)
+      2790453: ["막국수", "강원도맛집", "현지인추천"], // 김박사봉평막국수 (한식)
+      2789984: ["프리미엄한우", "고급스러운", "육즙가득"], // 대관령한우 (한식)
+      2777718: ["정통베트남", "쌀국수맛집", "이국적인"], // 호치민 쌀국수 (이색음식점)
+   };
 
    useEffect(() => {
+      // 게시글 데이터 불러오기
       const fetchPosts = async () => {
          setLoadingPosts(true);
          try {
@@ -35,7 +51,28 @@ export default function Home() {
             setLoadingPosts(false);
          }
       };
+
+      // 특정 contentId들의 식당 데이터 가져오기
+      const fetchRestaurants = async () => {
+         try {
+            console.log(`🌸 [API 요청] 특정 식당 데이터 가져오기 - contentIds=${contentIds.join(", ")} 🌸`);
+
+            // 여러 개의 contentId를 병렬 요청
+            const restaurantPromises = contentIds.map((id) => APIConnect.getRestaurantInfo(id));
+            const restaurantResults = await Promise.all(restaurantPromises);
+
+            // 유효한 데이터만 필터링
+            const validData = restaurantResults.filter((data) => data !== null);
+            setRestaurantData(validData);
+         } catch (error) {
+            console.error("데이터 가져오기 실패:", error);
+         } finally {
+            setLoadingRestaurant(false);
+         }
+      };
+
       fetchPosts();
+      fetchRestaurants();
    }, []);
 
    return (
@@ -157,42 +194,40 @@ export default function Home() {
 
                {/* 스와이퍼 */}
                <div className="text-center w-screen max-w-full mx-auto">
-                  <Swiper
-                     slidesPerView={4} // 1920px에서 5개 슬라이드 보이도록 설정
-                     centeredSlides={true}
-                     spaceBetween={24} // 슬라이드 간격 설정
-                     loop={true}
-                     className="w-full" // Swiper 전체에 overflow-hidden 추가
-                     breakpoints={{
-                        1920: {
-                           slidesPerView: 6,
-                        },
-                        640: {
-                           slidesPerView: 4,
-                           spaceBetween: 15,
-                        },
-                        320: {
-                           slidesPerView: 1.5,
-                           spaceBetween: 10,
-                        },
-                     }}>
-                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((index) => (
-                        <SwiperSlide key={index}>
-                           <div
-                              className={`relative aspect-[3/4] rounded-lg overflow-hidden transition-opacity duration-300`}>
-                              <SwiperCard
-                                 imageUrl="/images/main/test.png"
-                                 title="P.E.I coffee"
-                                 name="양양군"
-                                 imageSrc="/images/region/양양군.png"
-                                 isActive={true}
-                                 onClick={() => alert(`버튼 클릭됨: 카드 ${index}`)}
-                                 hashtags={["분위기", "전망좋은카페"]}
-                              />
-                           </div>
-                        </SwiperSlide>
-                     ))}
-                  </Swiper>
+                  {loadingRestaurant ? (
+                     <p>로딩 중...</p>
+                  ) : restaurantData.length > 0 ? (
+                     <Swiper
+                        slidesPerView={4}
+                        centeredSlides={true}
+                        spaceBetween={24} // 슬라이드 간격 설정
+                        loop={true} // 무한 루프
+                        autoplay={{ delay: 1000, disableOnInteraction: false }} // 자동 슬라이드 추가
+                        className="w-full"
+                        breakpoints={{
+                           1920: { slidesPerView: 6 },
+                           640: { slidesPerView: 4, spaceBetween: 15 },
+                           320: { slidesPerView: 1.5, spaceBetween: 10 },
+                        }}>
+                        {restaurantData.map((restaurant) => (
+                           <SwiperSlide key={restaurant.contentid}>
+                              <div className="relative aspect-[3/4] rounded-lg overflow-hidden transition-opacity duration-300">
+                                 <SwiperCard
+                                    imageUrl={restaurant.firstimage || "/images/main/test.png"}
+                                    title={restaurant.title || "알 수 없음"}
+                                    addr={restaurant.addr || "지역 없음"}
+                                    contentId={restaurant.contentid}
+                                    isActive={true}
+                                    onClick={() => alert(`선택한 식당: ${restaurant.title}`)}
+                                    hashtags={hashtagMapping[restaurant.contentid] || ["맛집", "추천"]}
+                                 />
+                              </div>
+                           </SwiperSlide>
+                        ))}
+                     </Swiper>
+                  ) : (
+                     <p>데이터를 찾을 수 없습니다.</p>
+                  )}
                </div>
             </div>
 
