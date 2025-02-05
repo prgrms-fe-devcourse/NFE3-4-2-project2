@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
-import { Culture, ListProps, Season, Nature, Restaurant, Accommodtaion } from "@/types/types";
+import { Culture, ListProps, Season, Nature} from "@/types/types";
 import seasonList from "@/utils/seasonList.json";
 import cultureList from "@/utils/cultureList.json";
 import natureList from "@/utils/natureList.json";
@@ -18,7 +18,7 @@ export async function GET(req: Request) {
 
       // 쿼리 파라미터 읽어오기
       const url = new URL(req.url);
-      const path = url.pathname;
+      const path = req.headers.get('referer') || "없음";
       const cat = url.searchParams.get("cat");
       const filter = url.searchParams.get("filter") || "";
       const detail = url.searchParams.get("detail") || "";
@@ -26,7 +26,7 @@ export async function GET(req: Request) {
       const pageSize = 12;
       const skip = (page - 1) * pageSize;
       
-      let params: any = {}; // 필터링 조건
+      const params: any = {}; // 필터링 조건
 
     
       //페이지에 따른 대분류 필터링
@@ -94,6 +94,7 @@ export async function GET(req: Request) {
 
       // 전체 아이템 수 구하기
       const totalCount = await db.collection("places").countDocuments(params);
+      const totalPages = Math.ceil(totalCount / pageSize);
 
       // 페이지에 맞는 데이터 가져오기
       const places = await db.collection("places").find(params).skip(skip).limit(pageSize).toArray();
@@ -105,14 +106,26 @@ export async function GET(req: Request) {
         contentTypeId: place.contenttypeid,
         cat3 : place.cat3
       }));
+
+      const message = `
+🔍[API 응답] 검색 파라미터 확인 🔍
+
+콘텐츠 타입 아이디 : ${Object.values(params.contenttypeid) || "없음"},
+지역 코드 : ${params.sigungucode || "없음"},
+소분류(cat3) : ${JSON.stringify(params.cat3) || "없음"}
+
+API 응답 데이터 개수: ${totalCount}
+전체 ${totalPages} 중 ${page} 페이지
+         `
       
       // 페이지네이션 처리된 결과 반환
       return NextResponse.json({
          success: true,
          data,
+         message,
          totalCount,
-         totalPages: Math.ceil(totalCount / pageSize), // 전체 페이지 수
-         currentPage: page, // 현재 페이지
+         totalPages,
+         currentPage: page,
       });
    } catch (error) {
       return NextResponse.json({ success: false, error: error }, { status: 500 });

@@ -35,10 +35,9 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
             const queryString = createQueryString(selected)
             const dataList = await fetch(`/api/places?${queryString}`).then(response => response.json());
+            console.log(dataList.message);
             response = dataList.data;
             setTotalPages(Number(dataList.totalPages));
-
-            console.log(`🔍 API 응답 데이터 개수: ${dataList.totalCount}`);
             if(response){
                setTourData(
                   response.map((item)=>({
