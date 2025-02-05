@@ -268,13 +268,13 @@ export default function PostDetail() {
                   {/* 작성자 정보 */}
                   <div className="text-gray-500 text-sm mb-4">
                      <p>
-                        <strong>작성자:</strong> {post.author.username || post.author.fullName} ({post.author.email})
+                        <strong>작성자 : </strong> {post.author.username || post.author.fullName} ({post.author.email})
                      </p>{" "}
                   </div>
                   {/* 게시글 작성일 */}
                   <div className="text-gray-500 text-sm mb-6">
                      <p>
-                        <strong>작성일:</strong> {formatDate(post.createdAt)}
+                        <strong>작성일 : </strong> {formatDate(post.createdAt)}
                      </p>
                   </div>
                   {/* 이미지 & 정보 섹션 */}
@@ -499,7 +499,7 @@ export default function PostDetail() {
                         />
                         <button
                            onClick={handleCommentSubmit}
-                           className="bg-sky-500 text-white px-6 py-2 rounded-3xl ml-auto">
+                           className="bg-sky-500 text-white px-6 py-2 rounded-3xl ml-auto hover:bg-sky-600">
                            댓글 달기
                         </button>
                      </div>
