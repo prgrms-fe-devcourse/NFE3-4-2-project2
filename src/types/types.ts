@@ -235,6 +235,6 @@ export interface Festival {
 
 export type Season = "spring" | "summer" | "autumn" | "winter";
 export type Culture = "museum" | "historic" | "religion" | "etc";
-export type Nature = "beach" | "mountain" | "river" | "forest";
+export type Nature = "ocean" | "mountain" | "river" | "forest";
 export type Restaurant = "korean" | "western" | "chinese" | "japanese" | "cafe" | "etc";
 export type Accommodtaion = "hotel" | "pension" | "motel" | "inn" | "geusthouse" | "hanok" | "homestay";

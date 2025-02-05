@@ -40,13 +40,13 @@ export default function Restaurants() {
    // 기본 파라미터 설정 (cat이 없을 경우 restaurants으로 설정)
    useEffect(() => {
       if (!nowCategory) {
-         setSelected({ cat: "restaurant", page: 1 });
-         router.replace("?cat=restaurant&page=1", { scroll: false });
+         setSelected({ cat: "restaurants", page: 1 });
+         router.push("?cat=restaurants&page=1", { scroll: false });
          return;
       }
 
       // 올바른 카테고리 값인지 확인 후 설정
-      if (["restaurant", "accommodation"].includes(nowCategory)) {
+      if (["restaurants", "accommodations"].includes(nowCategory)) {
          setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1, detail: nowDetail });
       }
    }, [nowCategory, nowFilter, nowPage, nowDetail, router]);

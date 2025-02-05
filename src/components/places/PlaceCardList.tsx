@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { ListProps, PlaceParam, PlaceSelectedChildParam } from "@/types/types";
 import Pagination from "@/components/common/Pagination";
-import RestaurantCard from "./restaurantCard";
+import PlaceCard from "./PlaceCard";
 import EmptyListCard from "@/components/common/EmptyListCard";
 import EmptyData from "@/components/common/EmptyData";
 
@@ -74,13 +74,12 @@ const PlaceCardList: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl 
          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             {tourData.map((item, index) => {
                return(
-               <Link key={index} href={`/explore/places/restaurants/detail?contentId=${item.contentId}`}>
-                  <RestaurantCard
+               <Link key={index} href={`/explore/places/${selected.cat}/detail?contentId=${item.contentId}`}>
+                  <PlaceCard
                      imageUrl={item.imageUrl}
                      title={item.title}
                      area={item.area}
                      category={item.cat3 || ""}
-                     buttonText="영업중"
                   />
                </Link>
             )
