@@ -12,10 +12,11 @@ const getCategoryName = (cat3) => {
 
 const FavoritePlaces = ({ updateCounts }) => {
    const [favorites, setFavorites] = useState([]);
+   const userId = getCookie("userId");
 
    useEffect(() => {
       const fetchFavorites = async () => {
-         const storedFavorites = JSON.parse(getCookie("favorites") || "[]");
+         const storedFavorites = JSON.parse(getCookie(`favorites_${userId}`) || "[]");
 
          const favoriteData = await Promise.all(
             storedFavorites.map(async (contentId) => {
@@ -33,13 +34,13 @@ const FavoritePlaces = ({ updateCounts }) => {
       };
 
       fetchFavorites();
-   }, []);
+   }, [userId]);
 
    const removeFavorite = (contentId) => {
       // ✅ 쿠키에서 해당 contentId 제거
       const updatedFavorites = favorites.filter((place) => place.contentid !== contentId);
       setFavorites(updatedFavorites);
-      setCookie("favorites", JSON.stringify(updatedFavorites.map((p) => p.contentid)), 7);
+      setCookie(`favorites_${userId}`, JSON.stringify(updatedFavorites.map((p) => p.contentid)), 7);
 
       updateCounts(); // ✅ 찜한 여행지 개수 업데이트
    };

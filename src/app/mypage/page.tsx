@@ -20,6 +20,7 @@ const MyPage: React.FC = () => {
    // ✅ 찜한 여행지 & 다녀온 여행지 개수 상태
    const [favoriteCount, setFavoriteCount] = useState<number>(0);
    const [visitedCount, setVisitedCount] = useState<number>(0);
+   const storedUserId = getCookie("userId");
 
    // 현재 로그인한 사용자 정보 불러오기
    useEffect(() => {
@@ -35,10 +36,21 @@ const MyPage: React.FC = () => {
 
       fetchUserInfo();
 
-      // ✅ 쿠키에서 찜한 여행지 & 다녀온 여행지 개수 가져오기
-      setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length);
-      setVisitedCount(JSON.parse(getCookie("visited") || "[]").length);
-   }, []);
+      if (storedUserId) {
+         // ✅ 사용자별 찜한 여행지 & 다녀온 여행지 개수 가져오기
+         setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
+         setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
+      }
+   }, [storedUserId]);
+
+      // ✅ 찜한 여행지 & 다녀온 여행지 개수 업데이트 함수
+      const updateFavoriteCount = () => {
+         setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
+      };
+   
+      const updateVisitedCount = () => {
+         setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
+      };
 
    // 사용자 닉네임 수정
    const handleSubmitProfileChange = async (e: React.FormEvent) => {
@@ -237,14 +249,10 @@ const MyPage: React.FC = () => {
                      <p>로그인 상태가 아닙니다. 로그인 후 다시 시도해 주세요.</p>
                   )}
                   {activeMenu === "찜한 여행지" && (
-                     <FavoritePlaces
-                        updateCounts={() => setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length)}
-                     />
+                     <FavoritePlaces updateCounts={updateFavoriteCount} />
                   )}
                   {activeMenu === "다녀온 여행지" && (
-                     <VisitedPlaces
-                        updateCounts={() => setVisitedCount(JSON.parse(getCookie("visited") || "[]").length)}
-                     />
+                     <VisitedPlaces updateCounts={updateVisitedCount} />
                   )}
                   {activeMenu === "내가 작성한 글" && <MyPost />}
                </div>

@@ -12,10 +12,11 @@ const getCategoryName = (cat3) => {
 
 const VisitedPlaces = ({ updateCounts }) => {
    const [visited, setVisited] = useState([]);
+   const userId = getCookie("userId");
 
    useEffect(() => {
       const fetchVisited = async () => {
-         const storedVisited = JSON.parse(getCookie("visited") || "[]");
+         const storedVisited = JSON.parse(getCookie(`visited_${userId}`) || "[]");
 
          const visitedData = await Promise.all(
             storedVisited.map(async (contentId) => {
@@ -33,13 +34,13 @@ const VisitedPlaces = ({ updateCounts }) => {
       };
 
       fetchVisited();
-   }, []);
+   }, [userId]);
 
    const removeVisited = (contentId) => {
       // ✅ 쿠키에서 해당 contentId 제거
       const updatedVisited = visited.filter((place) => place.contentid !== contentId);
       setVisited(updatedVisited);
-      setCookie("visited", JSON.stringify(updatedVisited.map((p) => p.contentid)), 7);
+      setCookie(`visited_${userId}`, JSON.stringify(updatedVisited.map((p) => p.contentid)), 7);
 
       updateCounts(); // ✅ 다녀온 여행지 개수 업데이트
    };
