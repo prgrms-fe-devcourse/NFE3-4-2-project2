@@ -4,9 +4,10 @@ import { checkAuthUser, updateUserInfo, uploadProfilePhoto } from "@/utils/autha
 import { getCookie } from "@/utils/cookie";
 import Header from "@/components/common/Header"; // 헤더 컴포넌트
 import Footer from "@/components/common/Footer"; // 푸터 컴포넌트
-import FavoritePlaces from "./favorites/page"; 
+import FavoritePlaces from "./favorites/page";
 import VisitedPlaces from "./visited/page";
 import axios from "axios";
+import MyPost from "./mypost/page";
 
 const MyPage: React.FC = () => {
    const [user, setUser] = useState<User | null>(null);
@@ -128,14 +129,14 @@ const MyPage: React.FC = () => {
                            activeMenu === "찜한 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("찜한 여행지")}>
-                        찜한 여행지 ({favoriteCount}) 
+                        찜한 여행지 ({favoriteCount})
                      </li>
                      <li
                         className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
                            activeMenu === "다녀온 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("다녀온 여행지")}>
-                        다녀온 여행지 ({visitedCount}) 
+                        다녀온 여행지 ({visitedCount})
                      </li>
                      <li
                         className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
@@ -150,7 +151,7 @@ const MyPage: React.FC = () => {
                {/* 프로필 오른쪽 영역 */}
                <div className="flex-grow bg-white shadow-lg p-6 rounded-lg max-w-screen-xl mx-auto">
                   {user ? (
-                     <div className="flex items-center space-x-14 mt-8 ml-4">
+                     <div className="flex items-center space-x-14 mt-8 ml-4 mb-8">
                         {/* 프로필 왼쪽 */}
                         <div className="flex-shrink-0 w-48 h-48">
                            {/* 프로필 이미지 미리보기 */}
@@ -235,8 +236,17 @@ const MyPage: React.FC = () => {
                   ) : (
                      <p>로그인 상태가 아닙니다. 로그인 후 다시 시도해 주세요.</p>
                   )}
-                  {activeMenu === "찜한 여행지" && <FavoritePlaces updateCounts={() => setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length)} />}
-                  {activeMenu === "다녀온 여행지" && <VisitedPlaces updateCounts={() => setVisitedCount(JSON.parse(getCookie("visited") || "[]").length)} />}
+                  {activeMenu === "찜한 여행지" && (
+                     <FavoritePlaces
+                        updateCounts={() => setFavoriteCount(JSON.parse(getCookie("favorites") || "[]").length)}
+                     />
+                  )}
+                  {activeMenu === "다녀온 여행지" && (
+                     <VisitedPlaces
+                        updateCounts={() => setVisitedCount(JSON.parse(getCookie("visited") || "[]").length)}
+                     />
+                  )}
+                  {activeMenu === "내가 작성한 글" && <MyPost />}
                </div>
             </main>
          </div>
