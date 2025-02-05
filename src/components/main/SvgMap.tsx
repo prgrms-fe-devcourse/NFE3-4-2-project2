@@ -155,7 +155,7 @@ export default function SvgMap() {
    return (
       <section className="py-12 bg-[url(/images/main/mountain.jpg)] bg-cover bg-left-top transition-all duration-75">
          <div className="mx-auto max-w-screen-xl">
-            <h2 className="text-5xl text-white">뭔가 타이틀</h2>
+            <h2 className="text-5xl text-white mb-4">강원도의 모든 것, Gangwon Go</h2>
             {showAreaName && (
                <p
                   className={`absolute pointer-events-none z-50 text-xl bg-white text-sky-500 px-4 py-2 rounded-md shadow-md`}
