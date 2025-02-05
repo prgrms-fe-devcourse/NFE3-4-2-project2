@@ -160,17 +160,15 @@ export default function EditPostPage() {
       <div className="min-h-screen flex flex-col bg-gray-50">
          <Header />
          <div className="relative mb-10">
-            <Image
-               width={0}
-               height={0}
-               sizes="100vw"
-               src="/images/community/banner.png"
-               alt="banner"
-               className="w-full h-[160px] object-cover"
-            />
-            <div className="absolute top-1/2 left-12 transform -translate-y-1/2 text-white text-left">
-               <p className="text-[28px] font-medium">설레는 동행과 특별한 이야기가 머무는 곳</p>
-               <h2 className="text-[36px] font-semibold mt-2">동행 모집 수정</h2>
+            <div className="min-h-[160px] bg-[url('/images/community/banner_together.png')] bg-cover bg-center">
+               <div className="relative flex flex-col justify-center gap-10 min-h-[160px]">
+                  <div className="text-white text-center">
+                     <h2 className="font-semibold mt-15 leading-loose">
+                        <span className="text-3xl block mb-5">함께하는 여행, 특별한 동행</span>
+                        <span className="text-4xl block">강원도 여행 동행 모집</span>
+                     </h2>
+                  </div>
+               </div>
             </div>
          </div>
          <div className="max-w-4xl w-full mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">

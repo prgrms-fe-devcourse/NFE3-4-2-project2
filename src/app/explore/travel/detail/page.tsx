@@ -286,7 +286,7 @@ const TravelListPage: React.FC = () => {
             </section>
             <hr className="my-12" />
             {/* 위치 */}
-            {/* <section>
+            <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy ? (
                   <div className="h-[500]">
@@ -295,7 +295,7 @@ const TravelListPage: React.FC = () => {
                ) : (
                   ""
                )}
-            </section> */}
+            </section> 
          </main>
          <Footer />
       </div>
