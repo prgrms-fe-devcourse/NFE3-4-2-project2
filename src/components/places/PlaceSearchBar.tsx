@@ -15,7 +15,10 @@ const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl
                {categories.map((cat, idx) => (
                   <button
                      key={cat.value + idx}
-                     onClick={()=>{changeUrl({...selected, cat:cat.value})}}
+                     onClick={()=>{
+                        const { detail, ...rest } = selected; //detail 추출
+                        changeUrl({ ...rest, cat: cat.value, page: 1 });
+                     }}
                      className={`hover:text-sky-500 ${selected.cat === cat.value ? "text-sky-500" : ""}`}>
                      {cat.name}
                   </button>

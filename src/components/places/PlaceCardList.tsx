@@ -76,6 +76,7 @@ const PlaceCardList: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl 
                return(
                <Link key={index} href={`/explore/places/${selected.cat}/detail?contentId=${item.contentId}`}>
                   <PlaceCard
+                     selected = {selected}
                      imageUrl={item.imageUrl}
                      title={item.title}
                      area={item.area}

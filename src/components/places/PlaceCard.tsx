@@ -1,16 +1,24 @@
 // 식당 및 숙소 - 식당 카드 컴포넌트
 import Image from "next/image";
 import restaurants from "@/utils/restaurantList.json";
+import accommodation from "@/utils/accommodationList.json";
+import { PlaceParam } from "@/types/types";
 
 interface RestaurantCardProps {
+   selected: PlaceParam;
    imageUrl: string;
    title: string;
    area: string;
    category: string;
 }
 
-const RestaurantCard = ({ imageUrl, title, area, category }: RestaurantCardProps) => {
-   const categoryParsing = restaurants.find((item) => item.cat3 === category)?.text || "기타";
+const RestaurantCard = ({ selected, imageUrl, title, area, category }: RestaurantCardProps) => {
+   let categoryParsing;
+   if(selected.cat === "restaurants"){
+       categoryParsing= restaurants.find((item) => item.cat3 === category)?.text || "기타";
+   }else{
+      categoryParsing= accommodation.find((item) => item.cat3 === category)?.text || "기타";
+   }
    const addressParsing = area.match(/(?<=강원특별자치도).{4}/);
 
    return (
