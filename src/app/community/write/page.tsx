@@ -6,7 +6,6 @@ import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
 import { createPost } from "@/utils/postapi";
 import { AxiosResponse, AxiosError } from "axios";
-import Image from "next/image";
 
 export default function WritePage() {
    const router = useRouter();
@@ -20,7 +19,6 @@ export default function WritePage() {
    const [endDate, setEndDate] = useState<string>(""); // 모집 마감일
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
-   const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
    const [loading, setLoading] = useState(false);
 
    useEffect(() => {
@@ -38,24 +36,15 @@ export default function WritePage() {
          setImage(file);
          const objectUrl = URL.createObjectURL(file);
          setPreview(objectUrl);
-
-         const img = new Image();
-         img.onload = () => {
-            setImageDimensions({ width: img.width, height: img.height });
-         };
-         img.src = objectUrl;
       }
    };
 
    // 참여 요금 처리
    const handleFeeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      // 입력값이 숫자인지 확인
       const value = e.target.value;
 
-      // 숫자만 허용하는 정규식
       if (/^\d*$/.test(value)) {
-         // 숫자만 허용
-         setFee(value === "" ? "" : Number(value)); // 빈 문자열도 허용
+         setFee(value === "" ? "" : Number(value)); // 숫자만 허용
       }
    };
 
@@ -83,10 +72,9 @@ export default function WritePage() {
    // 모집 상태 자동 설정 함수
    const getStatus = (endDate: string) => {
       const today = new Date();
-      today.setHours(0, 0, 0, 0); // 오늘 날짜의 시간을 00:00:00으로 설정
-
+      today.setHours(0, 0, 0, 0);
       const end = new Date(endDate);
-      end.setHours(0, 0, 0, 0); // 마감일의 시간을 00:00:00으로 설정
+      end.setHours(0, 0, 0, 0);
 
       if (today > end) {
          return "모집마감";
@@ -115,8 +103,8 @@ export default function WritePage() {
             fee,
             people,
             status,
-            date, 
-            endDate, 
+            date,
+            endDate,
             token,
          );
          console.log("📌 서버 응답:", response.data);
@@ -131,7 +119,6 @@ export default function WritePage() {
             setEndDate(""); // 마감일 초기화
             setImage(null);
             setPreview(null);
-            setImageDimensions(null);
 
             // 작성된 게시글 상세 페이지로 이동
             router.push(`/community/post/${response.data._id}`);
@@ -151,14 +138,7 @@ export default function WritePage() {
       <div className="min-h-screen flex flex-col">
          <Header />
          <div className="relative">
-            <Image
-               width={0}
-               height={0}
-               sizes="100vw"
-               src="/images/community/banner.png"
-               alt="banner"
-               className="w-full h-[160px] object-cover"
-            />
+            <img src="/images/community/banner.png" alt="banner" className="w-full h-[160px] object-cover" />
             <div className="absolute top-1/2 left-12 transform -translate-y-1/2 text-white text-left">
                <p className="text-[28px] font-medium">설레는 동행과 특별한 이야기가 머무는 곳</p>
                <h2 className="text-[36px] font-semibold mt-2">동행 모집 작성</h2>
@@ -190,9 +170,8 @@ export default function WritePage() {
             <div className="mb-4">
                <label className="block text-lg font-semibold">참여 요금 *</label>
                <input
-                  type="text" // "text"로 변경하여 숫자만 입력되도록 정규식으로 제한
+                  type="text"
                   value={fee}
-                  placeholder="1원 이상 입력해 주세요"
                   onChange={handleFeeChange}
                   className="w-full p-3 border border-gray-300 rounded-md"
                   required
@@ -245,14 +224,10 @@ export default function WritePage() {
                   onChange={handleImageUpload}
                   className="w-full p-2 border border-gray-300 rounded-md"
                />
-               {preview && imageDimensions && (
-                  <Image
-                     src={preview}
-                     alt="미리보기"
-                     width={imageDimensions.width}
-                     height={imageDimensions.height}
-                     className="mt-2 w-full h-48 object-cover rounded-md"
-                  />
+               {preview && (
+                  <div className="mt-2">
+                     <img src={preview} alt="미리보기" className="mt-2 w-[full] h-38 object-cover rounded-md" />
+                  </div>
                )}
             </div>
             <button
