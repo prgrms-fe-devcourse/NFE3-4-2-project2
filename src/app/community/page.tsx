@@ -89,7 +89,7 @@ export default function Community() {
                <div className="text-white text-center">
                   <h2 className="font-bold mt-20 leading-loose">
                      <span className="text-4xl block mb-5">함께하는 여행, 특별한 동행</span>
-                     <span className="text-6xl block">강원도 여행 동행 모집</span>
+                     <span className="text-5xl block">강원도 여행 동행 모집</span>
                   </h2>
                </div>
             </div>
