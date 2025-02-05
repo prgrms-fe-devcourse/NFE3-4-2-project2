@@ -17,7 +17,7 @@ const MyPage: React.FC = () => {
    const [isEditing, setIsEditing] = useState<boolean>(false); // 수정 모드 상태
    const [activeMenu, setActiveMenu] = useState<string>("내 프로필"); // 사이드바 메뉴 활성화 상태
 
-   // ✅ 찜한 여행지 & 다녀온 여행지 개수 상태
+   // ✅ 찜한 장소 & 다녀온 장소 개수 상태
    const [favoriteCount, setFavoriteCount] = useState<number>(0);
    const [visitedCount, setVisitedCount] = useState<number>(0);
    const storedUserId = getCookie("userId");
@@ -37,20 +37,20 @@ const MyPage: React.FC = () => {
       fetchUserInfo();
 
       if (storedUserId) {
-         // ✅ 사용자별 찜한 여행지 & 다녀온 여행지 개수 가져오기
+         // ✅ 사용자별 찜한 장소 & 다녀온 장소 개수 가져오기
          setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
          setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
       }
    }, [storedUserId]);
 
-      // ✅ 찜한 여행지 & 다녀온 여행지 개수 업데이트 함수
-      const updateFavoriteCount = () => {
-         setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
-      };
-   
-      const updateVisitedCount = () => {
-         setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
-      };
+   // ✅ 찜한 장소 & 다녀온 장소 개수 업데이트 함수
+   const updateFavoriteCount = () => {
+      setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
+   };
+
+   const updateVisitedCount = () => {
+      setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
+   };
 
    // 사용자 닉네임 수정
    const handleSubmitProfileChange = async (e: React.FormEvent) => {
@@ -75,7 +75,6 @@ const MyPage: React.FC = () => {
          try {
             const response = await uploadProfilePhoto(formData);
             setUser(response.data); // 업데이트된 사용자 정보 반영
-            alert("프로필 이미지가 변경되었습니다!");
          } catch (error) {
             if (axios.isAxiosError(error)) {
                console.error("서버 오류:", error.response?.data || error.message);
@@ -130,28 +129,58 @@ const MyPage: React.FC = () => {
                   <h2 className="text-2xl font-semibold text-gray-700 mb-6">마이페이지</h2>
                   <ul>
                      <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
+                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 ${
                            activeMenu === "내 프로필" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("내 프로필")}>
                         내 프로필
                      </li>
                      <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
-                           activeMenu === "찜한 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
+                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 flex items-center ${
+                           activeMenu === "찜한 장소" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
-                        onClick={() => setActiveMenu("찜한 여행지")}>
-                        찜한 여행지 ({favoriteCount})
+                        onClick={() => setActiveMenu("찜한 장소")}>
+                        {/* 아이콘 추가 */}
+                        <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           strokeWidth="1.5"
+                           stroke="currentColor"
+                           className="w-5 h-5 mr-2">
+                           <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
+                           />
+                        </svg>
+                        찜한 장소 ({favoriteCount})
                      </li>
+
                      <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
-                           activeMenu === "다녀온 여행지" ? "bg-amber-50 text-blue-600" : "text-gray-700"
+                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 flex items-center ${
+                           activeMenu === "다녀온 장소" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
-                        onClick={() => setActiveMenu("다녀온 여행지")}>
-                        다녀온 여행지 ({visitedCount})
+                        onClick={() => setActiveMenu("다녀온 장소")}>
+                        {/* 아이콘 추가 */}
+                        <svg
+                           xmlns="http://www.w3.org/2000/svg"
+                           fill="none"
+                           viewBox="0 0 24 24"
+                           strokeWidth="1.5"
+                           stroke="currentColor"
+                           className="w-5 h-5 mr-2">
+                           <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+                           />
+                        </svg>
+                        다녀온 장소({visitedCount})
                      </li>
+
                      <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer ${
+                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 ${
                            activeMenu === "내가 작성한 글" ? "bg-amber-50 text-blue-600" : "text-gray-700"
                         }`}
                         onClick={() => setActiveMenu("내가 작성한 글")}>
@@ -248,12 +277,8 @@ const MyPage: React.FC = () => {
                   ) : (
                      <p>로그인 상태가 아닙니다. 로그인 후 다시 시도해 주세요.</p>
                   )}
-                  {activeMenu === "찜한 여행지" && (
-                     <FavoritePlaces updateCounts={updateFavoriteCount} />
-                  )}
-                  {activeMenu === "다녀온 여행지" && (
-                     <VisitedPlaces updateCounts={updateVisitedCount} />
-                  )}
+                  {activeMenu === "찜한 장소" && <FavoritePlaces updateCounts={updateFavoriteCount} />}
+                  {activeMenu === "다녀온 장소" && <VisitedPlaces updateCounts={updateVisitedCount} />}
                   {activeMenu === "내가 작성한 글" && <MyPost />}
                </div>
             </main>

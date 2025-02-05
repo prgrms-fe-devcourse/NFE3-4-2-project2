@@ -163,7 +163,7 @@ export default function WritePage() {
                <textarea
                   value={content}
                   onChange={(e) => setContent(e.target.value)}
-                  className="w-full p-3 border border-gray-300 rounded-md h-40"
+                  className="w-full p-3 border border-gray-300 rounded-md h-60"
                   required
                />
             </div>
