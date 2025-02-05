@@ -13,7 +13,7 @@ export default function Signup() {
    const [formData, setFormData] = useState({
       email: "",
       fullName: "",
-      nickname: "",
+      username: "", // nickname -> username으로 변경
       password: "",
       confirmPassword: "",
    });
@@ -35,6 +35,7 @@ export default function Signup() {
          const response = await signUp({
             email: formData.email,
             fullName: formData.fullName,
+            username: formData.username, // nickname -> username으로 변경
             password: formData.password,
          });
 
@@ -87,13 +88,13 @@ export default function Signup() {
                      onChange={handleChange}
                   />
                   <input
-                     id="nickname"
-                     name="nickname"
+                     id="username"
+                     name="username"
                      type="text"
                      required
                      placeholder="닉네임"
                      className="block w-full rounded-md bg-white px-3 py-1.5 text-base text-neutral-800 outline outline-1 outline-neutral-300 focus:outline-sky-500"
-                     value={formData.nickname}
+                     value={formData.username}
                      onChange={handleChange}
                   />
                   <input

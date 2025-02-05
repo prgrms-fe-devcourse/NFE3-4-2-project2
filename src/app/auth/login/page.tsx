@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Header from "@/components/common/Header";
 import Footer from "@/components/common/Footer";
-import Image from "next/image";
 import Link from "next/link";
 import { login } from "@/utils/authapi"; // authapi.ts의 login 함수를 가져옵니다.
 import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가

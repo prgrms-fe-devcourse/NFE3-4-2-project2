@@ -7,6 +7,7 @@ const baseURL = "http://13.209.75.182:5003"; // 서버 주소
 interface SignUpRequest {
    email: string;
    fullName: string;
+   username: string;
    password: string;
 }
 
