@@ -59,7 +59,7 @@ export async function GET(req: Request) {
                }
                break;
             case "nature":
-               if (["beach", "mountain", "river", "forest"].includes(filter)) {
+               if (["ocean", "mountain", "river", "forest"].includes(filter)) {
                   const selectedFilter = natureList[filter as Nature];
                   const cat3Values = selectedFilter.map(item => item.cat3);
                   params.cat3 = { $in: cat3Values };

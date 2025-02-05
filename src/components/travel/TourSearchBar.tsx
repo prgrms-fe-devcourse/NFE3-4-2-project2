@@ -11,7 +11,15 @@ const TourSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) =>
    // 셀렉트 박스 값 변경 시 상태 업데이트
    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
       const selected = event.target.value;
-      changeUrl({ cat: selected, page:1 });
+      if(selected == "season"){
+         changeUrl({ cat: selected, page:1, filter:"spring"}); 
+      }else if (selected == "culture"){
+         changeUrl({ cat: selected, page:1, filter:"museum"}); 
+      }else if (selected == "nature"){
+         changeUrl({ cat: selected, page:1, filter:"ocean"}); 
+      }else{
+         changeUrl({ cat: selected, page:1 });
+      }
    };
 
    return (

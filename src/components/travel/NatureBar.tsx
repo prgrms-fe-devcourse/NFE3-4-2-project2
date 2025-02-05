@@ -12,7 +12,7 @@ const NatureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       nature: "바다 · 해변",
       imageSrc: "/images/nature/beach.png",
       description: "푸른 바다, 여유로운 해변",
-      query: "beach",
+      query: "ocean",
     },
     {
       nature: "산 · 등산로",
