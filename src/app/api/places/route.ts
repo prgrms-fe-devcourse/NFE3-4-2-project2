@@ -66,11 +66,14 @@ export async function GET(req: Request) {
                 }
                break;
             case "festival":
-               
+               if(filter){params.sigungucode = filter;}
                break;
             case "event":
-               
+               if(filter){params.sigungucode = filter;}
                break;
+            case "total":{
+               if(filter){params.sigungucode = filter;}
+            }
             case "restaurant":
                if(filter){params.sigungucode = filter;}
                if (["korean", "western", "chinese", "japanese", "cafe", "etc"].includes(detail)){
@@ -107,16 +110,29 @@ export async function GET(req: Request) {
         cat3 : place.cat3
       }));
 
-      const message = `
+      let message = `
 🔍[API 응답] 검색 파라미터 확인 🔍
 
-콘텐츠 타입 아이디 : ${Object.values(params.contenttypeid) || "없음"},
-지역 코드 : ${params.sigungucode || "없음"},
-소분류(cat3) : ${JSON.stringify(params.cat3) || "없음"}
-
 API 응답 데이터 개수: ${totalCount}
-전체 ${totalPages} 중 ${page} 페이지
-         `
+전체 ${totalPages}p 중 ${page}
+
+`
+
+      if(params.contenttypeid){
+         message += `콘텐츠 타입 아이디 : ${typeof params.contenttypeid === "object" ? Object.values(params.contenttypeid).join(", ") : params.contenttypeid} \n`
+      }
+      if(params.sigungucode){
+         message += `지역 코드 : ${params.sigungucode} \n`
+      }
+      if(params.cat2){
+         message +=  `중분류(cat2) : ${typeof params.cat2 === "object" ? Object.values(params.cat2).join(", ") : params.cat2} \n`
+      }
+      if(params.cat3){
+         message += `소분류(cat3) : ${typeof params.cat3 === "object" ? Object.values(params.cat3).join(", ") : params.cat3} \n`
+      }
+
+
+// .trim();
       
       // 페이지네이션 처리된 결과 반환
       return NextResponse.json({
