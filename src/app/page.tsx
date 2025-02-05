@@ -4,7 +4,9 @@ import SvgMap from "@/components/main/SvgMap";
 import Footer from "../components/common/Footer";
 import Header from "../components/common/Header";
 import Image from "next/image";
-import CommunityCard from "@/components/travel/CommunityCard";
+import PostList from "../components/common/Community/PostList";
+import { useState, useEffect } from "react";
+import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
 
 // Swiper 관련 import
 import "swiper/css";
@@ -17,7 +19,24 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
-   const router = useRouter(); // useRouter 사용
+   const router = useRouter();
+   const [posts, setPosts] = useState([]);
+   const [loadingPosts, setLoadingPosts] = useState(false);
+
+   useEffect(() => {
+      const fetchPosts = async () => {
+         setLoadingPosts(true);
+         try {
+            const response = await getPostsByChannel("679f3aba7cd28d7700f70f40"); // channelId 사용
+            setPosts(response.data.slice(0, 6)); // 처음 6개의 게시글만 가져옴
+         } catch (error) {
+            console.error("❌ 게시글 불러오기 실패:", error);
+         } finally {
+            setLoadingPosts(false);
+         }
+      };
+      fetchPosts();
+   }, []);
 
    return (
       <div className="min-h-screen">
@@ -199,46 +218,14 @@ export default function Home() {
                </div>
             </div>
 
-            {/* 모집 카드 */}
+            {/* 모집 카드 리스트 (최대 6개) */}
             <div className="flex justify-center items-center mb-44">
-               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
-                  <CommunityCard
-                     imageUrl="/images/community/surfing.png"
-                     title="3기 양양 서핑 동호회 모집"
-                     location="양양"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/galaxy.png"
-                     title="포토그래퍼와 함께 떠나는 강원도 밤하늘 여행"
-                     location="영월"
-                     buttonText="마감"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/climbing.png"
-                     title="인천에서 출발하는 설악산 당일치기"
-                     location="속초"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/dog.png"
-                     title="강릉 댕댕클럽카페 정기 모임 (누구나 환영!)"
-                     location="강릉"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/snow.png"
-                     title="2025 제32회 태백산 눈축제"
-                     location="태백"
-                     buttonText="참가"
-                  />
-                  <CommunityCard
-                     imageUrl="/images/community/coffee.png"
-                     title="커피 투어 참가자 모집 (무료)"
-                     location="강릉"
-                     buttonText="마감"
-                  />
-               </div>
+               <PostList
+                  posts={posts}
+                  loadingPosts={loadingPosts}
+                  currentPage={1}
+                  postsPerPage={6} // 6개만 보여주도록 설정
+               />
             </div>
          </div>
          {/* ////////////////////////////////// */}

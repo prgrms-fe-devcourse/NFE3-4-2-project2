@@ -23,12 +23,13 @@ import { getCookie, setCookie } from "@/utils/cookie";
 const catList = catListJson as CatList;
 
 const RestaurantDetailPage: React.FC = () => {
-
    const params = useSearchParams();
    const key = Number(params.get("contentId"));
 
-   const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
-   
+   const blankbox = (
+      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+   );
+
    const swiperRef = useRef<any>(null);
    const prevBtnRef = useRef<HTMLButtonElement | null>(null);
    const nextBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -40,14 +41,11 @@ const RestaurantDetailPage: React.FC = () => {
 
    useEffect(() => {
       const loadData = async () => {
-      
-         
          const infoList: RestaurantDetailInfo = await APIConnect.getRestaurantInfo(key);
          const img = await APIConnect.getTourImg(key);
 
          setRestaurantInfo(infoList);
          setImgList(img);
-
       };
 
       loadData();
@@ -94,7 +92,7 @@ const RestaurantDetailPage: React.FC = () => {
       setCookie("visited", JSON.stringify(visitedPlaces), 7);
       setIsVisited(!isVisited);
    };
-   
+
    const getContentCategory = (key: string | undefined) => {
       return (
          <>
@@ -138,12 +136,17 @@ const RestaurantDetailPage: React.FC = () => {
                      autoplay={{ delay: 5000, disableOnInteraction: false }}
                      loop={true}
                      modules={[Pagination, Navigation, Autoplay]}
-                     className="w-full aspect-[16/9] rounded-lg bg-neutral-200"
-                  >
+                     className="w-full aspect-[16/9] rounded-lg bg-neutral-200">
                      {Array.isArray(imgList) && imgList.length > 0 ? (
                         imgList.map((img) => (
                            <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
-                              <Image src={img.originimgurl} alt={img.imgname || "식당 이미지"} width={800} height={450} className="rounded-lg object-cover mx-auto" />
+                              <Image
+                                 src={img.originimgurl}
+                                 alt={img.imgname || "식당 이미지"}
+                                 width={800}
+                                 height={450}
+                                 className="rounded-lg object-cover mx-auto"
+                              />
                            </SwiperSlide>
                         ))
                      ) : (
@@ -156,37 +159,39 @@ const RestaurantDetailPage: React.FC = () => {
                   </Swiper>
 
                   {/* Swiper 내부 네비게이션 버튼 */}
-                  <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <button
+                     ref={prevBtnRef}
+                     className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
                      <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
                   </button>
-                  <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
+                  <button
+                     ref={nextBtnRef}
+                     className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
                      <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
                   </button>
                </div>
-
-               
 
                <div className="flex flex-col justify-between max-w-[480] gap-12">
                   {/* Info Section */}
                   <div className="grid grid-cols-[auto_1fr] items-start gap-4">
                      <DetailList iconUrl="/images/address.png" title="주소">
-                     {infoList ? infoList.addr : blankbox}
+                        {infoList ? infoList.addr : blankbox}
                      </DetailList>
                      <DetailList iconUrl="/images/tel.png" title="문의처">
-                     {infoList ? infoList.infocenterfood : blankbox}
+                        {infoList ? infoList.infocenterfood : blankbox}
                      </DetailList>
-                  </div>   
-               
+                  </div>
 
                   {/* Buttons */}
                   <div className="flex items-center space-x-4">
                      {/* 다녀온 관광지 추가 버튼 */}
                      <button
                         className={`w-72 h-13 py-2 rounded-lg border ${
-                           isVisited ? "bg-gray-300 text-black" : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                           isVisited
+                              ? "bg-gray-300 text-black"
+                              : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
                         }`}
-                        onClick={handleVisitedToggle}
-                     >
+                        onClick={handleVisitedToggle}>
                         <span className="font-semibold text-lg leading-7 tracking-normal">
                            {isVisited ? "다녀온 관광지" : "다녀온 관광지 추가"}
                         </span>
@@ -200,8 +205,7 @@ const RestaurantDetailPage: React.FC = () => {
                      {/* 찜하기 버튼 */}
                      <button
                         className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
-                        onClick={handleFavoriteToggle}
-                     >
+                        onClick={handleFavoriteToggle}>
                         <Image
                            src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
                            alt="찜하기"
@@ -210,7 +214,7 @@ const RestaurantDetailPage: React.FC = () => {
                         />
                         <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
                      </button>
-                  </div>   
+                  </div>
                </div>
             </div>
 
@@ -228,7 +232,8 @@ const RestaurantDetailPage: React.FC = () => {
                      {infoList && infoList.opentimefood && (
                         <DetailList title="운영시간">{convertBrToSpan(infoList.opentimefood)}</DetailList>
                      )}
-                     {infoList.extraInfo && infoList.extraInfo.length > 0 &&
+                     {infoList.extraInfo &&
+                        infoList.extraInfo.length > 0 &&
                         infoList.extraInfo.map((exInfo) => {
                            if (exInfo.infoname !== "주차요금" && exInfo.infoname !== "주차") {
                               return (
@@ -245,7 +250,6 @@ const RestaurantDetailPage: React.FC = () => {
                )}
             </section>
 
-
             <hr className="my-12" />
 
             {/* 메뉴 정보 */}
@@ -259,7 +263,6 @@ const RestaurantDetailPage: React.FC = () => {
                      {infoList && infoList.treatmenu && (
                         <DetailList title="취급 메뉴">{convertBrToSpan(infoList.treatmenu)}</DetailList>
                      )}
-                     
                   </div>
                ) : (
                   blankbox
@@ -279,9 +282,11 @@ const RestaurantDetailPage: React.FC = () => {
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy ? (
                   <div className="h-[500]">
-                  <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title}/>
-               </div>
-               ) : ""}
+                     <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
+                  </div>
+               ) : (
+                  ""
+               )}
             </section>
          </main>
          <Footer />
