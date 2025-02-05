@@ -8,7 +8,8 @@ import Footer from "@/components/common/Footer";
 import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
 import { checkAuthUser } from "@/utils/authapi";
-import { useSearchParams } from "next/navigation"; // useSearchParams 추가
+import { useSearchParams } from "next/navigation";
+import { AxiosError } from "axios";
 
 interface Post {
    _id: string;
@@ -16,7 +17,7 @@ interface Post {
    content: string;
    fee: number | string;
    people: number;
-   status: string; // 모집 상태 (모집중, 모집마감)
+   status: string;
    date: string;
    endDate: string;
    createdAt: string;
@@ -42,7 +43,7 @@ export default function PostDetail() {
    const router = useRouter();
    const params = useParams();
    const postId = params?.postId as string;
-   const searchParams = useSearchParams(); // searchParams를 사용하여 URL 파라미터 가져오기
+   const searchParams = useSearchParams();
    const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40"; // 기본값 설정
 
    const [post, setPost] = useState<Post | null>(null);
@@ -75,7 +76,7 @@ export default function PostDetail() {
       }
    }, [post]);
 
-   // 게시글 데이터와 댓글 가져오기
+   // 게시글 데이터, 댓글 가져오기
    useEffect(() => {
       if (!postId) return;
 
@@ -169,8 +170,6 @@ export default function PostDetail() {
                return;
             }
 
-            console.log("서버 응답:", response.data); // 서버 응답 확인
-
             // 댓글 내용 초기화
             setCommentContent("");
 
@@ -183,7 +182,8 @@ export default function PostDetail() {
                      _id: response.data.author._id,
                      fullName: response.data.author.fullName,
                      username: response.data.author.username,
-                  }, // 댓글 작성자 ID 추가
+                     image: response.data.author.image || "", // 이미지 속성 기본값 처리
+                  }, // 댓글 작성자 정보
                   comment: response.data.comment, // 댓글 내용
                   createdAt: response.data.createdAt, // 댓글 작성 시간
                },
@@ -221,6 +221,10 @@ export default function PostDetail() {
          return;
       }
 
+      // 삭제 전 확인 창 띄우기
+      const confirmDelete = window.confirm("정말로 이 댓글을 삭제하시겠습니까?");
+      if (!confirmDelete) return;
+
       try {
          // 댓글 삭제 API 호출
          const response = await deleteComment(commentId, token);
@@ -232,7 +236,11 @@ export default function PostDetail() {
             alert("댓글 삭제에 실패했습니다.");
          }
       } catch (error) {
-         console.error("❌ 댓글 삭제 실패:", error.response ? error.response.data : error.message);
+         if (error instanceof AxiosError) {
+            console.error("❌ 댓글 삭제 실패:", error.response ? error.response.data : error.message);
+         } else {
+            console.error("❌ 댓글 삭제 실패:", error);
+         }
          alert("댓글 삭제에 실패했습니다.");
       }
    };
@@ -268,13 +276,13 @@ export default function PostDetail() {
                   {/* 작성자 정보 */}
                   <div className="text-gray-500 text-sm mb-4">
                      <p>
-                        <strong>작성자:</strong> {post.author.username || post.author.fullName} ({post.author.email})
+                        <strong>작성자 : </strong> {post.author.username || post.author.fullName} ({post.author.email})
                      </p>{" "}
                   </div>
                   {/* 게시글 작성일 */}
                   <div className="text-gray-500 text-sm mb-6">
                      <p>
-                        <strong>작성일:</strong> {formatDate(post.createdAt)}
+                        <strong>작성일 : </strong> {formatDate(post.createdAt)}
                      </p>
                   </div>
                   {/* 이미지 & 정보 섹션 */}
@@ -352,8 +360,12 @@ export default function PostDetail() {
                            </span>
                            <span
                               className={`${
-                                 parsedTitle?.status === "모집중" ? "text-green-600" : "text-red-600"
-                              } font-semibold`}>
+                                 parsedTitle?.status === "모집중"
+                                    ? "bg-sky-50 text-sky-500"
+                                    : parsedTitle?.status === "모집마감"
+                                    ? "bg-red-100 text-red-500"
+                                    : "bg-gray-200 text-gray-500"
+                              } font-semibold px-3 py-1 rounded-md`}>
                               {parsedTitle?.status}
                            </span>
                         </div>
@@ -472,7 +484,7 @@ export default function PostDetail() {
 
                   {/* 댓글 입력 */}
                   <div className="mt-14">
-                     <label className="block text-lg font-semibold mb-2 flex items-center space-x-2">
+                     <label className="text-lg font-semibold mb-2 flex items-center space-x-2">
                         <svg
                            xmlns="http://www.w3.org/2000/svg"
                            fill="none"
@@ -499,7 +511,7 @@ export default function PostDetail() {
                         />
                         <button
                            onClick={handleCommentSubmit}
-                           className="bg-sky-500 text-white px-6 py-2 rounded-3xl ml-auto">
+                           className="bg-sky-500 text-white px-6 py-2 rounded-3xl ml-auto hover:bg-sky-600">
                            댓글 달기
                         </button>
                      </div>

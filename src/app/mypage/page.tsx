@@ -155,7 +155,7 @@ const MyPage: React.FC = () => {
                         {/* 프로필 왼쪽 */}
                         <div className="flex-shrink-0 w-48 h-48">
                            {/* 프로필 이미지 미리보기 */}
-                           <div className="w-full h-full rounded-full border-2 border-gray-500 mb-6">
+                           <div className="w-full h-full rounded-full border-2 border-gray-400 mb-6">
                               <img
                                  src={profileImagePreview || user.image || "/images/default_profile.png"} // 업로드된 이미지 미리보기 또는 기본 이미지
                                  alt="Profile"

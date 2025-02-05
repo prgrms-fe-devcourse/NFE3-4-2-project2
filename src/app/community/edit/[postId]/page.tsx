@@ -31,9 +31,7 @@ export default function EditPostPage() {
    const router = useRouter();
    const { postId } = useParams();
    const searchParams = useSearchParams();
-   const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40"; // 기본값 설정
-   console.log("Received channelId:", channelId); // URL에서 받은 channelId 확인
-
+   const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40";
    const [post, setPost] = useState<Post | null>(null);
    const [title, setTitle] = useState<string>("");
    const [content, setContent] = useState<string>("");
@@ -69,7 +67,7 @@ export default function EditPostPage() {
 
       const fetchPostData = async () => {
          try {
-            const response: AxiosResponse<Post> = await getPostById(postId);
+            const response: AxiosResponse<Post> = await getPostById(postId as string);
             setPost(response.data);
 
             // title이 JSON 문자열이므로 파싱해야 함
@@ -127,19 +125,8 @@ export default function EditPostPage() {
             return;
          }
 
-         // title에 포함된 데이터를 JSON 문자열로 변환하여 API로 전달
-         const postData = {
-            title,
-            content,
-            fee,
-            people,
-            status, // 모집 상태
-            date, // 모집 시작일
-            endDate, // 모집 마감일
-         };
-
          const imageToDeletePublicId = null;
-         
+
          // 수정된 게시글 데이터를 업데이트
          const response = await updatePost(
             postId as string,
@@ -191,7 +178,7 @@ export default function EditPostPage() {
                <>
                   {/* 제목, 내용 수정 폼 */}
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">제목</label>
+                     <label className="block text-lg font-semibold">제목 *</label>
                      <input
                         type="text"
                         value={title}
@@ -200,7 +187,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">내용</label>
+                     <label className="block text-lg font-semibold">내용 *</label>
                      <textarea
                         value={content}
                         onChange={(e) => setContent(e.target.value)}
@@ -208,7 +195,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">참여 요금</label>
+                     <label className="block text-lg font-semibold">참여 요금 *</label>
                      <input
                         type="number"
                         value={fee}
@@ -217,7 +204,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">인원 수</label>
+                     <label className="block text-lg font-semibold">인원 수 *</label>
                      <input
                         type="number"
                         value={people}
@@ -226,7 +213,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">모집 시작일</label>
+                     <label className="block text-lg font-semibold">여행 일자 *</label>
                      <input
                         type="date"
                         value={date}
@@ -235,7 +222,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">모집 마감일</label>
+                     <label className="block text-lg font-semibold">모집 마감일 *</label>
                      <input
                         type="date"
                         value={endDate}
@@ -244,7 +231,7 @@ export default function EditPostPage() {
                      />
                   </div>
                   <div className="mb-6">
-                     <label className="block text-lg font-semibold">이미지 업로드</label>
+                     <label className="block text-lg font-semibold">사진 첨부 (선택)</label>
                      <input
                         type="file"
                         onChange={handleImageUpload}

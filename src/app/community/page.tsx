@@ -102,18 +102,20 @@ export default function Community() {
                <h2 className="text-[48px] font-semibold mt-2">강원도 여행 동행 모집</h2>
             </div>
          </div>
-         <div className="max-w-[1280px] min-h-[700px] w-full mx-auto px-4 py-16 flex-1">
-            <div className="flex justify-between items-center mb-8">
+         <div className="max-w-[1280px] min-h-[700px] w-full mx-auto px-2 py-16 flex-1">
+            {" "}
+            <div className="flex justify-between items-center py-2 mb-16 px-4">
                <h3 className="text-[32px] font-semibold text-gray-800">🌟 여행 동행 모집 게시판</h3>{" "}
                {isLoggedIn && (
                   <button
                      onClick={() => router.push(`/community/write?channelId=${channelId}`)}
-                     className="w-[200px] h-[50px] bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md transform hover:translate-y-1">
+                     className="w-[180px] h-[50px] mx-4 bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md transform hover:translate-y-1">
                      ✏️ 동행 모집 글쓰기
                   </button>
                )}
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-8">
+               {" "}
                {loadingPosts ? (
                   <p className="text-gray-500 text-center col-span-3">게시글을 불러오는 중...</p>
                ) : currentPosts.length > 0 ? (
@@ -124,29 +126,28 @@ export default function Community() {
                         <div
                            key={`${post._id}-${index}`}
                            onClick={() => router.push(`/community/post/${post._id}`)} // 카드 클릭 시 바로 상세 페이지로 이동
-                           className="flex flex-col bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition border border-gray-300 hover:border-sky-500 cursor-pointer">
+                           className="w-full max-w-[380px] px-6 flex flex-col bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition border border-gray-300 hover:border-sky-500 cursor-pointer mx-auto hover:translate-y-[-4px]">
+                           {" "}
                            <div className="w-full h-[200px] relative mb-4">
                               <Image
                                  src={post.image || "/images/no_img.jpg"}
                                  alt={post.title}
                                  layout="fill"
                                  objectFit="cover"
-                                 className="rounded-md"
+                                 className="rounded-2xl"
                               />
                            </div>
-                           <h3 className="text-xl font-bold text-gray-900 mb-2">{postTitle}</h3>
-                           <p className="text-gray-500 text-sm mb-2">
+                           <h3 className="text-xl font-bold text-gray-900 mb-1">{postTitle}</h3>
+                           <p className="text-gray-500 text-sm">
                               작성일 {new Date(post.createdAt).toLocaleDateString()}
                            </p>
-                           <p className="text-gray-700 text-sm line-clamp-2 mb-4">{post.content}</p>
-
-                           {/* 모집 상태 버튼을 카드 우측 아래에 배치 */}
+                           <p className="text-gray-700 text-sm line-clamp-2">{post.content}</p>
                            {postStatus && (
                               <div className="flex justify-end mt-auto">
                                  <button
-                                    className={`py-1 px-3 rounded-md text-sm font-semibold ${
+                                    className={`py-1 px-5 rounded-md text-md font-semibold ${
                                        postStatus === "모집중"
-                                          ? "bg-green-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
+                                          ? "bg-sky-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
                                           : postStatus === "모집마감"
                                           ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
                                           : "bg-gray-200 text-gray-500"
@@ -164,7 +165,6 @@ export default function Community() {
                   </div>
                )}
             </div>
-
             {totalPages > 1 && (
                <div className="flex justify-center mt-8 space-x-4">
                   {[...Array(totalPages)].map((_, i) => (
