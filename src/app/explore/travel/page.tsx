@@ -36,7 +36,7 @@ const TravelPage: React.FC = () => {
       if (!nowCategory) {
          console.log("🔄 기본 카테고리 'season' 적용");
          setSelected({ cat: "season", page: 1 });
-         router.replace("?cat=season&page=1", { scroll: false });
+         router.replace("?cat=season&filter=spring&page=1", { scroll: false });
          return;
       }
 
