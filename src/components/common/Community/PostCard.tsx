@@ -16,7 +16,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
    return (
       <div
          onClick={() => router.push(`/community/post/${post._id}`)}
-         className="w-full max-w-[380px] px-6 flex flex-col bg-white rounded-2xl shadow-lg p-5 hover:shadow-xl transition border border-gray-300 hover:border-sky-500 cursor-pointer mx-auto hover:translate-y-[-4px]">
+         className="w-full max-w-[380px] px-6 py-5 flex flex-col bg-white rounded-3xl shadow-lg border border-gray-200 hover:border-sky-500 cursor-pointer mx-auto hover:translate-y-[-4px] transition-all duration-300 ease-in-out">
          <div className="w-full h-[200px] relative mb-4">
             <Image
                src={post.image || "/images/no_img.jpg"}
@@ -32,11 +32,11 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
          {postStatus && (
             <div className="flex justify-end mt-auto">
                <button
-                  className={`py-1 px-5 rounded-md text-md font-semibold ${
+                  className={`py-2 px-6 rounded-md text-md font-semibold ${
                      postStatus === "모집중"
-                        ? "bg-sky-50 text-sky-500 hover:bg-amber-50 outline outline-1 outline-sky-500"
+                        ? "bg-sky-100 text-sky-600 hover:bg-sky-200 outline outline-1 outline-sky-400"
                         : postStatus === "모집마감"
-                        ? "bg-neutral-300 text-neutral-500 outline outline-1 outline-neutral-500 cursor-not-allowed"
+                        ? "bg-neutral-300 text-neutral-600 outline outline-1 outline-neutral-500 cursor-not-allowed"
                         : "bg-gray-200 text-gray-500"
                   }`}>
                   {postStatus}
