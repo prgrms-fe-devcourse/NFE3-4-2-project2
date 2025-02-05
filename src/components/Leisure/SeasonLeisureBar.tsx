@@ -43,8 +43,13 @@ const SeasonLeisureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl })
    }, [selected.filter]);
 
    const handleClick = (seasonQuery: string) => {
-      setActive(seasonQuery);
-      changeUrl({ cat: selected.cat, filter: seasonQuery, page:1});
+      if (active === seasonQuery) {
+         setActive(null); // 버튼 해제했을 때
+         changeUrl({ cat: selected.cat, filter: "", page: 1 }); // 전체 리스트 표시
+      } else {
+         setActive(seasonQuery);
+         changeUrl({ cat: selected.cat, filter: seasonQuery, page: 1 });
+      }
    };
 
    return (
@@ -54,8 +59,7 @@ const SeasonLeisureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl })
                key={season.season}
                className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative 
                 ${active === season.season ? "scale-105" : "hover:scale-105 hover:shadow-xl"}`}
-              onClick={() => handleClick(season.season)}
-               >
+               onClick={() => handleClick(season.season)}>
                <Image
                   src={season.imageSrc}
                   alt={season.season}
