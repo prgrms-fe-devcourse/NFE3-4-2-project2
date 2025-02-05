@@ -59,7 +59,11 @@ export default function Festival() {
             <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
          </div>
 
-         <FestivalCardList selected={selected} changeUrl={handleUrlChange} />
+         <FestivalCardList 
+            key={`${selected.cat}-${selected.page}-${selected.filter}`} 
+            selected={selected} 
+            changeUrl={handleUrlChange} 
+         />
          <Footer />
       </div>
    );
