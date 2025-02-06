@@ -10,8 +10,9 @@ import FestivalSearchBar from "@/components/fetival/FestivalSearchBar";
 
 export default function Festival() {
 
-   type festivalDate = {
-      month ?: string
+   type ExtraType = {
+      month ?: string,
+      keyword ?:string,
    }
 
    // URL에서 파라미터 읽어오기
@@ -24,10 +25,11 @@ export default function Festival() {
    const nowPage = Number(searchParams.get("page"));
    const nowDetail = searchParams.get("detail");
    const nowMonth = searchParams.get("month");
-   const [selected, setSelected] = useState<PlaceParam & festivalDate>({ cat: nowCategory, page: nowPage });
+   const nowKeyword = searchParams.get("keyword");
+   const [selected, setSelected] = useState<PlaceParam & ExtraType>({ cat: nowCategory, page: nowPage });
 
    // URL 변경 함수
-   const handleUrlChange = (selectedParam: PlaceParam & festivalDate) => {
+   const handleUrlChange = (selectedParam: PlaceParam & ExtraType) => {
       let queryString = `?cat=${selectedParam.cat}&page=${selectedParam.page}`;
       if (selectedParam.filter) {
          queryString += `&filter=${selectedParam.filter}`;
@@ -38,6 +40,9 @@ export default function Festival() {
       if(selectedParam.month){
          queryString += `&month=${selectedParam.month}`;
       }
+      if(selectedParam.keyword){
+         queryString += `&keyword=${encodeURI(selectedParam.keyword)}`;
+      }
       router.push(queryString, { scroll: false });
       setSelected(selectedParam);
    };
@@ -45,13 +50,14 @@ export default function Festival() {
    // 기본 파라미터 설정 (cat이 없을 경우 total로 설정)
    useEffect(() => {
       setSelected((prev) => ({
-         cat: nowCategory || prev.cat || "total", // ✅ 기존 값 유지
-         page: nowPage || prev.page || 1, // ✅ 기존 값 유지
-         filter: nowFilter || prev.filter, // ✅ 기존 값 유지
-         detail: nowDetail || prev.detail, // ✅ 기존 값 유지
-         month: nowMonth || prev.month || "", // ✅ 기존 값 유지
+         cat: nowCategory || prev.cat || "total", 
+         page: nowPage || prev.page || 1,
+         filter: nowFilter || prev.filter,
+         detail: nowDetail || prev.detail,
+         month: nowMonth || prev.month || "",
+         keyword : nowKeyword || prev.keyword || "",
       }));
-   }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth]); // ✅ router는 제외
+   }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth, nowKeyword]);
 
 
    return (
@@ -64,7 +70,6 @@ export default function Festival() {
                </h2>
             </div>
             <FestivalSearchBar 
-               key={`${selected.cat}-${selected.page}-${selected.filter}`} // ✅ Key 추가
                selected={selected} 
                changeUrl={handleUrlChange} 
             />

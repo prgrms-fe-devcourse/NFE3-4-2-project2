@@ -23,6 +23,7 @@ export async function GET(req: Request) {
       const filter = url.searchParams.get("filter") || "";
       const detail = url.searchParams.get("detail") || "";
       const month = url.searchParams.get("month") || "";
+      const keyword = url.searchParams.get("keyword") || "";
       const page = parseInt(url.searchParams.get("page") || "1", 10);
       const pageSize = 12;
       const skip = (page - 1) * pageSize;
@@ -116,6 +117,14 @@ export async function GET(req: Request) {
          }
       }
 
+      //검색어 필터링
+      if (keyword) {
+         params.$or = [
+           { title: { $regex: keyword, $options: 'i' } },
+           { addr1: { $regex: keyword, $options: 'i' } },
+           { addr2: { $regex: keyword, $options: 'i' } }
+         ];
+      }
       if (path.includes("/add-data")) {
          const contenttypeid = url.searchParams.get("contenttypeid");
          if (contenttypeid) params.contenttypeid = contenttypeid;

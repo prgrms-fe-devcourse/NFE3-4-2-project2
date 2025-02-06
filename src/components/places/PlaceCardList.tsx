@@ -5,19 +5,23 @@ import Pagination from "@/components/common/Pagination";
 import PlaceCard from "./PlaceCard";
 import EmptyListCard from "@/components/common/EmptyListCard";
 import EmptyData from "@/components/common/EmptyData";
+type ExtraType = {
+   keyword? : string
+}
 
 const PlaceCardList: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl }) => {
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [totalPages, setTotalPages] = useState<number>(1);
 
-   const createQueryString = (selected: PlaceParam): string => {
+   const createQueryString = (selected: PlaceParam & ExtraType): string => {
       const params = new URLSearchParams();
 
       if (selected.cat) params.append("cat", selected.cat);
       if (selected.page) params.append("page", selected.page.toString());
       if (selected.filter) params.append("filter", selected.filter);
       if (selected.detail) params.append("detail", selected.detail);
+      if (selected.keyword) params.append("keyword", selected.keyword)
 
       return params.toString(); // 쿼리 문자열 형식으로 반환
    };

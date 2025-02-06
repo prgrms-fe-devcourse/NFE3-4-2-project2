@@ -1,11 +1,27 @@
-import { PlaceSelectedChildParam } from "@/types/types";
+import { SelectedParam } from "@/types/types";
 import regionList from "@/utils/regionList.json";
+import { useRef } from "react";
 
-const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl }) => {
+type ExtraSearchBarProps = {
+   selected: SelectedParam & ExtraType;
+   changeUrl: (url: SelectedParam & ExtraType) => void;
+};
+type ExtraType = {
+   detail?: string;
+   keyword?: string;
+};
+
+const PlaceSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl }) => {
    const categories = [
       { name: "식당", link: "explore/places/restaurants", value: "restaurants" },
       { name: "숙소", link: "explore/places/accommodations", value: "accommodations" },
    ];
+   const searchRef = useRef<HTMLInputElement>(null);
+   const handleSearch = () => {
+      if (searchRef.current) {
+         changeUrl({ ...selected, keyword: searchRef.current.value });
+      }
+   };
 
    return (
       <div className="mx-auto w-[860]  p-7 shadow-xl bg-white rounded-lg">
@@ -15,7 +31,7 @@ const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl
                {categories.map((cat, idx) => (
                   <button
                      key={cat.value + idx}
-                     onClick={()=>{
+                     onClick={() => {
                         const { detail, ...rest } = selected; //detail 추출
                         changeUrl({ ...rest, cat: cat.value, page: 1 });
                      }}
@@ -30,7 +46,7 @@ const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl
                   <p className="text-neutral-500 text-lg pb-2">지역</p>
                   <select
                      className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2"
-                     value={selected.filter? selected.filter : ""}
+                     value={selected.filter ? selected.filter : ""}
                      onChange={(e) => {
                         changeUrl({ ...selected, filter: e.target.value });
                      }}>
@@ -50,13 +66,24 @@ const PlaceSearchBar: React.FC<PlaceSelectedChildParam> = ({ selected, changeUrl
             <div className="flex items-start">
                <div className="relative">
                   <input
+                     ref={searchRef}
                      type="text"
                      placeholder="검색어를 입력해 주세요."
                      className="text-lg placeholder:text-base w-72 px-4 py-1 border border-sky-500 rounded-lg  focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                     onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                           handleSearch();
+                        }
+                     }}
                   />
                   <i className="bi bi-search text-sky-500 absolute right-3 top-[4] text-lg"></i>
                </div>
-               <button className="px-6 py-1 text-white bg-sky-500 text-lg font-medium rounded-lg ml-2 flex-grow"> 검색</button>
+               <button
+                  className="px-6 py-1 text-white bg-sky-500 text-lg font-medium rounded-lg ml-2 flex-grow"
+                  onClick={handleSearch}>
+                  {" "}
+                  검색
+               </button>
             </div>
          </div>
       </div>
