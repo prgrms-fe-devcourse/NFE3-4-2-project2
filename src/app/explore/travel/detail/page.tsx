@@ -238,13 +238,8 @@ const TravelListPage: React.FC = () => {
                         onClick={handleVisitedToggle}
                      >
                         <span className="font-semibold text-lg leading-7 tracking-normal">
-                           {isVisited ? "다녀온 관광지" : "다녀온 관광지 추가"}
+                           {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
                         </span>
-                     </button>
-
-                     {/* 리뷰 작성 버튼 */}
-                     <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                        <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
                      </button>
 
                      {/* 찜하기 버튼 */}

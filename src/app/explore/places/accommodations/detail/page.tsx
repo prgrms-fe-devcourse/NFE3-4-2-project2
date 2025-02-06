@@ -37,6 +37,8 @@ const AccommodationDetailPage: React.FC = () => {
    const [imgList, setImgList] = useState<TourImg[]>([]);
    const [isFavorite, setIsFavorite] = useState(false);
    const [isVisited, setIsVisited] = useState(false);
+   const [stateTrigger, setStateTrigger] = useState(0);
+   const storedUserId = getCookie("userId");
 
    useEffect(() => {
       const loadData = async () => {
@@ -50,12 +52,14 @@ const AccommodationDetailPage: React.FC = () => {
 
       loadData();
 
-      // ✅ 쿠키에서 찜하기 & 방문한 관광지 데이터 읽어오기
-      const favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
-      setIsFavorite(favoritePlaces.includes(key));
+      if (storedUserId) {
+         // ✅ 사용자별 찜 & 다녀온 여행지 데이터 로드
+         const favoritePlaces = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
+         setIsFavorite(favoritePlaces.includes(key));
 
-      const visitedPlaces = JSON.parse(getCookie("visited") || "[]");
-      setIsVisited(visitedPlaces.includes(key));
+         const visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
+         setIsVisited(visitedPlaces.includes(key));
+      }
 
       if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
          swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
@@ -63,25 +67,36 @@ const AccommodationDetailPage: React.FC = () => {
          swiperRef.current.navigation.init();
          swiperRef.current.navigation.update();
       }
-   }, []);
+   }, [key, storedUserId, stateTrigger]);
 
-   // ✅ 찜하기 토글 (쿠키에 저장)
+   // ✅ 찜하기 토글
    const handleFavoriteToggle = () => {
-      let favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
-
-      if (isFavorite) {
-         favoritePlaces = favoritePlaces.filter((id) => id !== key);
-      } else {
-         favoritePlaces.push(key);
+      if (!storedUserId) {
+         console.warn("🚨 userId 없음. 찜 목록을 저장할 수 없음.");
+         return;
       }
 
-      setCookie("favorites", JSON.stringify(favoritePlaces), 7);
+      let favorites = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
+
+      if (isFavorite) {
+         favorites = favorites.filter((id) => id !== key);
+      } else {
+         favorites.push(key);
+      }
+
+      setCookie(`favorites_${storedUserId}`, JSON.stringify(favorites), 7);
       setIsFavorite(!isFavorite);
+      setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
 
-   // ✅ 다녀온 관광지 토글 (쿠키에 저장)
+   // ✅ 다녀온 관광지 토글
    const handleVisitedToggle = () => {
-      let visitedPlaces = JSON.parse(getCookie("visited") || "[]");
+      if (!storedUserId) {
+         console.warn("🚨 userId 없음. 다녀온 관광지 목록을 저장할 수 없음.");
+         return;
+      }
+
+      let visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
 
       if (isVisited) {
          visitedPlaces = visitedPlaces.filter((id) => id !== key);
@@ -89,8 +104,9 @@ const AccommodationDetailPage: React.FC = () => {
          visitedPlaces.push(key);
       }
 
-      setCookie("visited", JSON.stringify(visitedPlaces), 7);
+      setCookie(`visited_${storedUserId}`, JSON.stringify(visitedPlaces), 7);
       setIsVisited(!isVisited);
+      setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
 
 
@@ -106,20 +122,14 @@ const AccommodationDetailPage: React.FC = () => {
       const parts = htmlString.split(/<br\s*\/?>/gi);
       return parts.map((part, idx) => <p key={idx}>{part}</p>);
    };
-   // 🔹 현재 페이지 번호 가져오기 (기본값 1)
-   const currentPage = params.get("page") || "1";
 
-   // 🔹 목록으로 돌아가기 버튼 함수
-   const handleBackToList = () => {
-      router.push(`/explore/places/accommodations?page=${currentPage}`); // 페이지 번호 유지한 채 목록으로 이동
-   };
    return (
       <div className="min-h-screen">
          <Header />
          <main className="mx-auto max-w-screen-xl px-4 py-8">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
-               <button className="flex items-center space-x-2" onClick={handleBackToList}>
+               <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
                   <Image src="/images/goback.png" alt="뒤로 가기" width={16} height={16} />
                   <span className="text-sky-500 text-lg font-semibold">목록</span>
                </button>
@@ -129,8 +139,8 @@ const AccommodationDetailPage: React.FC = () => {
             <div className="text-center">
                <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
                <p className="text-xl font-normal text-neutral-800">
-            {infoList ? catList[infoList.cat3]?.cat2 + " · " + catList[infoList.cat3]?.cat3 : blankbox}
-          </p>
+                  {infoList ? getContentCategory(infoList.cat3) : blankbox}
+               </p>
             </div>
 
             {/* Image and Info */}
@@ -215,13 +225,8 @@ const AccommodationDetailPage: React.FC = () => {
                      onClick={handleVisitedToggle}
                   >
                      <span className="font-semibold text-lg leading-7 tracking-normal">
-                        {isVisited ? "다녀온 관광지" : "다녀온 관광지 추가"}
+                        {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
                      </span>
-                  </button>
-
-                  {/* 리뷰 작성 버튼 */}
-                  <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                     <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
                   </button>
 
                   {/* 찜하기 버튼 */}

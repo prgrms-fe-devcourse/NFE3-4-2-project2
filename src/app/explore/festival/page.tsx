@@ -44,17 +44,15 @@ export default function Festival() {
 
    // 기본 파라미터 설정 (cat이 없을 경우 total로 설정)
    useEffect(() => {
-      if (!nowCategory) {
-         setSelected({ cat: "total", page: 1 });
-         router.replace("?cat=total&page=1", { scroll: false });
-         return;
-      }
+      setSelected((prev) => ({
+         cat: nowCategory || prev.cat || "total", // ✅ 기존 값 유지
+         page: nowPage || prev.page || 1, // ✅ 기존 값 유지
+         filter: nowFilter || prev.filter, // ✅ 기존 값 유지
+         detail: nowDetail || prev.detail, // ✅ 기존 값 유지
+         month: nowMonth || prev.month || "", // ✅ 기존 값 유지
+      }));
+   }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth]); // ✅ router는 제외
 
-      // 올바른 카테고리 값인지 확인 후 설정
-      if (["festival", "event"].includes(nowCategory)) {
-         setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1, detail: nowDetail, month : nowMonth || "" });
-      }
-   }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth, router]);
 
    return (
       <div>
@@ -65,7 +63,11 @@ export default function Festival() {
                   강원도에서 즐기는 <br /> 다채로운 축제와 공연/행사!
                </h2>
             </div>
-            <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
+            <FestivalSearchBar 
+               key={`${selected.cat}-${selected.page}-${selected.filter}`} // ✅ Key 추가
+               selected={selected} 
+               changeUrl={handleUrlChange} 
+            />
          </div>
 
          <FestivalCardList 

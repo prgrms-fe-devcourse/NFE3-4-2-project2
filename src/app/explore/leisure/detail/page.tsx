@@ -36,6 +36,8 @@ const LeisureDetailPage: React.FC = () => {
   const [imgList, setImgList] = useState<TourImg[]>([]);
   const [isFavorite, setIsFavorite] = useState(false);
   const [isVisited, setIsVisited] = useState(false);
+  const [stateTrigger, setStateTrigger] = useState(0);
+  const storedUserId = getCookie("userId");
 
   useEffect(() => {
     const loadData = async () => {
@@ -49,12 +51,14 @@ const LeisureDetailPage: React.FC = () => {
 
     loadData();
 
-    // ✅ 쿠키에서 찜하기 & 방문한 관광지 데이터 읽어오기
-    const favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
-    setIsFavorite(favoritePlaces.includes(key));
+    if (storedUserId) {
+        // ✅ 사용자별 찜 & 다녀온 여행지 데이터 로드
+        const favoritePlaces = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
+        setIsFavorite(favoritePlaces.includes(key));
 
-    const visitedPlaces = JSON.parse(getCookie("visited") || "[]");
-    setIsVisited(visitedPlaces.includes(key));
+        const visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
+        setIsVisited(visitedPlaces.includes(key));
+    }
 
     if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
       swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
@@ -62,59 +66,78 @@ const LeisureDetailPage: React.FC = () => {
       swiperRef.current.navigation.init();
       swiperRef.current.navigation.update();
     }
-  }, []);
+  }, [key, storedUserId, stateTrigger]);
 
-   // ✅ 찜하기 토글 (쿠키에 저장)
-   const handleFavoriteToggle = () => {
-      let favoritePlaces = JSON.parse(getCookie("favorites") || "[]");
+  // ✅ 찜하기 토글
+  const handleFavoriteToggle = () => {
+      if (!storedUserId) {
+        console.warn("🚨 userId 없음. 찜 목록을 저장할 수 없음.");
+        return;
+      }
+
+      let favorites = JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]");
 
       if (isFavorite) {
-         favoritePlaces = favoritePlaces.filter((id) => id !== key);
+        favorites = favorites.filter((id) => id !== key);
       } else {
-         favoritePlaces.push(key);
+        favorites.push(key);
       }
 
-      setCookie("favorites", JSON.stringify(favoritePlaces), 7);
+      setCookie(`favorites_${storedUserId}`, JSON.stringify(favorites), 7);
       setIsFavorite(!isFavorite);
-   };
+      setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
+  };
 
-   // ✅ 다녀온 관광지 토글 (쿠키에 저장)
-   const handleVisitedToggle = () => {
-      let visitedPlaces = JSON.parse(getCookie("visited") || "[]");
+  // ✅ 다녀온 관광지 토글
+  const handleVisitedToggle = () => {
+    if (!storedUserId) {
+        console.warn("🚨 userId 없음. 다녀온 관광지 목록을 저장할 수 없음.");
+        return;
+    }
 
-      if (isVisited) {
-         visitedPlaces = visitedPlaces.filter((id) => id !== key);
-      } else {
-         visitedPlaces.push(key);
-      }
+    let visitedPlaces = JSON.parse(getCookie(`visited_${storedUserId}`) || "[]");
 
-      setCookie("visited", JSON.stringify(visitedPlaces), 7);
-      setIsVisited(!isVisited);
-   };
+    if (isVisited) {
+        visitedPlaces = visitedPlaces.filter((id) => id !== key);
+    } else {
+        visitedPlaces.push(key);
+    }
 
+    setCookie(`visited_${storedUserId}`, JSON.stringify(visitedPlaces), 7);
+    setIsVisited(!isVisited);
+    setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
+  };
   
   const parseAnchors = (htmlString: string) => {
     const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
     const anchors = [];
     let match;
     while ((match = anchorRegex.exec(htmlString)) !== null) {
-       const [_, href, title, content] = match;
-       anchors.push({ href, title, content });
+      const [_, href, title, content] = match;
+      anchors.push({ href, title, content });
     }
     return anchors.map((anchor, idx) => (
-       <div key={idx}>
+      <div key={idx}>
           <a href={anchor.href} title={anchor.title} className="underline text-blue-600 hover:no-underline">
-             {anchor.content}
+            {anchor.content}
           </a>
           <br />
-       </div>
+      </div>
     ));
- };
+  };
   
   const convertBrToSpan = (htmlString: string) => {
     const parts = htmlString.split(/<br\s*\/?>/gi);
     return parts.map((part, idx) => <p key={idx}>{part}</p>);
   };
+
+  const getContentCategory = (key: string) => {
+    return (
+       <>
+          <span>{catList[key].cat2}</span> · <span>{catList[key].cat3}</span>
+       </>
+    );
+ };
 
   return (
     <div className="min-h-screen">
@@ -131,7 +154,7 @@ const LeisureDetailPage: React.FC = () => {
         <div className="text-center">
           <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
           <p className="text-xl font-normal text-neutral-800">
-            {infoList ? catList[infoList.cat3]?.cat2 + " · " + catList[infoList.cat3]?.cat3 : blankbox}
+            {infoList ? getContentCategory(infoList.cat3) : blankbox}
           </p>
         </div>
 
@@ -186,13 +209,8 @@ const LeisureDetailPage: React.FC = () => {
                 onClick={handleVisitedToggle}
               >
                 <span className="font-semibold text-lg leading-7 tracking-normal">
-                    {isVisited ? "다녀온 관광지" : "다녀온 관광지 추가"}
+                    {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
                 </span>
-              </button>
-
-              {/* 리뷰 작성 버튼 */}
-              <button className="w-52 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100">
-                <span className="font-semibold text-lg leading-7 tracking-normal text-sky-500">리뷰 작성</span>
               </button>
 
               {/* 찜하기 버튼 */}

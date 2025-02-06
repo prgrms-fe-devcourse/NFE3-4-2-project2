@@ -1,63 +1,44 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import {ListProps, SelectedChildParam, SelectedParam } from "@/types/types";
+import { ListProps, SelectedChildParam } from "@/types/types";
 import ListCard from "./ListCard";
 import Pagination from "./Pagination";
 import EmptyListCard from "@/components/common/EmptyListCard";
 import EmptyData from "@/components/common/EmptyData";
-import Link from "next/link";
-import { usePathname} from "next/navigation";
+import useNavigateToDetail from "@/hooks/useNavigateToDetail"; // ✅ 커스텀 Hook 가져오기
 
 const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
-   const nowPath = usePathname();
-
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [totalPages, setTotalPages] = useState<number>(1);
-
-   const createQueryString = (selected: SelectedParam): string => {
-      const params = new URLSearchParams();
-
-      if (selected.cat) params.append('cat', selected.cat);
-      if (selected.page) params.append('page', selected.page.toString());
-      if (selected.filter) params.append('filter', selected.filter);
-
-      return params.toString();  // 쿼리 문자열 형식으로 반환
-   };
+   const { navigateToDetail } = useNavigateToDetail(); // ✅ 커스텀 Hook 사용
 
    useEffect(() => {
-      
       const fetchData = async () => {
          try {
-            let response: ListProps[] = [];
+            const params: Record<string, string> = {};
 
-            console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
-            const queryString = createQueryString(selected)
-            const dataList = await fetch(`/api/places?${queryString}`).then(response => response.json());
-            console.log(dataList.message);
-            response = dataList.data;
+            if (selected.cat) params["cat"] = selected.cat; // ✅ undefined가 아닌 값만 추가
+            params["page"] = selected.page.toString();
+            if (selected.filter) params["filter"] = selected.filter; // ✅ undefined가 아닌 값만 추가
+
+            const queryString = new URLSearchParams(params).toString();
+            
+
+            const dataList = await fetch(`/api/places?${queryString}`).then((res) => res.json());
+
             setTotalPages(Number(dataList.totalPages));
-            if(response){
-               setTourData(
-                  response.map((item)=>({
-                     imageUrl: item.imageUrl,
-                     title: item.title,
-                     area: item.area,
-                     contentId: item.contentId,
-                     contentTypeId: item.contentTypeId
-                  }))
-               )
-            }
-            setLoading(false);
+            setTourData(dataList.data || []);
          } catch (err) {
-            console.log("❌ API 요청 실패:", err);
+            console.error("❌ API 요청 실패:", err);
+         } finally {
             setLoading(false);
          }
       };
+
       fetchData();
    }, [selected]);
-
 
    if (loading) {
       return (
@@ -69,7 +50,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       );
    }
 
-   if (totalPages == 0 || !totalPages) {
+   if (totalPages < 1) {
       return <EmptyData />;
    }
 
@@ -77,9 +58,9 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
       <div className="w-[1280px] mx-auto px-6 m-16">
          <div className="grid grid-cols-3 gap-8">
             {tourData.map((item) => (
-               <Link key={item.contentId} href={`${nowPath}/detail?contentId=${item.contentId}`}>
+               <div key={item.contentId} onClick={() => navigateToDetail(item.contentId)} className="cursor-pointer">
                   <ListCard {...item} />
-               </Link>
+               </div>
             ))}
          </div>
 
@@ -89,3 +70,5 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
 };
 
 export default CardList;
+
+

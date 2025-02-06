@@ -127,6 +127,8 @@ export default class APIConnect {
 
          return {
             contentid: commonData.contentid,
+            cat1: commonData.cat1,
+            cat2: commonData.cat2,
             cat3: commonData.cat3,
             title: commonData.title,
             overview: commonData.overview,

@@ -24,6 +24,8 @@ export interface TourItemRegion {
 export interface TourDetailInfo {
    //분류 및 기본정보
    contentid: string;
+   cat1: string;
+   cat2: string;
    cat3: string;
    title: string;
    overview: string;
