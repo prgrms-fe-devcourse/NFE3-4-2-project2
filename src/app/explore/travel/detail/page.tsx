@@ -39,7 +39,11 @@ const TravelListPage: React.FC = () => {
    const [isFavorite, setIsFavorite] = useState(false);
    const [isVisited, setIsVisited] = useState(false);
    const [stateTrigger, setStateTrigger] = useState(0);
-   const storedUserId = getCookie("userId");
+   const [storedUserId, setStoredUserId] = useState<string | null>(null);
+   
+   useEffect(() => {
+   setStoredUserId(getCookie("userId"));
+   }, []);
 
    useEffect(() => {
       const loadData = async () => {
