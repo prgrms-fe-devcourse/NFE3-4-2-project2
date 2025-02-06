@@ -22,6 +22,7 @@ export async function GET(req: Request) {
       const cat = url.searchParams.get("cat");
       const filter = url.searchParams.get("filter") || "";
       const detail = url.searchParams.get("detail") || "";
+      const month = url.searchParams.get("month") || "";
       const page = parseInt(url.searchParams.get("page") || "1", 10);
       const pageSize = 12;
       const skip = (page - 1) * pageSize;
@@ -31,6 +32,18 @@ export async function GET(req: Request) {
       //페이지에 따른 대분류 필터링
       if (path.includes("/explore/festival")) {
          params.contenttypeid = "15";
+         if (filter) {
+            params.sigungucode = filter;
+         }
+         if (month) {
+            params.$expr = {
+               $or: [
+                  { $eq: [{ $substr: [{ $toString: "$eventstartdate" }, 4, 2] }, month] },
+                  { $eq: [{ $substr: [{ $toString: "$eventenddate" }, 4, 2] }, month] }
+               ]
+            };
+         }
+         
       } else if (path.includes("/explore/leisure")) {
          params.contenttypeid = "28";
       } else if (path.includes("/explore/places")) {
@@ -68,21 +81,12 @@ export async function GET(req: Request) {
                break;
             case "festival":
                params.cat2 = "A0207";
-               if (filter) {
-                  params.sigungucode = filter;
-               }
                break;
             case "event":
                params.cat2 = "A0208";
-               if (filter) {
-                  params.sigungucode = filter;
-               }
                break;
             case "total": {
                params.cat2 = { $in: ["A0207", "A0208"] };
-               if (filter) {
-                  params.sigungucode = filter;
-               }
                break;
             }
             case "restaurants":
@@ -171,8 +175,9 @@ API 응답 데이터 개수: ${totalCount}
                typeof params.cat3 === "object" ? Object.values(params.cat3).join(", ") : params.cat3
             } \n`;
          }
-
-         // .trim();
+         if(month){
+            message += `날짜 데이터 : ${month}월`
+         }
 
          // 페이지네이션 처리된 결과 반환
          return NextResponse.json({

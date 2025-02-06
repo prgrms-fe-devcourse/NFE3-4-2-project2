@@ -1,9 +1,13 @@
 "use client";
+import dynamic from "next/dynamic";
 
-import Lottie from "react-lottie-player";
+const Lottie = dynamic(() => import("react-lottie-player"), {
+   ssr: false, // 서버 사이드 렌더링 시 로드하지 않도록 설정
+ });
 import { useEffect, useState } from "react";
 
 const EmptyData = () => {
+
    const [animation, setAnimation] = useState(null);
 
    useEffect(() => {

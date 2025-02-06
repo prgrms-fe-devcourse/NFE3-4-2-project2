@@ -9,7 +9,12 @@ const categories = [
    { name: "공연/행사", value: "event" },
 ];
 
-const FestivalSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
+type FestivalSearchBarProps = SelectedChildParam & festivalDate;
+type festivalDate = {
+   month ?: string
+}
+
+const FestivalSearchBar: React.FC<FestivalSearchBarProps> = ({ selected, changeUrl }) => {
    return (
       <div className="mt-6 w-full max-w-[800px] p-6 shadow-lg bg-white rounded-lg">
          <div className="flex justify-between items-center mb-4">
@@ -66,20 +71,25 @@ const FestivalSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }
             </div>
             <div className="w-[150px]">
                <p className="text-neutral-500 text-lg pb-2">날짜</p>
-               <select className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800">
-                  <option className="text-neutral-800">전체</option>
-                  <option className="text-neutral-800">1월</option>
-                  <option className="text-neutral-800">2월</option>
-                  <option className="text-neutral-800">3월</option>
-                  <option className="text-neutral-800">4월</option>
-                  <option className="text-neutral-800">5월</option>
-                  <option className="text-neutral-800">6월</option>
-                  <option className="text-neutral-800">7월</option>
-                  <option className="text-neutral-800">8월</option>
-                  <option className="text-neutral-800">9월</option>
-                  <option className="text-neutral-800">10월</option>
-                  <option className="text-neutral-800">11월</option>
-                  <option className="text-neutral-800">12월</option>
+               <select 
+                  className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
+                  onChange={(e) => {
+                     changeUrl({ ...selected, month: e.target.value });
+                  }}
+               >
+                  <option value="" className="text-neutral-800">전체</option>
+                  <option value={"01"} className="text-neutral-800">1월</option>
+                  <option value={"02"} className="text-neutral-800">2월</option>
+                  <option value={"03"} className="text-neutral-800">3월</option>
+                  <option value={"04"} className="text-neutral-800">4월</option>
+                  <option value={"05"} className="text-neutral-800">5월</option>
+                  <option value={"06"} className="text-neutral-800">6월</option>
+                  <option value={"07"} className="text-neutral-800">7월</option>
+                  <option value={"08"} className="text-neutral-800">8월</option>
+                  <option value={"09"} className="text-neutral-800">9월</option>
+                  <option value={"10"} className="text-neutral-800">10월</option>
+                  <option value={"11"} className="text-neutral-800">11월</option>
+                  <option value={"12"} className="text-neutral-800">12월</option>
                </select>
             </div>
          </div>

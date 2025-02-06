@@ -7,19 +7,23 @@ import EmptyListCard from "../common/EmptyListCard";
 import EmptyData from "../common/EmptyData";
 import ListCard from "../common/ListCard";
 import Pagination from "../common/Pagination";
+type festivalDate = {
+   month ?: string
+}
 
 const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({selected = { cat: "festival", page: 1 }, changeUrl, cat2}) => {
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [totalPages, setTotalPages] = useState<number>(1);
 
-   const createQueryString = (selected: PlaceParam): string => {
+   const createQueryString = (selected: PlaceParam & festivalDate): string => {
       const params = new URLSearchParams();
 
       if (selected.cat) params.append("cat", selected.cat);
       if (selected.page) params.append("page", selected.page.toString());
       if (selected.filter) params.append("filter", selected.filter);
       if (selected.detail) params.append("detail", selected.detail);
+      if (selected.month) params.append("month", selected.month);
 
       return params.toString(); // 쿼리 문자열 형식으로 반환
    };

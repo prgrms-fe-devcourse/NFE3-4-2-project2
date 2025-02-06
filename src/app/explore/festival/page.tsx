@@ -9,6 +9,11 @@ import FestivalCardList from "@/components/fetival/FestivalCardList";
 import FestivalSearchBar from "@/components/fetival/FestivalSearchBar";
 
 export default function Festival() {
+
+   type festivalDate = {
+      month ?: string
+   }
+
    // URL에서 파라미터 읽어오기
    const searchParams = useSearchParams();
    const router = useRouter();
@@ -18,16 +23,20 @@ export default function Festival() {
    const nowFilter = searchParams.get("filter");
    const nowPage = Number(searchParams.get("page"));
    const nowDetail = searchParams.get("detail");
-   const [selected, setSelected] = useState<PlaceParam>({ cat: nowCategory, page: nowPage });
+   const nowMonth = searchParams.get("month");
+   const [selected, setSelected] = useState<PlaceParam & festivalDate>({ cat: nowCategory, page: nowPage });
 
    // URL 변경 함수
-   const handleUrlChange = (selectedParam: PlaceParam) => {
+   const handleUrlChange = (selectedParam: PlaceParam & festivalDate) => {
       let queryString = `?cat=${selectedParam.cat}&page=${selectedParam.page}`;
       if (selectedParam.filter) {
          queryString += `&filter=${selectedParam.filter}`;
       }
       if (selectedParam.detail) {
          queryString += `&detail=${selectedParam.detail}`;
+      }
+      if(selectedParam.month){
+         queryString += `&month=${selectedParam.month}`;
       }
       router.push(queryString, { scroll: false });
       setSelected(selectedParam);
@@ -43,9 +52,9 @@ export default function Festival() {
 
       // 올바른 카테고리 값인지 확인 후 설정
       if (["festival", "event"].includes(nowCategory)) {
-         setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1, detail: nowDetail });
+         setSelected({ cat: nowCategory, filter: nowFilter, page: nowPage || 1, detail: nowDetail, month : nowMonth || "" });
       }
-   }, [nowCategory, nowFilter, nowPage, nowDetail, router]);
+   }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth, router]);
 
    return (
       <div>
