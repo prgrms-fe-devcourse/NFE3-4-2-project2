@@ -259,7 +259,7 @@ export default class APIConnect {
          // 선택된 카테고리가 없으면 모든 자연 데이터 병합
          const selectedCategories: Array<keyof typeof natureList> = natureCategory
             ? [natureCategory]
-            : ["beach", "mountain", "lake", "forest"];
+            : ["ocean", "mountain", "river", "forest"];
 
          const cat3List = selectedCategories.flatMap((category) => natureList[category] || []);
 
