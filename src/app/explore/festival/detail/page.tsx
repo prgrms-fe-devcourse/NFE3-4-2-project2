@@ -35,17 +35,19 @@ const FestivalDetailPage: React.FC = () => {
   const [isFavorite, setIsFavorite] = useState(false);
   const [isVisited, setIsVisited] = useState(false);
   const [stateTrigger, setStateTrigger] = useState(0);
-  const storedUserId = getCookie("userId");
+  const [storedUserId, setStoredUserId] = useState<string | null>(null);
+  
+    useEffect(() => {
+      setStoredUserId(getCookie("userId"));
+    }, []);
 
    useEffect(() => {
       const loadData = async () => {
-
          const infoList: TourDetailInfo = await APIConnect.getFestivalInfo(key);
          const img = await APIConnect.getTourImg(key);
 
          setInfoList(infoList);
          setImgList(img);
-
       };
 
       loadData();
@@ -253,7 +255,7 @@ const FestivalDetailPage: React.FC = () => {
             <hr className="my-12" />
 
             {/* 위치 */}
-            <section>
+            {/* <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy && window.kakao ? (
                   <div className="h-[500]">
