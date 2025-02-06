@@ -137,11 +137,14 @@ export default function WritePage() {
    return (
       <div className="min-h-screen flex flex-col">
          <Header />
-         <div className="relative">
-            <img src="/images/community/banner.png" alt="banner" className="w-full h-[160px] object-cover" />
-            <div className="absolute top-1/2 left-12 transform -translate-y-1/2 text-white text-left">
-               <p className="text-[28px] font-medium">설레는 동행과 특별한 이야기가 머무는 곳</p>
-               <h2 className="text-[36px] font-semibold mt-2">동행 모집 작성</h2>
+         <div className="min-h-[160px] py-20 bg-[url(/images/community/banner_together.png)] bg-cover">
+            <div className="relative flex flex-col justify-center gap-10">
+               <div className="text-white ml-12">
+                  <h2 className="font-bold mt-20 leading-loose">
+                     <span className="text-3xl block mb-5">설레는 동행과 특별한 이야기가 머무는 곳</span>
+                     <span className="text-4xl block">동행 모집 작성</span>
+                  </h2>
+               </div>
             </div>
          </div>
          <div className="max-w-[800px] w-full mx-auto mt-16 p-6 bg-white shadow-lg rounded-lg mb-16">
