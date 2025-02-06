@@ -11,11 +11,7 @@ import { TourDetailInfo, TourImg, CatList } from "@/types/types";
 import catListJson from "@/utils/catList.json";
 import KakaoMap from "@/components/common/KakaoMap";
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination, Navigation, Autoplay } from "swiper/modules";
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+import DetailSwiper from "@/components/common/DetailSwiper";
 import { useSearchParams } from "next/navigation";
 
 import { getCookie, setCookie } from "@/utils/cookie";
@@ -140,46 +136,7 @@ const FestivalDetailPage: React.FC = () => {
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
 
-            <div className="relative w-full max-w-[800px]">
-              <Swiper
-                onSwiper={(swiper) => (swiperRef.current = swiper)} //
-                pagination={{ clickable: true }}
-                navigation={true} // 🔥 useEffect에서 버튼 연결
-                autoplay={{ delay: 5000, disableOnInteraction: false }} // 🔥 5초마다 자동 넘김
-                loop={true}
-                modules={[Pagination, Navigation, Autoplay]}
-                className="w-full aspect-[16/9] rounded-lg bg-neutral-200">
-                
-                {imgList.length > 0 ? (
-                    imgList.map((img) => (
-                      <SwiperSlide key={img.serialnum} className="flex items-center justify-center">
-                          <Image
-                            src={img.originimgurl}
-                            alt={img.imgname || "축제 이미지"}
-                            width={800}
-                            height={450}
-                            className="rounded-lg object-cover mx-auto"
-                          />
-                      </SwiperSlide>
-                    ))
-                ) : (
-                    <SwiperSlide>
-                      <div className="flex items-center justify-center w-full h-full">
-                          <p className="text-xl text-neutral-400">축제 이미지를 준비중입니다.</p>
-                      </div>
-                    </SwiperSlide>
-                )}
-              </Swiper>
-
-              {/* 🔥 Swiper 내부 좌우 네비게이션 버튼 */}
-              
-              <button ref={prevBtnRef} className="absolute left-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
-                  <Image src="/images/prev-icon.png" alt="이전" width={24} height={24} />
-              </button>
-              <button ref={nextBtnRef} className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 rounded-full p-3 z-10">
-                  <Image src="/images/next-icon.png" alt="다음" width={24} height={24} />
-              </button>
-            </div>  
+            <DetailSwiper infoList={infoList} imgList={imgList}/>
               
               
             
@@ -277,11 +234,11 @@ const FestivalDetailPage: React.FC = () => {
             {/* 위치 */}
             <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
-               {infoList?.mapx && infoList?.mapy ? (
+               {infoList?.mapx && infoList?.mapy && window.kakao ? (
                   <div className="h-[500]">
                   <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title}/>
                </div>
-               ) : ""}
+               ) : "지도 정보 없음"}
             </section>
          </main>
          <Footer />
