@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { checkAuthUser, logout } from "@/utils/authapi"; // logout 함수 import
+import style from "@/styles/header.module.css";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
    const [nickname, setNickname] = useState<string | null>(null);
    const [isLoading, setIsLoading] = useState(true);
+   const [scrollTop, setScrollTop] = useState(true);
+   const pathname = usePathname();
 
-   useEffect(() => {
+   useEffect(() => { //로그인 관련
       if (typeof window !== "undefined") {
          const token = localStorage.getItem("accessToken");
          const storedNickname = localStorage.getItem("nickname");
@@ -43,6 +47,26 @@ export default function Header() {
       }
    }, []);
 
+   useEffect(() => {
+      const handleScroll = () => {
+        setScrollTop(window.scrollY === 0);
+      };
+  
+      // 메인 페이지인지 확인
+      const isMainPage = location.pathname === "/";
+  
+      if (isMainPage) {
+        window.addEventListener("scroll", handleScroll);
+        handleScroll(); // 초기 상태 설정
+      } else {
+        setScrollTop(false);
+      }
+  
+      return () => {
+        window.removeEventListener("scroll", handleScroll);
+      };
+    }, [pathname]);
+
    const handleLogout = async () => {
       try {
          // 서버에서 로그아웃 요청 처리
@@ -72,19 +96,20 @@ export default function Header() {
       { name: "커뮤니티", href: "/community" },
    ];
 
+   
+
    return (
-      <header className="bg-white w-full h-[107px] border-b border-b-neutral-800">
-         <nav className="mx-auto max-w-screen-xl p-4">
-            <div className="flex w-full justify-between items-start">
+      <header className={`w-full border-b fixed z-50 ${scrollTop == true ? style.active : style.default}`}>
+         <nav className="mx-auto max-w-screen-xl pt-2 pb-3">
+            <div className="flex w-full justify-between items-end">
                {/* 왼쪽 로고 및 메뉴 */}
                <div className="flex flex-col items-start">
                   <Link href="/">
-                     <span className="text-2xl font-bold text-sky-500 no-underline mb-2 cursor-pointer">
+                     <h1 className="text-3xl font-bold text-sky-500 no-underline cursor-pointer font-[tilt]!">
                         Gangwon GO
-                     </span>
+                     </h1>
                   </Link>
-
-                  <ul className="flex gap-6 text-neutral-800 mt-4">
+                  <ul className="flex gap-6 text-neutral-800 mt-2">
                      {menus.map((menu) => (
                         <li key={menu.name}>
                            <Link href={menu.href}>
@@ -96,28 +121,27 @@ export default function Header() {
                      ))}
                   </ul>
                </div>
-
                {/* 오른쪽 로그인/로그아웃 및 마이페이지 버튼 */}
                <div className="flex items-center gap-4">
                   {!isLoading &&
                      (isLoggedIn ? (
-                        <div className="flex flex-col items-end gap-4 mt-3">
+                        <div className="flex flex-col items-end gap-2 mt-3">
                            {/* 사용자 이름과 환영 메시지 */}
-                           <span className="text-neutral-800 text-sm font-medium">
+                           <span className="text-neutral-800 text-base font-medium">
                               {nickname ?? "사용자"}님 환영합니다!
                            </span>
-                           <div className="flex gap-4">
+                           <div className="flex gap-2">
                               {/* 마이페이지 및 로그아웃 버튼 */}
                               <Link href="/mypage">
                                  <button
-                                    className="h-[32px] px-4 text-neutral-800 text-sm font-medium border-2 border-solid border-neutral-800 rounded-md 
+                                    className="px-3 py-1 text-xs font-medium border rounded-md 
                                              hover:text-white hover:bg-sky-500 hover:border-sky-500 active:bg-sky-600 active:border-sky-600">
                                     마이페이지
                                  </button>
                               </Link>
                               <button
                                  onClick={handleLogout}
-                                 className="h-[32px] px-4 text-neutral-800 text-sm font-medium border-2 border-solid border-neutral-800 rounded-md 
+                                 className="px-3 py-1 text-xs font-medium border rounded-md 
                                          hover:text-white hover:bg-red-500 hover:border-red-500 active:bg-red-600 active:border-red-600">
                                  로그아웃
                               </button>
@@ -126,7 +150,7 @@ export default function Header() {
                      ) : (
                         <Link href="/auth/login">
                            <button
-                              className="h-[32px] px-4 mt-6 text-neutral-800 text-sm font-medium border-2 border-solid border-neutral-800 rounded-md 
+                              className="px-3 py-1 mt-6 text-neutral-800 text-xs font-medium border rounded-md 
                                       hover:text-white hover:bg-sky-500 hover:border-sky-500 active:bg-sky-600 active:border-sky-600">
                               로그인
                            </button>

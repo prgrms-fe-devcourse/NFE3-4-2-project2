@@ -1,0 +1,13 @@
+.active * {
+    color: white;
+    border-color: white;
+}
+
+.default {background: white; box-shadow: 0px 2px 23px rgba(120,120,160,.1); transition: all .3s;}
+.default * {
+    color : var(--neutral-800);
+    border-color: var(--neutral-300);
+}
+.default h1 {
+    color: var(--sky-500);
+}

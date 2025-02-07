@@ -63,7 +63,7 @@ export default function Festival() {
    return (
       <div>
          <Header />
-         <div className="relative py-20 bg-[url(/images/festival/banner_festival.png)] flex flex-col items-center justify-center gap-6">
+         <div className="relative py-20 pt-40 bg-[url(/images/festival/banner_festival.png)] flex flex-col items-center justify-center gap-6">
             <div className="text-white text-center">
                <h2 className="text-4xl font-bold leading-normal">
                   강원도에서 즐기는 <br /> 다채로운 축제와 공연/행사!
