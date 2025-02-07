@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { checkAuthUser, updateUserInfo, uploadProfilePhoto } from "@/utils/authapi"; // api 호출 함수
+import { checkAuthUser, updateUserInfo, uploadProfilePhoto } from "@/utils/authapi";
 import { getCookie } from "@/utils/cookie";
-import Header from "@/components/common/Header"; // 헤더 컴포넌트
-import Footer from "@/components/common/Footer"; // 푸터 컴포넌트
+import Header from "@/components/common/Header";
+import Footer from "@/components/common/Footer";
 import FavoritePlaces from "./favorites/page";
 import VisitedPlaces from "./visited/page";
 import axios from "axios";
@@ -14,15 +14,13 @@ const MyPage: React.FC = () => {
    const [newUsername, setNewUsername] = useState<string>("");
    const [newProfileImage, setNewProfileImage] = useState<File | null>(null);
    const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
-   const [isEditing, setIsEditing] = useState<boolean>(false); // 수정 모드 상태
-   const [activeMenu, setActiveMenu] = useState<string>("내 프로필"); // 사이드바 메뉴 활성화 상태
+   const [isEditing, setIsEditing] = useState<boolean>(false);
+   const [activeMenu, setActiveMenu] = useState<string>("내 프로필");
 
-   // ✅ 찜한 장소 & 다녀온 장소 개수 상태
    const [favoriteCount, setFavoriteCount] = useState<number>(0);
    const [visitedCount, setVisitedCount] = useState<number>(0);
    const storedUserId = getCookie("userId");
 
-   // 현재 로그인한 사용자 정보 불러오기
    useEffect(() => {
       const fetchUserInfo = async () => {
          try {
@@ -37,28 +35,31 @@ const MyPage: React.FC = () => {
       fetchUserInfo();
 
       if (storedUserId) {
-         // ✅ 사용자별 찜한 장소 & 다녀온 장소 개수 가져오기
          setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
          setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
       }
    }, [storedUserId]);
 
-   // ✅ 찜한 장소 & 다녀온 장소 개수 업데이트 함수
-   const updateFavoriteCount = () => {
-      setFavoriteCount(JSON.parse(getCookie(`favorites_${storedUserId}`) || "[]").length);
+   // 프로필 수정 버튼 클릭 시, "내 프로필" 메뉴로 이동
+   const handleEditClick = () => {
+      setActiveMenu("내 프로필");
+      setIsEditing(true);
    };
 
-   const updateVisitedCount = () => {
-      setVisitedCount(JSON.parse(getCookie(`visited_${storedUserId}`) || "[]").length);
+   // 프로필 수정 취소
+   const handleCancelClick = () => {
+      setIsEditing(false);
+      setNewUsername(user?.username || "");
+      setNewProfileImage(null);
+      setProfileImagePreview(null);
    };
 
-   // 사용자 닉네임 수정
+   // 프로필 변경 저장
    const handleSubmitProfileChange = async (e: React.FormEvent) => {
       e.preventDefault();
-
       if (newUsername !== user?.username) {
          try {
-            await updateUserInfo(user?.fullName || "", newUsername); // fullName은 그대로 두고 username만 업데이트
+            await updateUserInfo(user?.fullName || "", newUsername);
             alert("닉네임이 변경되었습니다!");
          } catch (error) {
             console.error("닉네임 수정 실패", error);
@@ -66,15 +67,14 @@ const MyPage: React.FC = () => {
          }
       }
 
-      // 프로필 이미지 수정
       if (newProfileImage) {
          const formData = new FormData();
-         formData.append("isCover", "false"); // 반드시 false로 설정
-         formData.append("image", newProfileImage); // 이미지를 바이너리 형식으로 추가
+         formData.append("isCover", "false");
+         formData.append("image", newProfileImage);
 
          try {
             const response = await uploadProfilePhoto(formData);
-            setUser(response.data); // 업데이트된 사용자 정보 반영
+            setUser(response.data);
          } catch (error) {
             if (axios.isAxiosError(error)) {
                console.error("서버 오류:", error.response?.data || error.message);
@@ -85,8 +85,6 @@ const MyPage: React.FC = () => {
             }
          }
       }
-
-      // 수정 상태 종료
       setIsEditing(false);
    };
 
@@ -96,7 +94,6 @@ const MyPage: React.FC = () => {
          const file = e.target.files[0];
          setNewProfileImage(file);
 
-         // 미리보기 처리
          const reader = new FileReader();
          reader.onloadend = () => {
             setProfileImagePreview(reader.result as string);
@@ -105,185 +102,120 @@ const MyPage: React.FC = () => {
       }
    };
 
-   // 수정 버튼 클릭 시
-   const handleEditClick = () => {
-      setIsEditing(true); // 수정 모드로 전환
-   };
-
-   // 취소 버튼 클릭 시
-   const handleCancelClick = () => {
-      setIsEditing(false); // 수정 모드 종료
-      setNewUsername(user?.username || "");
-      setNewProfileImage(null);
-      setProfileImagePreview(null);
-   };
-
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
-         {/* 헤더 */}
          <Header />
-         <div className="max-w-[1280px] w-full mx-auto px-4 py-8">
-            <main className="flex-grow p-14 flex justify-between min-h-[600px]">
-               {/* 사이드바 */}
-               <div className="w-56 bg-gray-100 p-6 shadow-xl rounded-lg">
-                  <h2 className="text-2xl font-semibold text-gray-700 mb-6">마이페이지</h2>
-                  <ul>
-                     <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 ${
-                           activeMenu === "내 프로필" ? "bg-amber-50 text-blue-600" : "text-gray-700"
-                        }`}
-                        onClick={() => setActiveMenu("내 프로필")}>
-                        내 프로필
-                     </li>
-                     <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 flex items-center ${
-                           activeMenu === "찜한 장소" ? "bg-amber-50 text-blue-600" : "text-gray-700"
-                        }`}
-                        onClick={() => setActiveMenu("찜한 장소")}>
-                        {/* 아이콘 추가 */}
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           strokeWidth="1.5"
-                           stroke="currentColor"
-                           className="w-5 h-5 mr-2">
-                           <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z"
-                           />
-                        </svg>
-                        찜한 장소 ({favoriteCount})
-                     </li>
+         {/* ✅ 헤더 fixed로 인해 패딩 추가 */}
+         <div className="pt-[200px] max-w-[1280px] w-full mx-auto px-6 py-12 flex gap-8 pb-[160px]">
+            {/* 사이드바 */}
+            <aside className="w-1/4 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
+               <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300">
+                  <img
+                     src={profileImagePreview || user?.image || "/images/default_profile.png"}
+                     alt="Profile"
+                     className="w-full h-full object-cover"
+                  />
+               </div>
+               <h2 className="text-xl font-semibold mt-4">{user?.fullName} 님</h2>
+               <p className="text-gray-500 text-sm mt-2">{user?.email}</p>
+               <button
+                  className="mt-6 mb-2 bg-sky-500 text-white py-3 px-5 rounded-xl hover:bg-sky-600"
+                  onClick={handleEditClick}>
+                  프로필 수정
+               </button>
 
-                     <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 flex items-center ${
-                           activeMenu === "다녀온 장소" ? "bg-amber-50 text-blue-600" : "text-gray-700"
-                        }`}
-                        onClick={() => setActiveMenu("다녀온 장소")}>
-                        {/* 아이콘 추가 */}
-                        <svg
-                           xmlns="http://www.w3.org/2000/svg"
-                           fill="none"
-                           viewBox="0 0 24 24"
-                           strokeWidth="1.5"
-                           stroke="currentColor"
-                           className="w-5 h-5 mr-2">
-                           <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-                           />
-                        </svg>
-                        다녀온 장소({visitedCount})
-                     </li>
-
-                     <li
-                        className={`mb-4 py-2 px-4 font-semibold rounded-lg cursor-pointer hover:bg-amber-50 ${
-                           activeMenu === "내가 작성한 글" ? "bg-amber-50 text-blue-600" : "text-gray-700"
-                        }`}
-                        onClick={() => setActiveMenu("내가 작성한 글")}>
-                        내가 작성한 글
-                     </li>
+               <nav className="mt-6 w-full">
+                  <ul className="flex flex-col gap-4">
+                     {[
+                        { name: "내 프로필", icon: "bi-person-fill text-gray-500" },
+                        { name: `찜한 장소 (${favoriteCount})`, icon: "bi-heart-fill text-red-500" },
+                        { name: `다녀온 장소 (${visitedCount})`, icon: "bi-geo-alt-fill text-green-500" },
+                        { name: "내가 작성한 글", icon: "bi-pencil-square text-blue-500" },
+                     ].map((item) => (
+                        <li
+                           key={item.name}
+                           className={`py-2 px-4 rounded-lg cursor-pointer flex items-center gap-3 transition-all ${
+                              activeMenu === item.name.replace(/\s\(\d+\)$/, "")
+                                 ? "bg-blue-100 text-blue-600 font-semibold"
+                                 : "text-gray-700"
+                           } hover:bg-gray-200 hover:text-sky-500`}
+                           onClick={() => setActiveMenu(item.name.replace(/\s\(\d+\)$/, ""))}>
+                           <i className={`bi ${item.icon} text-lg`}></i>
+                           {item.name}
+                        </li>
+                     ))}
                   </ul>
-               </div>
+               </nav>
+            </aside>
 
-               {/* 프로필 오른쪽 영역 */}
-               <div className="flex-grow bg-white shadow-lg p-6 rounded-lg max-w-screen-xl mx-auto">
-                  {user ? (
-                     <div className="flex items-center space-x-14 mt-8 ml-4 mb-8">
-                        {/* 프로필 왼쪽 */}
-                        <div className="flex-shrink-0 w-48 h-48">
-                           {/* 프로필 이미지 미리보기 */}
-                           <div className="w-full h-full rounded-full border-2 border-gray-400 mb-6">
-                              <img
-                                 src={profileImagePreview || user.image || "/images/default_profile.png"} // 업로드된 이미지 미리보기 또는 기본 이미지
-                                 alt="Profile"
-                                 className="w-full h-full object-cover rounded-full"
-                              />
-                           </div>
-                        </div>
+            {/* 메인 컨텐츠 */}
+            <main className="flex-grow bg-white shadow-md p-8 rounded-xl">
+               <h1 className="text-2xl font-bold text-gray-800 mb-6">
+                  <span className="text-sky-500">{user?.fullName}</span> 님의 {activeMenu}
+               </h1>
 
-                        {/* 프로필 오른쪽 */}
-                        <div className="flex-grow">
-                           <h2 className="text-2xl font-semibold text-gray-800 mb-6">
-                              {user.fullName}님{/* 수정 버튼 */}
-                              <button
-                                 className="ml-4 mt-4 px-2 py-2 hover:shadow-md rounded-md"
-                                 onClick={handleEditClick}>
-                                 <img src="/images/Edit.png" alt="수정" className="w-6 h-6" />
-                              </button>
-                           </h2>
-                           <p className="text-gray-600 mb-6">
-                              이메일 <span className="font-semibold mx-4">{user.email}</span>
-                           </p>
-
-                           {isEditing ? (
-                              <div className="mb-6 flex items-center space-x-4">
-                                 <label htmlFor="username" className="text-gray-700">
-                                    닉네임
-                                 </label>
-                                 <input
-                                    type="text"
-                                    id="username"
-                                    value={newUsername}
-                                    onChange={(e) => setNewUsername(e.target.value)}
-                                    className="p-2 border-2 border-gray-300 rounded-md"
-                                    placeholder="새로운 닉네임"
-                                 />
-                              </div>
-                           ) : (
-                              <p className="mb-6 text-gray-700">
-                                 닉네임 <span className="font-semibold mx-4">{newUsername}</span>
-                              </p>
-                           )}
-
-                           {/* 프로필 파일 선택 필드 */}
-                           {isEditing && (
-                              <div className="my-6 flex items-center space-x-4">
-                                 <label htmlFor="profile-photo" className="text-gray-700">
-                                    프로필
-                                 </label>
-                                 <input
-                                    type="file"
-                                    id="profile-photo"
-                                    accept="image/*"
-                                    onChange={handleProfileImageChange}
-                                    className="block w-3/4 text-sm text-gray-500 p-2"
-                                 />
-                              </div>
-                           )}
-
-                           <div className="flex space-x-4">
-                              {isEditing && (
-                                 <>
-                                    <button
-                                       type="submit"
-                                       className="mt-2 px-5 py-2 bg-sky-400 text-white rounded-lg hover:bg-blue-500"
-                                       onClick={handleSubmitProfileChange}>
-                                       저장
-                                    </button>
-                                    <button
-                                       className="mt-2 px-5 py-2 bg-gray-400 text-white rounded-lg hover:bg-gray-500"
-                                       onClick={handleCancelClick}>
-                                       취소
-                                    </button>
-                                 </>
-                              )}
-                           </div>
-                        </div>
+               {/* ✅ 프로필 수정 모드 추가 */}
+               {activeMenu === "내 프로필" && (
+                  <div className="mt-20 flex items-center space-x-14 mx-4">
+                     <div className="w-48 h-48 rounded-full overflow-hidden border-2 border-gray-400">
+                        <img
+                           src={profileImagePreview || user?.image || "/images/default_profile.png"}
+                           alt="Profile"
+                           className="w-full h-full object-cover"
+                        />
                      </div>
-                  ) : (
-                     <p>로그인 상태가 아닙니다. 로그인 후 다시 시도해 주세요.</p>
-                  )}
-                  {activeMenu === "찜한 장소" && <FavoritePlaces updateCounts={updateFavoriteCount} />}
-                  {activeMenu === "다녀온 장소" && <VisitedPlaces updateCounts={updateVisitedCount} />}
-                  {activeMenu === "내가 작성한 글" && <MyPost />}
-               </div>
+                     <div className="flex-grow">
+                        <h2 className="text-3xl font-bold text-gray-800">{user?.fullName}</h2>
+                        <p className="text-gray-500 text-sm mt-1">안녕하세요, {user?.fullName} 님!</p>
+
+                        {isEditing ? (
+                           <div className="mt-4">
+                              <label className="block text-gray-700">닉네임</label>
+                              <input
+                                 type="text"
+                                 value={newUsername}
+                                 onChange={(e) => setNewUsername(e.target.value)}
+                                 className="mt-1 mb-1 p-2 border-2 border-gray-300 rounded-md"
+                              />
+                              <label className="block text-gray-700 mt-2">프로필 이미지</label>
+                              <input type="file" accept="image/*" onChange={handleProfileImageChange} />
+
+                              <div className="flex gap-4 mt-5">
+                                 <button
+                                    className="bg-sky-500 text-white px-4 py-2 rounded-lg"
+                                    onClick={handleSubmitProfileChange}>
+                                    저장
+                                 </button>
+                                 <button
+                                    className="bg-gray-400 text-white px-4 py-2 rounded-lg"
+                                    onClick={handleCancelClick}>
+                                    취소
+                                 </button>
+                              </div>
+                           </div>
+                        ) : (
+                           <div className="mt-5">
+                              <p className="text-gray-700 text-md flex items-center gap-2">
+                                 <i className="bi bi-person-circle text-lg text-gray-600"></i>{" "}
+                                 {/* 👤 닉네임 아이콘 추가 */}
+                                 닉네임 : <span className="text-gray-900">{newUsername}</span>
+                              </p>
+                              <p className="text-gray-600 text-md mt-2 flex items-center gap-2">
+                                 <i className="bi bi-envelope-fill text-lg text-gray-500"></i>{" "}
+                                 {/* ✉ 이메일 아이콘 추가 */}
+                                 이메일 : <span className="text-gray-900">{user?.email}</span>
+                              </p>
+                           </div>
+                        )}
+                     </div>
+                  </div>
+               )}
+
+               {activeMenu === "찜한 장소" && <FavoritePlaces />}
+               {activeMenu === "다녀온 장소" && <VisitedPlaces />}
+               {activeMenu === "내가 작성한 글" && <MyPost />}
             </main>
          </div>
-         {/* 푸터 */}
          <Footer />
       </div>
    );
