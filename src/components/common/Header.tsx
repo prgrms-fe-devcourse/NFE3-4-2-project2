@@ -100,7 +100,7 @@ export default function Header() {
 
    return (
       <header className={`w-full border-b fixed z-50 ${scrollTop == true ? style.active : style.default}`}>
-         <nav className="mx-auto max-w-screen-xl pt-2 pb-3">
+         <nav className="contents-wrap pt-2 pb-3">
             <div className="flex w-full justify-between items-end">
                {/* 왼쪽 로고 및 메뉴 */}
                <div className="flex flex-col items-start">

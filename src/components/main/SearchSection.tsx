@@ -56,8 +56,9 @@ export default function SearchSection() {
 
    return (
       <div>
-         <div
-            className="w-full max-w-screen-lg mx-auto relative my-10 flex items-center gap-3 
+        <div className="contents-wrap">
+        <div
+            className="w-full max-w-screen-lg mx-auto relative my-10 flex items-center gap-3
             rounded-full px-6 py-3 border-2 border-sky-400 outline outline-white outline-2 transition-all 
             group focus-within:outline-sky-200">
             <Image src="/icons/main_search.svg" alt="search 아이콘" width={18} height={18} />
@@ -74,15 +75,15 @@ export default function SearchSection() {
                }}
             />
          </div>
-
+        </div>
          {nowSearching && (
             <div className="w-full bg-neutral-50 py-10 mb-12">
-               <div className="max-w-screen-lg mx-auto overflow-visible text-center">
+               <div className="contents-wrap overflow-visible text-center">
                   <h4 className="mb-4 text-2xl font-bold text-left">
                      검색결과{" "}
                      <span className="font-medium text-base text-neutral-400 ml-2">총 {totalLength}건</span>
                   </h4>
-                  <div className={`w-full text-left grid gap-2 items-stretch  ${totalLength < 24 ? "grid-cols-2" : "grid-cols-3"}`}>
+                  <div className={`w-full text-left grid gap-2 items-stretch  ${totalLength < 24 ? "grid-cols-2" : "grid-cols-3 max-lg:grid-cols-2"}`}>
                      {tourData.map((item) => {
                         const parsed = item.area.replace("강원특별자치도", "").trim().split(" ");
                         const addressParsing = parsed.slice(0, 2).join(" ");

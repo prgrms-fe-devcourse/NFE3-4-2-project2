@@ -172,7 +172,7 @@ export default function SvgMap() {
          <div className="absolute w-full h-full z-0 top-0 left-0">
             <BackgroundSwiper bgList={bgList}/>
          </div>
-         <div className="mx-auto max-w-screen-xl z-10 relative">
+         <div className="contents-wrap z-10 relative">
             <h2 className="text-5xl text-white mb-6 font-extrabold drop-shadow-lg">강원도의 모든 것, <span className="font-tilt text-[52px]">Gangwon Go</span></h2>
             {showAreaName && (
                <p
@@ -181,7 +181,7 @@ export default function SvgMap() {
                   {enterMapName}
                </p>
             )}
-            <div className="flex gap-14 align-middle justify-center">
+            <div className="flex gap-14 align-middle justify-center flex-wrap">
                <svg
                   onMouseMove={(e) => {
                      setMouseXY({ x: e.clientX, y: e.clientY});
@@ -213,7 +213,10 @@ export default function SvgMap() {
                      strokeLinecap="round"
                   />
                </svg>
-               <div className="flex flex-wrap align-top justify-items-start items-center content-center gap-4 w-2/5">
+               <div className="
+                  flex flex-wrap align-top justify-items-start items-center content-center gap-4 w-2/5 
+                  max-lg:w-full max-lg:justify-center
+               ">
                   {iconButtons.map((item) => {
                      return (
                         <Link

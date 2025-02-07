@@ -99,15 +99,15 @@ export default function Home() {
             {/* 검색창 */}
             <SearchSection />
             {/* 주요 관광지 소개 섹션 */}
-            <div className="max-w-screen-xl mx-auto">
-               <div className="flex w-full mb-[55px] ">
+            <div className="contents-wrap">
+               <div className="flex w-full mb-16 flex-wrap">
                   <div className="flex items-center text-4xl font-normal text-neutral-800 mr-2">
                      각각의 매력이 살아있는{" "}
                   </div>
-                  <div className="flex items-center text-4xl font-bold text-neutral-800 mr-1">강원도 주요 관광지 </div>
-                  <div className="flex items-center">
-                     <Image src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
-                  </div>
+                  <div className="flex items-center text-4xl font-bold text-neutral-800">
+                     강원도 주요 관광지 
+                     <Image className="ml-2" src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
+                     </div>
 
                   {/* 더보기 버튼 */}
                   <div className="ml-auto flex items-center">
@@ -121,7 +121,7 @@ export default function Home() {
                   </div>
                </div>
                {/* 이미지 버튼 */}
-               <div className="flex justify-between mb-[145px]">
+               <div className="flex flex-wrap justify-between gap-4 mb-20 max-xl:justify-center">
                   {[
                      {
                         src: "/images/main/circle_Chuncheon.png",
@@ -157,7 +157,7 @@ export default function Home() {
                      <Link
                         href={`/explore/travel?cat=region&filter=${code}`}
                         key={alt}
-                        className="relative w-[200px] h-[200px] rounded-full overflow-hidden focus:outline-none">
+                        className="relative w-[200px] max-xl:w-[160] aspect-square rounded-full overflow-hidden focus:outline-none">
                         <Image src={src} alt={alt} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-30">
                            <span className="text-white text-2xl font-semibold">{text}</span>
@@ -169,7 +169,7 @@ export default function Home() {
 
             {/* 강원도 Hot한 식당 섹션 */}
             <div className="bg-neutral-50 py-12 mb-12">
-               <div className="flex w-full mb-[55px] max-w-screen-xl mx-auto">
+               <div className="flex mb-[55px] contents-wrap">
                   <div className="flex items-center text-4xl font-bold text-neutral-800 mr-2">강원도 Hot한 식당 </div>
                   <div className="flex items-center">
                      <Image src="/icons/main_yellowPin.svg" alt="bluePin 아이콘" width={30} height={30} />
@@ -200,9 +200,10 @@ export default function Home() {
                         autoplay={{ delay: 1000, disableOnInteraction: false }} // 자동 슬라이드 추가
                         className="w-full"
                         breakpoints={{
-                           1920: { slidesPerView: 6 },
-                           640: { slidesPerView: 4, spaceBetween: 15 },
-                           320: { slidesPerView: 1.5, spaceBetween: 10 },
+                           1600 : { slidesPerView: 6 },
+                           840: { slidesPerView: 4, spaceBetween: 15 },
+                           670: {slidesPerView: 2.6, spaceBetween: 15},          
+                           480: { slidesPerView: 2.2, spaceBetween: 10 },
                         }}>
                         {restaurantData.map((restaurant) => (
                            <SwiperSlide key={restaurant.contentid}>
@@ -227,7 +228,7 @@ export default function Home() {
             </div>
 
             {/* '강원도 같이 갈 사람' 섹션 */}
-            <div className="flex max-w-screen-xl mx-auto mb-[55px] flex-col">
+            <div className="flex contents-wrap mb-[55px] flex-col">
                <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
                   같이 떠나면 두 배로 즐거운 여행{" "}
                </div>
@@ -249,7 +250,7 @@ export default function Home() {
             </div>
 
             {/* 모집 카드 리스트 (최대 6개) */}
-            <div className="flex justify-center items-center mb-44">
+            <div className="mb-44 contents-wrap">
                <PostList
                   posts={posts}
                   loadingPosts={loadingPosts}
@@ -264,3 +265,4 @@ export default function Home() {
       </div>
    );
 }
+7

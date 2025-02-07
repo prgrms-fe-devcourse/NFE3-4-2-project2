@@ -16,7 +16,7 @@ const PostList: React.FC<PostListProps> = ({ posts, loadingPosts, currentPage, p
    const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
 
    return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-8">
+      <div className="w-fu1ll grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 justify-between gap-4">
          {loadingPosts ? (
             <p className="text-gray-500 text-center col-span-3">게시글을 불러오는 중...</p>
          ) : currentPosts.length > 0 ? (

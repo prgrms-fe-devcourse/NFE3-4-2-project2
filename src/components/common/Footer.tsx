@@ -5,8 +5,8 @@ import Image from "next/image";
 export default function Footer() {
    return (
       <footer className="bg-amber-50 pt-12 pb-10">
-         <div className="mx-auto max-w-screen-xl px-4">
-            <div className="flex justify-between">
+         <div className="contents-wrap px-4">
+            <div className="flex justify-between flex-wrap gap-4">
                <div className="text-orange-500">
                   <h2 className=" font-black text-3xl">Gangwon Go</h2>
                   <p >Programmers 2nd Project - 3Team</p>
