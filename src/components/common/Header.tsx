@@ -105,7 +105,7 @@ export default function Header() {
                {/* 왼쪽 로고 및 메뉴 */}
                <div className="flex flex-col items-start">
                   <Link href="/">
-                     <h1 className="text-3xl font-bold text-sky-500 no-underline cursor-pointer font-[tilt]!">
+                     <h1 className="text-3xl font-bold text-sky-500 no-underline cursor-pointer font-tilt">
                         Gangwon GO
                      </h1>
                   </Link>
