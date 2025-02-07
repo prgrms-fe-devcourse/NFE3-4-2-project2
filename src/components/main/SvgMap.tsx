@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import BackgroundSwiper from "@/components/common/BackgroundSwiper";
 
 const svgs = [
    {
@@ -151,22 +152,39 @@ export default function SvgMap() {
    const handleMouseOver = () => {
       setShowAreaName(false);
    };
+   
+   const bgList = [
+      { imgUrl : "/images/main/bg_01.jpg", place : "인제군 설악산",},
+      { imgUrl : "/images/main/bg_02.jpg", place : "강릉시 강동면 정동진역",},
+      { imgUrl : "/images/main/bg_03.jpg", place : "인제군 설악산",},
+      { imgUrl : "/images/main/bg_04.jpg", place : "강릉시 정동진",},
+      { imgUrl : "/images/main/bg_05.jpg", place : "인제군 방태산",},
+      { imgUrl : "/images/main/bg_06.jpg", place : "태백시 매봉산",},
+      { imgUrl : "/images/main/bg_07.jpg", place : "평창군 대관령",},
+      { imgUrl : "/images/main/bg_08.jpg", place : "정선군 병방치 스카이워크",},
+      { imgUrl : "/images/main/bg_09.jpg", place : "정선군 함백산",},
+      { imgUrl : "/images/main/bg_10.jpg", place : "강릉시 경포호",},
+      { imgUrl : "/images/main/bg_11.jpg", place : "양양군 낙산사",},
+   ]
 
    return (
-      <section className="py-12 bg-[url(/images/main/mountain.jpg)] bg-cover bg-left-top transition-all duration-75">
-         <div className="mx-auto max-w-screen-xl">
-            <h2 className="text-5xl text-white mb-4">강원도의 모든 것, Gangwon Go</h2>
+      <section className="py-12 bg-cover bg-left-top transition-all duration-75 pt-32 relative">
+         <div className="absolute w-full h-full z-0 top-0 left-0">
+            <BackgroundSwiper bgList={bgList}/>
+         </div>
+         <div className="mx-auto max-w-screen-xl z-10 relative">
+            <h2 className="text-5xl text-white mb-6 font-extrabold drop-shadow-lg">강원도의 모든 것, <span className="font-tilt text-[52px]">Gangwon Go</span></h2>
             {showAreaName && (
                <p
-                  className={`absolute pointer-events-none z-50 text-xl bg-white text-sky-500 px-4 py-2 rounded-md shadow-md`}
-                  style={{ left: mouseXY.x, top: mouseXY.y }}>
+                  className={`absolute pointer-events-none z-50 text-lg font-semibold bg-white text-sky-500 px-4 py-1 rounded-md shadow-md`}
+                  style={{ left: mouseXY.x + 20, top: mouseXY.y - 170}}>
                   {enterMapName}
                </p>
             )}
             <div className="flex gap-14 align-middle justify-center">
                <svg
                   onMouseMove={(e) => {
-                     setMouseXY({ x: e.clientX + 15, y: e.clientY + 15 });
+                     setMouseXY({ x: e.clientX, y: e.clientY});
                   }}
                   xmlns="http://www.w3.org/2000/svg"
                   width="529"
@@ -201,9 +219,13 @@ export default function SvgMap() {
                         <Link
                            href={item.href}
                            key={item.id}
-                           className="border-sky-500 border w-28 h-28 text-center bg-white hover:bg-amber-100 rounded-xl flex flex-col justify-center items-center gap-1">
+                           className="
+                              border-white border w-28 h-28 text-center rounded-xl 
+                              bg-white/50 backdrop-blur-sm hover:bg-white/90 hover:shadow-xl transition-all
+                              flex flex-col justify-center items-center gap-1
+                              ">
                            <img src={item.imgSrc} alt={item.title + " 아이콘"} />
-                           <span className="text-base font-normal">{item.title}</span>
+                           <span className="text-sm font-semibold">{item.title}</span>
                         </Link>
                      );
                   })}
