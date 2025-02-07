@@ -86,8 +86,18 @@ export default function SearchSection() {
                      {tourData.map((item) => {
                         const parsed = item.area.replace("강원특별자치도", "").trim().split(" ");
                         const addressParsing = parsed.slice(0, 2).join(" ");
+                        let conType = "travel";
+
+                        if(item.contentTypeId == 15){
+                            conType="festival"
+                        }else if(item.contentTypeId == 28){
+                            conType="leisure"
+                        }else if(item.contentTypeId == 32 || item.contentTypeId == 39){
+                            conType="places"
+                        }
+
                         return (
-                           <Link key={item.contentId} href={`/travel/detail?contentId=${item.contentId}`}>
+                           <Link key={item.contentId} href={`explore/${conType}/detail?contentId=${item.contentId}`}>
                               <div className="text-lg border border-neutral-300 rounded-xl px-4 py-3 flex gap-3 items-start h-full">
                                  <div
                                     className="w-14 aspect-square rounded-full relative bg-cover"
