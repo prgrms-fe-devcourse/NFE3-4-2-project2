@@ -119,12 +119,18 @@ export async function GET(req: Request) {
 
       //검색어 필터링
       if (keyword) {
-         params.$or = [
-           { title: { $regex: keyword, $options: 'i' } },
-           { addr1: { $regex: keyword, $options: 'i' } },
-           { addr2: { $regex: keyword, $options: 'i' } }
-         ];
+         if(!cat){
+            params.$or = [{title: { $regex: keyword, $options: 'i' }}];
+            params.contenttypeid = { $in: ["32", "39", "12", "15", "28"] };
+         }else{
+            params.$or = [
+               { title: { $regex: keyword, $options: 'i' } },
+               { addr1: { $regex: keyword, $options: 'i' } },
+               { addr2: { $regex: keyword, $options: 'i' } }
+             ];
+         }
       }
+
       if (path.includes("/add-data")) {
          const contenttypeid = url.searchParams.get("contenttypeid");
          if (contenttypeid) params.contenttypeid = contenttypeid;

@@ -1,21 +1,31 @@
 "use client";
 
-import SvgMap from "@/components/main/SvgMap";
-import Footer from "@/components/common/Footer";
-import Header from "@/components/common/Header";
-import Image from "next/image";
-import PostList from "@/components/common/Community/PostList";
 import { useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+
+//api
 import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
+import APIConnect from "@/utils/api"; // API 요청 모듈
+
+//types
+import { RestaurantDetailInfo } from "@/types/types";
+
+//swiper
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
 import SwiperCard from "@/components/main/SwiperCard";
-import APIConnect from "@/utils/api"; // API 요청 모듈
-import { RestaurantDetailInfo } from "@/types/types";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+
+//components
+import SvgMap from "@/components/main/SvgMap";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import SearchSection from "@/components/main/SearchSection";
+import PostList from "@/components/common/Community/PostList";
+
 
 export default function Home() {
    const router = useRouter();
@@ -87,25 +97,7 @@ export default function Home() {
          {/* 메인페이지 */}
          <div className="bg-white mx-auto">
             {/* 검색창 */}
-            <div className="mb-24 mt-8 flex items-center justify-center w-full">
-               <div className="flex">
-                  <div className="relative w-[992px]">
-                     {/* 검색 입력창 */}
-                     <input
-                        type="text"
-                        placeholder="가을 캠핑 관광지"
-                        className="w-full h-[68px] border-2 text-2xl font-semibold border-sky-500 rounded-full placeholder:text-2xl placeholder:font-semibold focus:border-sky-500 focus:outline-none focus:outline-sky-50 pl-8 pr-12"
-                     />
-                     {/* 검색 버튼 */}
-                     <button
-                        className="absolute right-7 top-1/2 transform -translate-y-1/2"
-                        onClick={() => alert("검색 버튼 클릭됨")}>
-                        <Image src="/icons/main_search.svg" alt="search 아이콘" width={18} height={18} />
-                     </button>
-                  </div>
-               </div>
-            </div>
-
+            <SearchSection />
             {/* 주요 관광지 소개 섹션 */}
             <div className="max-w-screen-xl mx-auto">
                <div className="flex w-full mb-[55px] ">
