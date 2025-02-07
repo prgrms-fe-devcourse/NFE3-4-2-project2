@@ -56,23 +56,8 @@ export default function MyPost() {
 
    return (
       <div className="p-6 bg-white shadow rounded-lg w-full">
-         <h2 className="text-xl font-bold flex items-center space-x-2">
-            {/* 별 아이콘 SVG */}
-            <svg
-               xmlns="http://www.w3.org/2000/svg"
-               fill="none"
-               viewBox="0 0 24 24"
-               strokeWidth="1.5"
-               stroke="currentColor"
-               className="size-6">
-               <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.33a18.095 18.095 0 0 0 5.223-5.223c.542-.827.369-1.908-.33-2.607L11.16 3.66A2.25 2.25 0 0 0 9.568 3Z"
-               />
-               <path strokeLinecap="round" strokeLinejoin="round" d="M6 6h.008v.008H6V6Z" />
-            </svg>
-
+         <h2 className="text-xl font-bold flex items-center gap-2">
+            <i className="bi bi-pencil-square text-blue-500 text-2xl"></i> {/* ✏️ 글쓰기 아이콘 */}
             <span>내가 작성한 글</span>
          </h2>
 

@@ -106,14 +106,14 @@ const MyPage: React.FC = () => {
       <div className="min-h-screen flex flex-col bg-gray-50">
          <Header />
          {/* ✅ 헤더 fixed로 인해 패딩 추가 */}
-         <div className="pt-[200px] max-w-[1280px] w-full mx-auto px-6 py-12 flex gap-8 pb-[160px]">
+         <div className="pt-[160px] max-w-[1280px] w-full mx-auto px-6 py-12 flex gap-8 pb-[160px]">
             {/* 사이드바 */}
-            <aside className="w-1/4 bg-white p-6 rounded-xl shadow-md flex flex-col items-center">
+            <aside className="w-1/4 bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
                <div className="w-32 h-32 rounded-full overflow-hidden border-2 border-gray-300">
                   <img
                      src={profileImagePreview || user?.image || "/images/default_profile.png"}
                      alt="Profile"
-                     className="w-full h-full object-cover"
+                     className="w-full h-full object-cover cursor-pointer"
                   />
                </div>
                <h2 className="text-xl font-semibold mt-4">{user?.fullName} 님</h2>
@@ -149,7 +149,7 @@ const MyPage: React.FC = () => {
             </aside>
 
             {/* 메인 컨텐츠 */}
-            <main className="flex-grow bg-white shadow-md p-8 rounded-xl">
+            <main className="flex-grow bg-white shadow-md p-8 rounded-xl border border-gray-200">
                <h1 className="text-2xl font-bold text-gray-800 mb-6">
                   <span className="text-sky-500">{user?.fullName}</span> 님의 {activeMenu}
                </h1>
@@ -161,7 +161,7 @@ const MyPage: React.FC = () => {
                         <img
                            src={profileImagePreview || user?.image || "/images/default_profile.png"}
                            alt="Profile"
-                           className="w-full h-full object-cover"
+                           className="w-full h-full object-cover cursor-pointer"
                         />
                      </div>
                      <div className="flex-grow">

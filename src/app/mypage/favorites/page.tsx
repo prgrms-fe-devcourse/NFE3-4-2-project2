@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getCookie, setCookie } from "@/utils/cookie"; 
+import { getCookie, setCookie } from "@/utils/cookie";
 import APIConnect from "@/utils/api";
 import catList from "@/utils/catList.json";
 
@@ -27,7 +27,7 @@ const FavoritePlaces = ({ updateCounts }) => {
                   console.error(`Failed to fetch details for contentId: ${contentId}`, error);
                   return null;
                }
-            })
+            }),
          );
 
          setFavorites(favoriteData.filter((item) => item !== null));
@@ -47,7 +47,10 @@ const FavoritePlaces = ({ updateCounts }) => {
 
    return (
       <div className="p-6 bg-white shadow rounded-lg w-full">
-         <h2 className="text-xl font-bold mb-4">📌 찜한 관광지</h2>
+         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
+            <i className="bi bi-heart-fill text-red-500"></i> {/* ❤️ 하트 아이콘 */}
+            내가 찜한 장소
+         </h2>{" "}
          {favorites.length > 0 ? (
             <ul className="space-y-3">
                {favorites.map((place) => (
@@ -63,7 +66,9 @@ const FavoritePlaces = ({ updateCounts }) => {
 
                         <div className="flex-1">
                            <h3 className="text-lg font-semibold">{place.title}</h3>
-                           <p className="text-gray-600">{place.addr} | {getCategoryName(place.cat3)}</p>
+                           <p className="text-gray-600">
+                              {place.addr} | {getCategoryName(place.cat3)}
+                           </p>
                         </div>
                      </Link>
 
@@ -89,13 +94,3 @@ const FavoritePlaces = ({ updateCounts }) => {
 };
 
 export default FavoritePlaces;
-
-
-
-
-
-
-
-
-
-
