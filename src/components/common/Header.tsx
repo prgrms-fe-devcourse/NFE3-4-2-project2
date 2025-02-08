@@ -125,6 +125,8 @@ export default function Header() {
                <div className="flex items-center gap-4">
                   {!isLoading &&
                      (isLoggedIn ? (
+                        
+                        
                         <div className="flex flex-col items-end gap-2 mt-3">
                            {/* 사용자 이름과 환영 메시지 */}
                            <span className="text-neutral-800 text-base font-medium">

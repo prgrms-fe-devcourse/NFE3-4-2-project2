@@ -24,7 +24,6 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             if (selected.filter) params["filter"] = selected.filter; // ✅ undefined가 아닌 값만 추가
 
             const queryString = new URLSearchParams(params).toString();
-            
 
             const dataList = await fetch(`/api/places?${queryString}`).then((res) => res.json());
 
@@ -55,7 +54,7 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    }
 
    return (
-      <div className="w-[1280px] mx-auto px-6 m-16">
+      <div className="w-[1280px] mx-auto px-6 m-20">
          <div className="grid grid-cols-3 gap-8">
             {tourData.map((item) => (
                <div key={item.contentId} onClick={() => navigateToDetail(item.contentId)} className="cursor-pointer">
@@ -70,5 +69,3 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
 };
 
 export default CardList;
-
-

@@ -69,8 +69,8 @@ export default function Restaurants() {
    return (
       <div>
          <Header />
-         <div className="py-20 bg-[url(/images/places/banner_eat.png)] bg-cover">
-            <div className="elative flex flex-col justify-center gap-10">
+         <div className="h-[480px] py-20 bg-[url(/images/places/banner_eat.png)] bg-cover">
+            <div className="relative flex flex-col justify-center gap-10">
                <div className=" text-white text-center">
                   <h2 className="text-4xl font-bold mt-20 leading-normal">
                      완벽한 여행 계획을 위해 <br /> 강원도만의 맛집과 숙소를 만나보세요.

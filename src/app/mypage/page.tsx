@@ -105,7 +105,7 @@ const MyPage: React.FC = () => {
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
          <Header />
-         {/* ✅ 헤더 fixed로 인해 패딩 추가 */}
+
          <div className="pt-[160px] max-w-[1280px] w-full mx-auto px-6 py-12 flex gap-8 pb-[160px]">
             {/* 사이드바 */}
             <aside className="w-1/4 bg-white p-6 rounded-xl shadow-md flex flex-col items-center border border-gray-200">
@@ -154,7 +154,6 @@ const MyPage: React.FC = () => {
                   <span className="text-sky-500">{user?.fullName}</span> 님의 {activeMenu}
                </h1>
 
-               {/* ✅ 프로필 수정 모드 추가 */}
                {activeMenu === "내 프로필" && (
                   <div className="mt-20 flex items-center space-x-14 mx-4">
                      <div className="w-48 h-48 rounded-full overflow-hidden border-2 border-gray-400">
@@ -197,12 +196,10 @@ const MyPage: React.FC = () => {
                            <div className="mt-5">
                               <p className="text-gray-700 text-md flex items-center gap-2">
                                  <i className="bi bi-person-circle text-lg text-gray-600"></i>{" "}
-                                 {/* 👤 닉네임 아이콘 추가 */}
                                  닉네임 : <span className="text-gray-900">{newUsername}</span>
                               </p>
                               <p className="text-gray-600 text-md mt-2 flex items-center gap-2">
                                  <i className="bi bi-envelope-fill text-lg text-gray-500"></i>{" "}
-                                 {/* ✉ 이메일 아이콘 추가 */}
                                  이메일 : <span className="text-gray-900">{user?.email}</span>
                               </p>
                            </div>

@@ -5,15 +5,15 @@ import { useRef } from "react";
 // 축제 = a0207
 // 공연/행사 = a0208
 const categories = [
-   { name: "전체", value: "total" }, // 전체 리스트 보기
+   { name: "전체", value: "total" },
    { name: "축제", value: "festival" },
    { name: "공연/행사", value: "event" },
 ];
 
 type ExtraSearchBarProps = {
-      selected: SelectedParam & ExtraType;
-      changeUrl: (url: SelectedParam & ExtraType) => void;
-}
+   selected: SelectedParam & ExtraType;
+   changeUrl: (url: SelectedParam & ExtraType) => void;
+};
 type ExtraType = {
    month?: string;
    keyword?: string;
@@ -21,63 +21,65 @@ type ExtraType = {
 
 const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl }) => {
    const searchRef = useRef<HTMLInputElement>(null);
+
    const handleSearch = () => {
-      if(searchRef.current){
-         changeUrl({ ...selected, keyword: searchRef.current.value});
+      if (searchRef.current) {
+         changeUrl({ ...selected, keyword: searchRef.current.value });
       }
    };
+
    return (
-      <div className="mt-6 w-full max-w-[800px] p-6 shadow-lg bg-white rounded-lg">
-         <div className="flex justify-between items-center mb-4">
-            {/* 카테고리 */}
-            <ul className="flex gap-5 text-xl font-bold cursor-pointer">
+      <div className="mx-auto w-[860px] p-7 shadow-xl bg-white rounded-lg">
+         <div className="flex justify-between">
+            {/* 카테고리 선택 */}
+            <div className="flex gap-x-6 font-bold text-xl items-start">
                {categories.map((category) => (
-                  <li
+                  <button
                      key={category.value}
                      onClick={() => changeUrl({ cat: category.value, page: 1 })}
-                     className={
-                        selected.cat === category.value ? "text-sky-500" : "text-neutral-800 hover:text-sky-500"
-                     }>
+                     className={`hover:text-sky-500 ${selected.cat === category.value ? "text-sky-500" : ""}`}
+                  >
                      {category.name}
-                  </li>
+                  </button>
                ))}
-            </ul>
+            </div>
+
             {/* 검색 바 */}
-            <div className="flex">
-               <div className="relative">
+            <div className="flex items-center gap-2">
+               <div className="relative flex items-center">
                   <input
                      ref={searchRef}
                      type="text"
                      placeholder="검색어를 입력해 주세요."
-                     className="h-[32px] w-72 p-3 pr-10 border border-sky-500 rounded-lg placeholder:text-sm focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-                     onKeyDown={(e)=>{
-                        if(e.key === "Enter"){handleSearch()}
+                     className="text-lg placeholder:text-base w-72 px-4 py-2 border border-sky-500 rounded-lg focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                     onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                           handleSearch();
+                        }
                      }}
                   />
-                  <svg
-                     aria-hidden="true"
-                     fill="currentColor"
-                     viewBox="0 0 20 20"
-                     className="w-4 h-4 absolute top-1/2 right-3 transform -translate-y-1/2 text-sky-500">
-                     <path d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" />
-                  </svg>
+                  <i className="bi bi-search text-sky-500 absolute right-3 top-1/2 transform -translate-y-1/2 text-lg"></i>
                </div>
                <button
-                  className="h-[32px] px-4 text-white bg-sky-500 text-sm font-medium rounded-lg ml-2"
-                  onClick={handleSearch}>
+                  className="h-[40px] px-5 text-white bg-sky-500 text-sm font-medium rounded-lg"
+                  onClick={handleSearch}
+               >
                   검색
                </button>
             </div>
          </div>
-         <div className="flex mt-4 gap-4">
-            <div className="w-[180]">
+
+         <div className="flex mt-2 gap-4">
+            {/* 지역 필터 */}
+            <div className="w-[180px]">
                <p className="text-neutral-500 text-lg pb-2">지역</p>
                <select
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
                   value={selected.filter ? selected.filter : ""}
                   onChange={(e) => {
                      changeUrl({ ...selected, filter: e.target.value });
-                  }}>
+                  }}
+               >
                   <option value="">전체</option>
                   {regionList.map((region) => (
                      <option key={region.code} value={region.code}>
@@ -86,52 +88,22 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                   ))}
                </select>
             </div>
+
+            {/* 날짜 필터 */}
             <div className="w-[150px]">
                <p className="text-neutral-500 text-lg pb-2">날짜</p>
                <select
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
                   onChange={(e) => {
                      changeUrl({ ...selected, month: e.target.value });
-                  }}>
-                  <option value="" className="text-neutral-800">
-                     전체
-                  </option>
-                  <option value={"01"} className="text-neutral-800">
-                     1월
-                  </option>
-                  <option value={"02"} className="text-neutral-800">
-                     2월
-                  </option>
-                  <option value={"03"} className="text-neutral-800">
-                     3월
-                  </option>
-                  <option value={"04"} className="text-neutral-800">
-                     4월
-                  </option>
-                  <option value={"05"} className="text-neutral-800">
-                     5월
-                  </option>
-                  <option value={"06"} className="text-neutral-800">
-                     6월
-                  </option>
-                  <option value={"07"} className="text-neutral-800">
-                     7월
-                  </option>
-                  <option value={"08"} className="text-neutral-800">
-                     8월
-                  </option>
-                  <option value={"09"} className="text-neutral-800">
-                     9월
-                  </option>
-                  <option value={"10"} className="text-neutral-800">
-                     10월
-                  </option>
-                  <option value={"11"} className="text-neutral-800">
-                     11월
-                  </option>
-                  <option value={"12"} className="text-neutral-800">
-                     12월
-                  </option>
+                  }}
+               >
+                  <option value="">전체</option>
+                  {[...Array(12)].map((_, i) => (
+                     <option key={i} value={(i + 1).toString().padStart(2, "0")}>
+                        {i + 1}월
+                     </option>
+                  ))}
                </select>
             </div>
          </div>

@@ -23,13 +23,14 @@ const TourSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) =>
    };
 
    return (
-      <div className="bg-sky-50 w-full flex justify-center items-start p-6 h-[392px]">
-         <div className="w-full max-w-screen-xl mx-auto flex flex-col gap-6 px-6 mt-2">
-            <h2 className="text-neutral-800 text-4xl font-semibold">강원도의</h2>
-            <div className="flex flex-row gap-6 items-center">
+      <div className="bg-sky-50 w-full flex justify-center items-start p-28 h-[480px]">
+         <div className="w-full max-w-screen-xl mx-auto flex flex-col gap-6 px-6">
+            {/* "강원도의" 글자만 아래로 이동 */}
+            <h2 className="text-neutral-800 text-4xl font-semibold mt-2">강원도의</h2> 
+            <div className="flex flex-row gap-4 items-center">
                <span className="text-neutral-600 text-2xl font-semibold">인기</span>
                <select
-                  className="border-b-2 border-sky-500 text-sky-500 text-4xl font-semibold bg-transparent focus:outline-none cursor-pointer p-2"
+                  className="border-b-2 border-sky-500 text-sky-500 text-4xl font-semibold bg-transparent focus:outline-none cursor-pointer p-1"
                   value={selected.cat ? selected.cat : "season"}
                   onChange={handleSelectChange}>
                   <option value={"season"}>계절별 관광지</option>
@@ -46,6 +47,7 @@ const TourSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) =>
          </div>
       </div>
    );
+
 };
 
 export default TourSearchBar;

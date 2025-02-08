@@ -22,7 +22,7 @@ const CultureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    ];
 
    return (
-      <div className="flex justify-center items-center mt-3 w-full gap-16">
+      <div className="flex justify-center items-center mt-2 w-full gap-16">
          {cultureData.map((culture) => (
             <div
                key={culture.query}

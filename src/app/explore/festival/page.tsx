@@ -9,11 +9,10 @@ import FestivalCardList from "@/components/fetival/FestivalCardList";
 import FestivalSearchBar from "@/components/fetival/FestivalSearchBar";
 
 export default function Festival() {
-
    type ExtraType = {
-      month ?: string,
-      keyword ?:string,
-   }
+      month?: string;
+      keyword?: string;
+   };
 
    // URL에서 파라미터 읽어오기
    const searchParams = useSearchParams();
@@ -37,10 +36,10 @@ export default function Festival() {
       if (selectedParam.detail) {
          queryString += `&detail=${selectedParam.detail}`;
       }
-      if(selectedParam.month){
+      if (selectedParam.month) {
          queryString += `&month=${selectedParam.month}`;
       }
-      if(selectedParam.keyword){
+      if (selectedParam.keyword) {
          queryString += `&keyword=${encodeURI(selectedParam.keyword)}`;
       }
       router.push(queryString, { scroll: false });
@@ -50,35 +49,36 @@ export default function Festival() {
    // 기본 파라미터 설정 (cat이 없을 경우 total로 설정)
    useEffect(() => {
       setSelected((prev) => ({
-         cat: nowCategory || prev.cat || "total", 
+         cat: nowCategory || prev.cat || "total",
          page: nowPage || prev.page || 1,
          filter: nowFilter || prev.filter,
          detail: nowDetail || prev.detail,
          month: nowMonth || prev.month || "",
-         keyword : nowKeyword || prev.keyword || "",
+         keyword: nowKeyword || prev.keyword || "",
       }));
    }, [nowCategory, nowFilter, nowPage, nowDetail, nowMonth, nowKeyword]);
-
 
    return (
       <div>
          <Header />
-         <div className="relative py-20 pt-40 bg-[url(/images/festival/banner_festival.png)] flex flex-col items-center justify-center gap-6">
-            <div className="text-white text-center">
-               <h2 className="text-4xl font-bold leading-normal">
+         <div className="relative h-[480px] pt-32 bg-[url(/images/festival/banner_festival.png)] bg-cover bg-center flex flex-col items-center justify-start gap-4">
+            {/* 제목 */}
+            <div className="text-white text-center relative -translate-y-2">
+               <h2 className="text-4xl font-bold leading-loose">
                   강원도에서 즐기는 <br /> 다채로운 축제와 공연/행사!
                </h2>
             </div>
-            <FestivalSearchBar 
-               selected={selected} 
-               changeUrl={handleUrlChange} 
-            />
+
+            {/* 검색 바 */}
+            <div className="relative -translate-y-4">
+               <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
+            </div>
          </div>
 
-         <FestivalCardList 
-            key={`${selected.cat}-${selected.page}-${selected.filter}`} 
-            selected={selected} 
-            changeUrl={handleUrlChange} 
+         <FestivalCardList
+            key={`${selected.cat}-${selected.page}-${selected.filter}`}
+            selected={selected}
+            changeUrl={handleUrlChange}
          />
          <Footer />
       </div>

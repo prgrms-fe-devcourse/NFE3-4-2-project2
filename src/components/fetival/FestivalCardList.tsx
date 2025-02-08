@@ -1,18 +1,22 @@
 "use client";
 
-import React, { useEffect, useState} from "react";
-import {PlaceParam, ListProps, SelectedChildParam } from "@/types/types";
+import React, { useEffect, useState } from "react";
+import { PlaceParam, ListProps, SelectedChildParam } from "@/types/types";
 import Link from "next/link";
 import EmptyListCard from "../common/EmptyListCard";
 import EmptyData from "../common/EmptyData";
 import ListCard from "../common/ListCard";
 import Pagination from "../common/Pagination";
 type ExtraType = {
-   month ?: string
-   keyword? : string
-}
+   month?: string;
+   keyword?: string;
+};
 
-const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({selected = { cat: "festival", page: 1 }, changeUrl, cat2}) => {
+const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({
+   selected = { cat: "festival", page: 1 },
+   changeUrl,
+   cat2,
+}) => {
    const [tourData, setTourData] = useState<ListProps[]>([]);
    const [loading, setLoading] = useState<boolean>(true);
    const [totalPages, setTotalPages] = useState<number>(1);
@@ -25,34 +29,33 @@ const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({
       if (selected.filter) params.append("filter", selected.filter);
       if (selected.detail) params.append("detail", selected.detail);
       if (selected.month) params.append("month", selected.month);
-      if (selected.keyword) params.append("keyword", selected.keyword)
+      if (selected.keyword) params.append("keyword", selected.keyword);
 
       return params.toString(); // 쿼리 문자열 형식으로 반환
    };
 
    useEffect(() => {
-      
       const fetchData = async () => {
          try {
             let response: ListProps[] = [];
 
             console.log(`🌸 [API 요청] 관광지 리스트 가져오기 🌸`);
-            const queryString = createQueryString(selected)
-            const dataList = await fetch(`/api/places?${queryString}`).then(response => response.json());
-            console.log(dataList.message)
+            const queryString = createQueryString(selected);
+            const dataList = await fetch(`/api/places?${queryString}`).then((response) => response.json());
+            console.log(dataList.message);
             response = dataList.data;
             setTotalPages(Number(dataList.totalPages));
-            if(response){
+            if (response) {
                setTourData(
-                  response.map((item)=>({
+                  response.map((item) => ({
                      imageUrl: item.imageUrl,
                      title: item.title,
                      area: item.area,
                      contentId: item.contentId,
                      contentTypeId: item.contentTypeId,
-                     cat3:item.cat3
-                  }))
-               )
+                     cat3: item.cat3,
+                  })),
+               );
             }
             setLoading(false);
          } catch (err) {
@@ -65,7 +68,7 @@ const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({
 
    if (loading) {
       return (
-         <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-16">
+         <div className="w-[1280px] h-[1376px] mx-auto px-6 mt-20">
             <div className="grid grid-cols-3 gap-8">
                <EmptyListCard />
             </div>
@@ -78,7 +81,7 @@ const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({
    }
 
    return (
-      <div className="w-[1280px] mx-auto px-6 m-16">
+      <div className="w-[1280px] mx-auto px-6 m-20">
          <div className="grid grid-cols-3 gap-8">
             {tourData.map((item) => (
                <Link key={item.contentId} href={`/explore/festival/detail?contentId=${item.contentId}`}>

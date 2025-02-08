@@ -69,7 +69,7 @@ export default function Community() {
    return (
       <div>
          <Header />
-         <div className="min-h-[480px] py-20 bg-[url(/images/community/banner_together.png)] bg-cover bg-center">
+         <div className="h-[480px] pt-40 bg-[url(/images/community/banner_together.png)] bg-cover bg-center">
             <div className="relative flex flex-col justify-center gap-10">
                <div className="text-white text-center">
                   <h2 className="font-bold mt-20 leading-loose">

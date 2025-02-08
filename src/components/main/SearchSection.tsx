@@ -58,7 +58,7 @@ export default function SearchSection() {
       <div>
         <div className="contents-wrap">
         <div
-            className="w-full max-w-screen-lg mx-auto relative my-10 flex items-center gap-3
+            className="w-full max-w-screen-lg mx-auto relative my-20 flex items-center gap-3
             rounded-full px-6 py-3 border-2 border-sky-400 outline outline-white outline-2 transition-all 
             group focus-within:outline-sky-200">
             <Image src="/icons/main_search.svg" alt="search 아이콘" width={18} height={18} />

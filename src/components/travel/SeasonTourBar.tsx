@@ -48,7 +48,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    };
 
    return (
-      <div className="flex justify-center items-center mt-3 w-full gap-16">
+      <div className="flex justify-center items-center mt-2 w-full gap-16">
          {seasonData.map((season) => (
             <div
                key={season.season}

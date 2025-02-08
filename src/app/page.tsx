@@ -26,7 +26,6 @@ import Header from "@/components/common/Header";
 import SearchSection from "@/components/main/SearchSection";
 import PostList from "@/components/common/Community/PostList";
 
-
 export default function Home() {
    const router = useRouter();
    const [posts, setPosts] = useState([]);
@@ -105,9 +104,15 @@ export default function Home() {
                      각각의 매력이 살아있는{" "}
                   </div>
                   <div className="flex items-center text-4xl font-bold text-neutral-800">
-                     강원도 주요 관광지 
-                     <Image className="ml-2" src="/icons/main_bluePin.svg" alt="bluePin 아이콘" width={30} height={30} />
-                     </div>
+                     강원도 주요 관광지
+                     <Image
+                        className="ml-2"
+                        src="/icons/main_bluePin.svg"
+                        alt="bluePin 아이콘"
+                        width={30}
+                        height={30}
+                     />
+                  </div>
 
                   {/* 더보기 버튼 */}
                   <div className="ml-auto flex items-center">
@@ -157,7 +162,7 @@ export default function Home() {
                      <Link
                         href={`/explore/travel?cat=region&filter=${code}`}
                         key={alt}
-                        className="relative w-[200px] max-xl:w-[160] aspect-square rounded-full overflow-hidden focus:outline-none">
+                        className="relative w-[200px] max-xl:w-[160px] aspect-square rounded-full overflow-hidden focus:outline-none hover:scale-105 hover:shadow-lg hover:shadow-gray-500/50 hover:ring-2 hover:ring-gray-300 transition-all duration-300">
                         <Image src={src} alt={alt} fill className="object-cover" />
                         <div className="absolute inset-0 flex items-center justify-center bg-neutral-800 bg-opacity-30">
                            <span className="text-white text-2xl font-semibold">{text}</span>
@@ -200,9 +205,9 @@ export default function Home() {
                         autoplay={{ delay: 1000, disableOnInteraction: false }} // 자동 슬라이드 추가
                         className="w-full"
                         breakpoints={{
-                           1600 : { slidesPerView: 6 },
+                           1600: { slidesPerView: 6 },
                            840: { slidesPerView: 4, spaceBetween: 15 },
-                           670: {slidesPerView: 2.6, spaceBetween: 15},          
+                           670: { slidesPerView: 2.6, spaceBetween: 15 },
                            480: { slidesPerView: 2.2, spaceBetween: 10 },
                         }}>
                         {restaurantData.map((restaurant) => (
@@ -229,7 +234,7 @@ export default function Home() {
 
             {/* '강원도 같이 갈 사람' 섹션 */}
             <div className="flex contents-wrap mb-[55px] flex-col">
-               <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1">
+               <div className="flex items-center text-4xl font-normal text-neutral-800 mb-1 mt-2">
                   같이 떠나면 두 배로 즐거운 여행{" "}
                </div>
 
@@ -265,4 +270,4 @@ export default function Home() {
       </div>
    );
 }
-7
+7;
