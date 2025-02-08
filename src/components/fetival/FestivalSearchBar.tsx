@@ -36,9 +36,14 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                {categories.map((category) => (
                   <button
                      key={category.value}
-                     onClick={() => changeUrl({ cat: category.value, page: 1 })}
-                     className={`hover:text-sky-500 ${selected.cat === category.value ? "text-sky-500" : ""}`}
-                  >
+                     onClick={() => {
+                        changeUrl({ cat: category.value, page: 1, keyword: "" });
+
+                        if (searchRef.current) {
+                           searchRef.current.value = ""; // 검색창 초기화
+                        }
+                     }}
+                     className={`hover:text-sky-500 ${selected.cat === category.value ? "text-sky-500" : ""}`}>
                      {category.name}
                   </button>
                ))}
@@ -62,8 +67,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                </div>
                <button
                   className="h-[40px] px-5 text-white bg-sky-500 text-sm font-medium rounded-lg"
-                  onClick={handleSearch}
-               >
+                  onClick={handleSearch}>
                   검색
                </button>
             </div>
@@ -78,8 +82,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                   value={selected.filter ? selected.filter : ""}
                   onChange={(e) => {
                      changeUrl({ ...selected, filter: e.target.value });
-                  }}
-               >
+                  }}>
                   <option value="">전체</option>
                   {regionList.map((region) => (
                      <option key={region.code} value={region.code}>
@@ -96,8 +99,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
                   onChange={(e) => {
                      changeUrl({ ...selected, month: e.target.value });
-                  }}
-               >
+                  }}>
                   <option value="">전체</option>
                   {[...Array(12)].map((_, i) => (
                      <option key={i} value={(i + 1).toString().padStart(2, "0")}>

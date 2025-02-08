@@ -32,8 +32,12 @@ const PlaceSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl }) 
                   <button
                      key={cat.value + idx}
                      onClick={() => {
-                        const { detail, ...rest } = selected; //detail 추출
-                        changeUrl({ ...rest, cat: cat.value, page: 1 });
+                        const { detail, ...rest } = selected; // detail 추출
+                        changeUrl({ ...rest, cat: cat.value, page: 1, keyword: "" });
+
+                        if (searchRef.current) {
+                           searchRef.current.value = ""; // 검색창 초기화
+                        }
                      }}
                      className={`hover:text-sky-500 ${selected.cat === cat.value ? "text-sky-500" : ""}`}>
                      {cat.name}
@@ -63,21 +67,26 @@ const PlaceSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl }) 
             </div>
 
             {/* 검색 바 */}
-            <div className="flex items-center gap-2"> {/* items-center 추가 */}
-         <div className="relative flex items-center"> {/* input이 중앙 정렬되도록 설정 */}
-            <input
-               ref={searchRef}
-               type="text"
-               placeholder="검색어를 입력해 주세요."
-               className="text-lg placeholder:text-base w-72 px-4 py-2 border border-sky-500 rounded-lg focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
-               onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                     handleSearch();
-                  }
-               }}
-            />
-            <i className="bi bi-search text-sky-500 absolute right-3 top-1/2 transform -translate-y-1/2 text-lg"></i> {/* 아이콘 가운데 정렬 */}
-         </div>
+            <div className="flex items-center gap-2">
+               {" "}
+               {/* items-center 추가 */}
+               <div className="relative flex items-center">
+                  {" "}
+                  {/* input이 중앙 정렬되도록 설정 */}
+                  <input
+                     ref={searchRef}
+                     type="text"
+                     placeholder="검색어를 입력해 주세요."
+                     className="text-lg placeholder:text-base w-72 px-4 py-2 border border-sky-500 rounded-lg focus:border-sky-500 focus:outline-none focus:ring-1 focus:ring-sky-500"
+                     onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                           handleSearch();
+                        }
+                     }}
+                  />
+                  <i className="bi bi-search text-sky-500 absolute right-3 top-1/2 transform -translate-y-1/2 text-lg"></i>{" "}
+                  {/* 아이콘 가운데 정렬 */}
+               </div>
                <button
                   className="px-6 py-1 text-white bg-sky-500 text-lg font-medium rounded-lg ml-2 flex-grow"
                   onClick={handleSearch}>
