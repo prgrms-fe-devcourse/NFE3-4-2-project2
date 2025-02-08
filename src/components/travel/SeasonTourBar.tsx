@@ -53,7 +53,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
             <div
                key={season.season}
                className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
-                  active === season.season ? "scale-105 border-b-2 border-sky-500" : "hover:scale-105 hover:shadow-xl"
+                  active === season.season ? "scale-105  border-sky-500" : "hover:scale-105 hover:shadow-xl"
                }`}
                onClick={() => handleClick(season.season)}>
                <Image
