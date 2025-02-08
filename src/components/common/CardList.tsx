@@ -54,8 +54,8 @@ const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    }
 
    return (
-      <div className="w-[1280px] mx-auto px-6 m-20">
-         <div className="grid grid-cols-3 gap-8">
+      <div className="contents-wrap px-6 m-20">
+         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {tourData.map((item) => (
                <div key={item.contentId} onClick={() => navigateToDetail(item.contentId)} className="cursor-pointer">
                   <ListCard {...item} />

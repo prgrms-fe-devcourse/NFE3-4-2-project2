@@ -44,7 +44,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
 
    const handleClick = (seasonQuery: string) => {
       setActive(seasonQuery);
-      changeUrl({ cat: selected.cat, filter: seasonQuery, page:1 });
+      changeUrl({ cat: selected.cat, filter: seasonQuery, page: 1 });
    };
 
    return (
@@ -52,7 +52,7 @@ const SeasonBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
          {seasonData.map((season) => (
             <div
                key={season.season}
-               className={`flex flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
+               className={`flex flex-wrap flex-col items-center cursor-pointer transition-all p-4 rounded-md relative ${
                   active === season.season ? "scale-105  border-sky-500" : "hover:scale-105 hover:shadow-xl"
                }`}
                onClick={() => handleClick(season.season)}>
