@@ -73,21 +73,32 @@ export default function Community() {
             <div className="relative flex flex-col justify-center gap-10">
                <div className="text-white text-center">
                   <h2 className="font-bold mt-20 leading-loose">
-                     <span className="text-4xl block mb-5">함께하는 여행, 특별한 동행</span>
-                     <span className="text-5xl block">강원도 여행 동행 모집</span>
+                     <span className="text-4xl block mb-5">함께하는 여행, 특별한 순간</span>
+                     <span className="text-5xl block">강원도에서 만나는 새로운 동행</span>
                   </h2>
                </div>
             </div>
          </div>
 
          <div className="max-w-[1280px] min-h-[700px] w-full mx-auto px-2 py-16 flex-1">
-            <div className="flex justify-between items-center py-2 mb-16 px-4">
-               <h3 className="text-[32px] font-semibold text-gray-800">🌟 여행 동행 모집 게시판</h3>
+            <div className="flex justify-between items-center py-6 mb-12 px-8">
+               {/* 제목 섹션 */}
+               <div className="flex items-center gap-4">
+                  <div className="bg-sky-100 text-sky-500 p-3 rounded-full shadow">
+                     <i className="bi bi-people-fill text-4xl"></i>
+                  </div>
+                  <div>
+                     <h3 className="text-3xl font-bold text-gray-900">여행 동행 모집 게시판</h3>
+                     <p className="text-gray-500 text-lg">같이 떠날 동행을 찾고, 여행을 함께 만들어 보세요!</p>
+                  </div>
+               </div>
+
+               {/* 글쓰기 버튼 */}
                {isLoggedIn && (
                   <button
                      onClick={() => router.push(`/community/write?channelId=${channelId}`)}
-                     className="w-[180px] h-[50px] mx-4 bg-sky-500 hover:bg-sky-600 transition text-white text-[18px] font-semibold rounded-md shadow-md transform hover:translate-y-1">
-                     ✏️ 동행 모집 글쓰기
+                     className="flex items-center gap-3 bg-gradient-to-r from-sky-500 to-blue-500 hover:from-sky-600 hover:to-blue-600 transition text-white text-lg font-semibold rounded-full px-6 py-3 shadow-lg">
+                     <i className="bi bi-pencil-square text-xl"></i> 글쓰기
                   </button>
                )}
             </div>

@@ -260,7 +260,7 @@ export default function PostDetail() {
                </div>
             </div>
          </div>
-         <div className="max-w-4xl w-full mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+         <div className="max-w-4xl w-full mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10 border">
             {loading ? (
                <p className="text-gray-500 text-center">게시글을 불러오는 중...</p>
             ) : post ? (

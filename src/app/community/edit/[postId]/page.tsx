@@ -171,7 +171,7 @@ export default function EditPostPage() {
                </div>
             </div>
          </div>
-         <div className="max-w-4xl w-full mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10">
+         <div className="max-w-4xl w-full mx-auto px-6 py-10 bg-white rounded-lg shadow-md mb-10 border">
             {post ? (
                <>
                   {/* 제목, 내용 수정 폼 */}
@@ -242,7 +242,7 @@ export default function EditPostPage() {
                   <button
                      onClick={handleSubmit}
                      disabled={loading || !title || !content || !fee || !people || !date || !endDate || !channelId}
-                     className={`w-full p-4 text-lg font-semibold rounded-md ${
+                     className={`w-full p-4 mt-2 text-lg font-semibold rounded-md ${
                         loading ? "bg-gray-300 cursor-not-allowed" : "bg-sky-500 text-white"
                      }`}>
                      {loading ? "수정 중..." : "수정 완료"}

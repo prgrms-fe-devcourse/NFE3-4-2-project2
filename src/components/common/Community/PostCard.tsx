@@ -16,7 +16,7 @@ const PostCard: React.FC<PostCardProps> = ({ post }) => {
    return (
       <div
          onClick={() => router.push(`/community/post/${post._id}`)}
-         className="w-full px-6 py-5 flex flex-col bg-white rounded-3xl shadow-lg border border-gray-200 hover:border-sky-500 cursor-pointer mx-auto hover:translate-y-[-4px] transition-all duration-300 ease-in-out">
+         className="w-full px-6 py-5 flex flex-col bg-white rounded-3xl shadow-lg border border-neutral-300 hover:border-blue-500 cursor-pointer mx-auto hover:translate-y-[-4px] transition-all duration-300 ease-in-out">
          <div className="w-full h-[200px] relative mb-4">
             <Image
                src={post.image || "/images/no_img.jpg"}

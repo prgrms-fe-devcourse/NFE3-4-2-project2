@@ -147,7 +147,7 @@ export default function WritePage() {
                </div>
             </div>
          </div>
-         <div className="max-w-[800px] w-full mx-auto mt-16 p-6 bg-white shadow-lg rounded-lg mb-16">
+         <div className="max-w-[800px] w-full mx-auto mt-16 p-6 bg-white shadow-lg rounded-lg mb-16 border">
             <button onClick={() => router.back()} className="mb-4 text-blue-500 hover:underline">
                ◀ 게시글 목록
             </button>
