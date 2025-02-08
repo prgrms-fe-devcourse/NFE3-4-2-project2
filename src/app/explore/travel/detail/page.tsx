@@ -35,9 +35,9 @@ const TravelListPage: React.FC = () => {
    const [isVisited, setIsVisited] = useState(false);
    const [stateTrigger, setStateTrigger] = useState(0);
    const [storedUserId, setStoredUserId] = useState<string | null>(null);
-   
+
    useEffect(() => {
-   setStoredUserId(getCookie("userId"));
+      setStoredUserId(getCookie("userId"));
    }, []);
 
    useEffect(() => {
@@ -109,8 +109,6 @@ const TravelListPage: React.FC = () => {
       setIsVisited(!isVisited);
       setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
-   
-
 
    const getContentCategory = (key: string) => {
       return (
@@ -146,7 +144,7 @@ const TravelListPage: React.FC = () => {
    return (
       <div className="min-h-screen">
          <Header />
-         <main className="mx-auto max-w-screen-xl px-4 py-8">
+         <main className="mx-auto max-w-screen-xl px-4 py-8 pt-[120px]">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
                <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
@@ -165,7 +163,7 @@ const TravelListPage: React.FC = () => {
 
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
-            <DetailSwiper infoList={infoList} imgList={imgList}/>
+               <DetailSwiper infoList={infoList} imgList={imgList} />
 
                <div className="flex flex-col justify-between max-w-[480] gap-12">
                   {/* Info Section */}
@@ -190,10 +188,11 @@ const TravelListPage: React.FC = () => {
                      {/* 다녀온 관광지 추가 버튼 */}
                      <button
                         className={`w-72 h-13 py-2 rounded-lg border ${
-                           isVisited ? "bg-gray-300 text-black" : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                           isVisited
+                              ? "bg-gray-300 text-black"
+                              : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
                         }`}
-                        onClick={handleVisitedToggle}
-                     >
+                        onClick={handleVisitedToggle}>
                         <span className="font-semibold text-lg leading-7 tracking-normal">
                            {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
                         </span>
@@ -202,8 +201,7 @@ const TravelListPage: React.FC = () => {
                      {/* 찜하기 버튼 */}
                      <button
                         className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
-                        onClick={handleFavoriteToggle}
-                     >
+                        onClick={handleFavoriteToggle}>
                         <Image
                            src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
                            alt="찜하기"
@@ -262,8 +260,10 @@ const TravelListPage: React.FC = () => {
                   <div className="h-[500]">
                      <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
                   </div>
-               ) : "지도 정보 없음"}
-            </section> 
+               ) : (
+                  "지도 정보 없음"
+               )}
+            </section>
          </main>
          <Footer />
       </div>

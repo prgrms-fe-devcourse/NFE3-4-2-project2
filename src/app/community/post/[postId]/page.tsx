@@ -248,15 +248,13 @@ export default function PostDetail() {
    return (
       <div className="min-h-screen flex flex-col bg-gray-50">
          <Header />
-         <div className="relative mb-10">
-            <div className="min-h-[160px] bg-[url('/images/community/banner_together.png')] bg-cover bg-center">
-               <div className="relative flex flex-col justify-center gap-10 min-h-[160px]">
-                  <div className="text-white text-center">
-                     <h2 className="font-semibold mt-15 leading-loose">
-                        <span className="text-3xl block mb-5">함께하는 여행, 특별한 동행</span>
-                        <span className="text-4xl block">강원도 여행 동행 모집</span>
-                     </h2>
-                  </div>
+         <div className="min-h-[160px] mb-10 py-20 bg-[url(/images/community/banner_together.png)] bg-cover">
+            <div className="relative flex flex-col justify-center gap-10 min-h-[160px]">
+               <div className="text-white ml-12">
+                  <h2 className="font-bold mt-20 text-center">
+                     <span className="text-3xl block mb-5">함께하는 여행, 특별한 동행</span>
+                     <span className="text-4xl block">강원도 여행 동행 모집</span>
+                  </h2>
                </div>
             </div>
          </div>

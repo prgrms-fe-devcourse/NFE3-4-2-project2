@@ -17,13 +17,13 @@ import { getCookie, setCookie } from "@/utils/cookie";
 const catList = catListJson as CatList;
 
 const AccommodationDetailPage: React.FC = () => {
-   
    const params = useSearchParams();
    const key = Number(params.get("contentId"));
-   
 
-   const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
-   
+   const blankbox = (
+      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+   );
+
    const swiperRef = useRef<any>(null);
    const prevBtnRef = useRef<HTMLButtonElement | null>(null);
    const nextBtnRef = useRef<HTMLButtonElement | null>(null);
@@ -34,14 +34,13 @@ const AccommodationDetailPage: React.FC = () => {
    const [isVisited, setIsVisited] = useState(false);
    const [stateTrigger, setStateTrigger] = useState(0);
    const [storedUserId, setStoredUserId] = useState<string | null>(null);
-   
+
    useEffect(() => {
       setStoredUserId(getCookie("userId"));
    }, []);
 
    useEffect(() => {
       const loadData = async () => {
-         
          const info: AccommodationDetailInfo = await APIConnect.getAccommodationInfo(key);
          const img = await APIConnect.getTourImg(key);
 
@@ -108,7 +107,6 @@ const AccommodationDetailPage: React.FC = () => {
       setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
 
-
    const getContentCategory = (key: string | undefined) => {
       return (
          <>
@@ -125,7 +123,7 @@ const AccommodationDetailPage: React.FC = () => {
    return (
       <div className="min-h-screen">
          <Header />
-         <main className="mx-auto max-w-screen-xl px-4 py-8">
+         <main className="mx-auto max-w-screen-xl px-4 py-8 pt-[120px]">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
                <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
@@ -144,13 +142,17 @@ const AccommodationDetailPage: React.FC = () => {
 
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
-            <DetailSwiper infoList={infoList} imgList={imgList}/>
+               <DetailSwiper infoList={infoList} imgList={imgList} />
 
                <div className="flex flex-col justify-between max-w-[480px] gap-12">
                   {/* Info Section */}
                   <div className="grid grid-cols-[auto_1fr] items-start gap-4">
-                     <DetailList iconUrl="/images/address.png" title="주소">{infoList?.addr || blankbox}</DetailList>
-                     <DetailList iconUrl="/images/tel.png" title="문의처">{infoList?.tel || blankbox}</DetailList>
+                     <DetailList iconUrl="/images/address.png" title="주소">
+                        {infoList?.addr || blankbox}
+                     </DetailList>
+                     <DetailList iconUrl="/images/tel.png" title="문의처">
+                        {infoList?.tel || blankbox}
+                     </DetailList>
                      <DetailList iconUrl="/images/time.png" title="체크인 / 체크아웃">
                         {infoList ? `${infoList.checkin} / ${infoList.checkout}` : blankbox}
                      </DetailList>
@@ -183,38 +185,37 @@ const AccommodationDetailPage: React.FC = () => {
                         </DetailList>
                      )}
                   </div>
-               {/* Buttons */}
-               <div className="flex items-center space-x-4">
-                  {/* 다녀온 관광지 추가 버튼 */}
-                  <button
-                     className={`w-72 h-13 py-2 rounded-lg border ${
-                        isVisited ? "bg-gray-300 text-black" : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
-                     }`}
-                     onClick={handleVisitedToggle}
-                  >
-                     <span className="font-semibold text-lg leading-7 tracking-normal">
-                        {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
-                     </span>
-                  </button>
+                  {/* Buttons */}
+                  <div className="flex items-center space-x-4">
+                     {/* 다녀온 관광지 추가 버튼 */}
+                     <button
+                        className={`w-72 h-13 py-2 rounded-lg border ${
+                           isVisited
+                              ? "bg-gray-300 text-black"
+                              : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                        }`}
+                        onClick={handleVisitedToggle}>
+                        <span className="font-semibold text-lg leading-7 tracking-normal">
+                           {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
+                        </span>
+                     </button>
 
-                  {/* 찜하기 버튼 */}
-                  <button
-                     className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
-                     onClick={handleFavoriteToggle}
-                  >
-                     <Image
-                        src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
-                        alt="찜하기"
-                        width={24}
-                        height={24}
-                     />
-                     <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
-                  </button>
+                     {/* 찜하기 버튼 */}
+                     <button
+                        className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
+                        onClick={handleFavoriteToggle}>
+                        <Image
+                           src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
+                           alt="찜하기"
+                           width={24}
+                           height={24}
+                        />
+                        <span className="ml-2 font-semibold text-lg leading-7 tracking-normal text-sky-500">찜</span>
+                     </button>
+                  </div>
                </div>
             </div>
-         </div>
 
-            
             {/* 객실 정보 (객실 데이터가 있을 경우에만 출력) */}
             {infoList?.rooms && infoList.rooms.length > 0 && (
                <section>
@@ -225,17 +226,18 @@ const AccommodationDetailPage: React.FC = () => {
                            <div className="flex flex-wrap gap-x-4">
                               {/* 객실 크기 */}
                               {room.roomSize && room.roomSize !== "0" && <p>크기: {room.roomSize}㎡</p>}
-                              
+
                               {/* 기본 인원 */}
                               {room.baseCapacity && room.baseCapacity !== 0 && <p>기본 인원: {room.baseCapacity}명</p>}
-                              
+
                               {/* 최대 인원 */}
                               {room.maxCapacity && room.maxCapacity !== 0 && <p>최대 인원: {room.maxCapacity}명</p>}
-                              
+
                               {/* 요금 정보 (둘 다 0이면 출력 안 함) */}
-                              {(room.priceLow && room.priceLow !== "0") || (room.priceHigh && room.priceHigh !== "0") ? (
+                              {(room.priceLow && room.priceLow !== "0") ||
+                              (room.priceHigh && room.priceHigh !== "0") ? (
                                  <p>
-                                    요금: {room.priceLow && room.priceLow !== "0" ? `${room.priceLow}원` : ""} 
+                                    요금: {room.priceLow && room.priceLow !== "0" ? `${room.priceLow}원` : ""}
                                     {room.priceLow && room.priceHigh ? " ~ " : ""}
                                     {room.priceHigh && room.priceHigh !== "0" ? `${room.priceHigh}원` : ""}
                                  </p>
@@ -246,7 +248,6 @@ const AccommodationDetailPage: React.FC = () => {
                   </div>
                </section>
             )}
-
 
             <hr className="my-12" />
 
@@ -265,8 +266,9 @@ const AccommodationDetailPage: React.FC = () => {
                   <div className="h-[500px]">
                      <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
                   </div>
-               ):"지도 정보 없음"
-            }
+               ) : (
+                  "지도 정보 없음"
+               )}
             </section>
          </main>
          <Footer />

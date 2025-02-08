@@ -38,7 +38,7 @@ const RestaurantDetailPage: React.FC = () => {
    const [storedUserId, setStoredUserId] = useState<string | null>(null);
 
    useEffect(() => {
-   setStoredUserId(getCookie("userId"));
+      setStoredUserId(getCookie("userId"));
    }, []);
 
    useEffect(() => {
@@ -125,7 +125,7 @@ const RestaurantDetailPage: React.FC = () => {
    return (
       <div className="min-h-screen">
          <Header />
-         <main className="mx-auto max-w-screen-xl px-4 py-8">
+         <main className="mx-auto max-w-screen-xl px-4 py-8 pt-[120px]">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
                <button className="flex items-center space-x-2" onClick={() => window.history.back()}>

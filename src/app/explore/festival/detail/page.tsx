@@ -20,26 +20,27 @@ import { getCookie, setCookie } from "@/utils/cookie";
 const catList = catListJson as CatList;
 
 const FestivalDetailPage: React.FC = () => {
+   const params = useSearchParams();
+   const key = Number(params.get("contentId"));
 
-  const params = useSearchParams();
-  const key = Number(params.get("contentId"));
+   const blankbox = (
+      <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+   );
 
-  const blankbox = <span className="bg-neutral-200 rounded px-24">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>;
+   const swiperRef = useRef<any>(null); // 🔥 Swiper 인스턴스 저장
+   const prevBtnRef = useRef<HTMLButtonElement | null>(null);
+   const nextBtnRef = useRef<HTMLButtonElement | null>(null);
 
-  const swiperRef = useRef<any>(null); // 🔥 Swiper 인스턴스 저장
-  const prevBtnRef = useRef<HTMLButtonElement | null>(null);
-  const nextBtnRef = useRef<HTMLButtonElement | null>(null);
- 
-  const [infoList, setInfoList] = useState<TourDetailInfo>();
-  const [imgList, setImgList] = useState<TourImg[]>([]);
-  const [isFavorite, setIsFavorite] = useState(false);
-  const [isVisited, setIsVisited] = useState(false);
-  const [stateTrigger, setStateTrigger] = useState(0);
-  const [storedUserId, setStoredUserId] = useState<string | null>(null);
-  
-    useEffect(() => {
+   const [infoList, setInfoList] = useState<TourDetailInfo>();
+   const [imgList, setImgList] = useState<TourImg[]>([]);
+   const [isFavorite, setIsFavorite] = useState(false);
+   const [isVisited, setIsVisited] = useState(false);
+   const [stateTrigger, setStateTrigger] = useState(0);
+   const [storedUserId, setStoredUserId] = useState<string | null>(null);
+
+   useEffect(() => {
       setStoredUserId(getCookie("userId"));
-    }, []);
+   }, []);
 
    useEffect(() => {
       const loadData = async () => {
@@ -62,10 +63,10 @@ const FestivalDetailPage: React.FC = () => {
       }
 
       if (swiperRef.current && prevBtnRef.current && nextBtnRef.current) {
-        swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
-        swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
-        swiperRef.current.navigation.init();
-        swiperRef.current.navigation.update();
+         swiperRef.current.params.navigation.prevEl = prevBtnRef.current;
+         swiperRef.current.params.navigation.nextEl = nextBtnRef.current;
+         swiperRef.current.navigation.init();
+         swiperRef.current.navigation.update();
       }
    }, [key, storedUserId, stateTrigger]);
 
@@ -109,7 +110,6 @@ const FestivalDetailPage: React.FC = () => {
       setStateTrigger((prev) => prev + 1); // ✅ 상태 변경 감지 (UI 업데이트)
    };
 
-
    const parseAnchors = (htmlString: string) => {
       const anchorRegex = /<a\s+[^>]*href="([^"]+)"[^>]*title="([^"]*)"[^>]*>(.*?)<\/a>/g;
       const anchors = [];
@@ -144,7 +144,7 @@ const FestivalDetailPage: React.FC = () => {
    return (
       <div className="min-h-screen">
          <Header />
-         <main className="mx-auto max-w-screen-xl px-4 py-8">
+         <main className="mx-auto max-w-screen-xl px-4 py-8 pt-[120px]">
             {/* 뒤로 가기 버튼 */}
             <div className="flex justify-start mb-4">
                <button className="flex items-center space-x-2" onClick={() => window.history.back()}>
@@ -157,17 +157,14 @@ const FestivalDetailPage: React.FC = () => {
             <div className="text-center">
                <h2 className="text-4xl font-bold text-neutral-800 mb-2">{infoList?.title || blankbox}</h2>
                <p className="text-xl font-normal text-neutral-800">
-               {infoList ? getContentCategory(infoList.cat3) : blankbox}
+                  {infoList ? getContentCategory(infoList.cat3) : blankbox}
                </p>
             </div>
 
             {/* Image and Info */}
             <div className="flex gap-12 my-12">
+               <DetailSwiper infoList={infoList} imgList={imgList} />
 
-            <DetailSwiper infoList={infoList} imgList={imgList}/>  
-              
-              
-            
                <div className="flex flex-col justify-between max-w-[480] gap-12">
                   {/* Info Section */}
                   <div className="grid grid-cols-[auto_1fr] items-start gap-4">
@@ -187,10 +184,11 @@ const FestivalDetailPage: React.FC = () => {
                      {/* 다녀온 관광지 추가 버튼 */}
                      <button
                         className={`w-72 h-13 py-2 rounded-lg border ${
-                           isVisited ? "bg-gray-300 text-black" : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
+                           isVisited
+                              ? "bg-gray-300 text-black"
+                              : "bg-sky-500 text-white hover:bg-sky-600 border-sky-500"
                         }`}
-                        onClick={handleVisitedToggle}
-                     >
+                        onClick={handleVisitedToggle}>
                         <span className="font-semibold text-lg leading-7 tracking-normal">
                            {isVisited ? "다녀온 장소" : "다녀온 장소 추가"}
                         </span>
@@ -199,8 +197,7 @@ const FestivalDetailPage: React.FC = () => {
                      {/* 찜하기 버튼 */}
                      <button
                         className="w-28 h-13 bg-sky-50 py-2 px-4 rounded-lg border border-sky-500 hover:bg-sky-100 flex items-center justify-center"
-                        onClick={handleFavoriteToggle}
-                     >
+                        onClick={handleFavoriteToggle}>
                         <Image
                            src={isFavorite ? "/images/full_heart.png" : "/images/heart.png"}
                            alt="찜하기"
@@ -215,37 +212,36 @@ const FestivalDetailPage: React.FC = () => {
 
             {/* 운영 정보 */}
             <section className="">
-              <h3 className="text-2xl font-bold mb-6">운영 정보</h3>
-              {infoList ? (
+               <h3 className="text-2xl font-bold mb-6">운영 정보</h3>
+               {infoList ? (
                   <div className="grid grid-cols-[auto_1fr] items-start gap-y-5 gap-x-3">
-                    {infoList.usetime && <DetailList title="운영시간">{convertBrToSpan(infoList.usetime)}</DetailList>}
-                    {infoList.entranceFee && (
+                     {infoList.usetime && <DetailList title="운영시간">{convertBrToSpan(infoList.usetime)}</DetailList>}
+                     {infoList.entranceFee && (
                         <DetailList title="입장료">{convertBrToSpan(infoList.entranceFee)}</DetailList>
-                    )}
+                     )}
                   </div>
-              ) : (
+               ) : (
                   blankbox
-              )}
+               )}
             </section>
 
             <hr className="my-12" />
 
             {/* 행사 내용 추가 */}
             {infoList?.extraInfo?.map((exInfo) => {
-              if (exInfo.infoname === "행사내용") {
+               if (exInfo.infoname === "행사내용") {
                   return (
-                    <section key={exInfo.serialnum} className="my-12">
+                     <section key={exInfo.serialnum} className="my-12">
                         <h3 className="text-2xl font-bold mb-6">{exInfo.infoname}</h3>
                         <div className="text-neutral-800 leading-relaxed text-lg">
-                          {convertBrToSpan(exInfo.infotext)}
+                           {convertBrToSpan(exInfo.infotext)}
                         </div>
-                    </section>
+                     </section>
                   );
-              }
-              return null;
+               }
+               return null;
             })}
 
-            
             {/* 소개 */}
             <section>
                <h3 className="text-2xl font-bold mb-6">소개</h3>
@@ -259,9 +255,11 @@ const FestivalDetailPage: React.FC = () => {
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy && window.kakao ? (
                   <div className="h-[500]">
-                  <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title}/>
-               </div>
-               ) : "지도 정보 없음"}
+                     <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
+                  </div>
+               ) : (
+                  "지도 정보 없음"
+               )}
             </section>
          </main>
          <Footer />

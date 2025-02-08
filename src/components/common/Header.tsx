@@ -11,7 +11,8 @@ export default function Header() {
    const [scrollTop, setScrollTop] = useState(true);
    const pathname = usePathname();
 
-   useEffect(() => { //로그인 관련
+   useEffect(() => {
+      //로그인 관련
       if (typeof window !== "undefined") {
          const token = localStorage.getItem("accessToken");
          const storedNickname = localStorage.getItem("nickname");
@@ -49,23 +50,23 @@ export default function Header() {
 
    useEffect(() => {
       const handleScroll = () => {
-        setScrollTop(window.scrollY === 0);
+         setScrollTop(window.scrollY === 0);
       };
-  
+
       // 메인 페이지인지 확인
       const isMainPage = location.pathname === "/";
-  
+
       if (isMainPage) {
-        window.addEventListener("scroll", handleScroll);
-        handleScroll(); // 초기 상태 설정
+         window.addEventListener("scroll", handleScroll);
+         handleScroll(); // 초기 상태 설정
       } else {
-        setScrollTop(false);
+         setScrollTop(false);
       }
-  
+
       return () => {
-        window.removeEventListener("scroll", handleScroll);
+         window.removeEventListener("scroll", handleScroll);
       };
-    }, [pathname]);
+   }, [pathname]);
 
    const handleLogout = async () => {
       try {
@@ -96,10 +97,8 @@ export default function Header() {
       { name: "커뮤니티", href: "/community" },
    ];
 
-   
-
    return (
-      <header className={`w-full border-b fixed z-50 ${scrollTop == true ? style.active : style.default}`}>
+      <header className={`w-full border-b fixed top-0 z-[999] ${scrollTop == true ? style.active : style.default}`}>
          <nav className="contents-wrap pt-2 pb-3">
             <div className="flex w-full justify-between items-end">
                {/* 왼쪽 로고 및 메뉴 */}
@@ -125,8 +124,6 @@ export default function Header() {
                <div className="flex items-center gap-4">
                   {!isLoading &&
                      (isLoggedIn ? (
-                        
-                        
                         <div className="flex flex-col items-end gap-2 mt-3">
                            {/* 사용자 이름과 환영 메시지 */}
                            <span className="text-neutral-800 text-base font-medium">
