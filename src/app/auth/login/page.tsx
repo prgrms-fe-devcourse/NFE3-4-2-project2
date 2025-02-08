@@ -75,7 +75,7 @@ export default function Login() {
       <div className="min-h-screen">
          <Header />
          {/* 로그인 섹션에 여백 추가 */}
-         <div className="space-y-16 mt-12 max-w-screen-xl mx-auto px-4 py-16">
+         <div className="space-y-16 mt-12 max-w-screen-xl mx-auto px-4 py-16 pt-[120px]">
             <div className="mx-auto max-w-460px text-center">
                <div className="text-3xl font-bold text-neutral-800">로그인</div>
             </div>

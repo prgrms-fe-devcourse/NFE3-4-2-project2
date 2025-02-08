@@ -60,7 +60,7 @@ export default function Signup() {
    return (
       <div className="min-h-screen">
          <Header />
-         <div className="space-y-8 my-20 max-w-screen-xl mx-auto">
+         <div className="space-y-16 mt-12 max-w-screen-xl mx-auto px-4 py-16 pt-[120px]">
             <div className="mx-auto text-center">
                <div className="text-3xl font-bold text-neutral-800">강원도 여행이 쉬워지는 첫걸음!</div>
                <div className="text-3xl font-bold text-neutral-800">Gangwon Go!</div>
