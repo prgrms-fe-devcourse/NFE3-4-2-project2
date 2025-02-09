@@ -83,8 +83,8 @@ const FestivalCard: React.FC<SelectedChildParam & { cat2?: string | null }> = ({
    }
 
    return (
-      <div className="w-[1280px] mx-auto px-6 m-20">
-         <div className="grid grid-cols-3 gap-8">
+      <div className="contents-wrap px-6 m-20">
+         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
             {tourData.map((item) => (
                <Link key={item.contentId} href={`/explore/festival/detail?contentId=${item.contentId}`}>
                   <ListCard {...item} />

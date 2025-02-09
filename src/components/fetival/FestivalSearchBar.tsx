@@ -30,8 +30,9 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
    };
 
    return (
-      <div className="mx-auto w-[860px] p-7 shadow-xl bg-white rounded-lg">
-         <div className="flex justify-between">
+      <div className="mx-auto max-w-[860px] p-7 shadow-xl bg-white rounded-lg">
+         <div className="flex flex-wrap justify-between gap-4">
+            {" "}
             {/* 카테고리 선택 */}
             <div className="flex gap-x-6 font-bold text-xl items-start">
                {categories.map((category) => (
@@ -49,9 +50,9 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                   </button>
                ))}
             </div>
-
             {/* 검색 바 */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+               {" "}
                <div className="relative flex items-center">
                   <input
                      ref={searchRef}
@@ -76,7 +77,8 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
 
          <div className="flex mt-2 gap-4">
             {/* 지역 필터 */}
-            <div className="w-[180px]">
+            <div className="w-full sm:w-[180px]">
+               {" "}
                <p className="text-neutral-500 text-lg pb-2">지역</p>
                <select
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
@@ -94,7 +96,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
             </div>
 
             {/* 날짜 필터 */}
-            <div className="w-[150px]">
+            <div className="w-full sm:w-[150px]">
                <p className="text-neutral-500 text-lg pb-2">날짜</p>
                <select
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
