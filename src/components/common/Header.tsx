@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 import style from "@/styles/header.module.css";
 import { checkAuthUser, logout } from "@/utils/authapi"; // logout 함수 import
 
-
 export default function Header() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);
    const [nickname, setNickname] = useState<string | null>(null);
@@ -151,7 +150,7 @@ export default function Header() {
                      ) : (
                         <Link href="/auth/login">
                            <button
-                              className="px-3 py-1 mt-6 text-neutral-800 text-xs font-medium border rounded-md 
+                              className="px-4 py-2 mt-4 text-neutral-800 text-xs font-medium border rounded-md 
                                       hover:text-white hover:bg-sky-500 hover:border-sky-500 active:bg-sky-600 active:border-sky-600">
                               로그인
                            </button>

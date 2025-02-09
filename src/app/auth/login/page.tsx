@@ -3,6 +3,7 @@
 import { AxiosError } from "axios";
 import Link from "next/link";
 import { useState } from "react";
+
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import { login } from "@/utils/authapi";
@@ -71,7 +72,7 @@ export default function Login() {
          <div className="flex flex-col justify-center items-center px-6 py-24 pt-[200px] pb-[160px]">
             {/* 로그인 타이틀 */}
             <div className="text-center mb-12">
-               <h1 className="text-4xl font-extrabold text-neutral-800">다시 만나 반가워요요👋</h1>
+               <h1 className="text-4xl font-extrabold text-neutral-800">다시 만나 반가워요👋</h1>
                <h2 className="text-4xl font-extrabold text-sky-600 mt-2">Gangwon Go!</h2>
             </div>
 
