@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { createPost, getChannels } from "@/utils/postapi";
 import { AxiosResponse, AxiosError } from "axios";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { createPost, getChannels } from "@/utils/postapi";
+
 
 export default function AdminPage() {
    const router = useRouter();

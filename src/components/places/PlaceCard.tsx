@@ -1,8 +1,9 @@
 // 식당 및 숙소 - 식당 카드 컴포넌트
 import Image from "next/image";
-import restaurants from "@/utils/restaurantList.json";
-import accommodation from "@/utils/accommodationList.json";
+
 import { PlaceParam } from "@/types/types";
+import accommodation from "@/utils/accommodationList.json";
+import restaurants from "@/utils/restaurantList.json";
 
 interface RestaurantCardProps {
    selected: PlaceParam;

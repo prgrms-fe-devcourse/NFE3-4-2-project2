@@ -1,15 +1,19 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
-import Image from "next/image";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
-import { checkAuthUser } from "@/utils/authapi";
-import { useSearchParams } from "next/navigation";
 import { AxiosError } from "axios";
+import Image from "next/image";
+import { useRouter, useParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { checkAuthUser } from "@/utils/authapi";
+import { getPostById, deletePost, createComment, deleteComment } from "@/utils/postapi";
+
+
+
 
 interface Post {
    _id: string;

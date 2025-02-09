@@ -1,11 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { createPost } from "@/utils/postapi";
 import { AxiosResponse, AxiosError } from "axios";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { createPost } from "@/utils/postapi";
+
 
 export default function WritePage() {
    const router = useRouter();

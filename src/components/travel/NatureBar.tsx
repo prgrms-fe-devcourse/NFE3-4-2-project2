@@ -1,7 +1,8 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import Image from "next/image";
+import React, { useEffect, useState } from "react";
+
 import { SelectedChildParam } from "@/types/types";
 
 const NatureBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {

@@ -1,6 +1,7 @@
+import { useRef } from "react";
+
 import { SelectedParam } from "@/types/types";
 import regionList from "@/utils/regionList.json";
-import { useRef } from "react";
 
 // 축제 = a0207
 // 공연/행사 = a0208

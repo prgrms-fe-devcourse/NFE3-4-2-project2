@@ -1,11 +1,14 @@
 "use client";
 
 import React, { useState } from "react";
-import RegionList from "../common/RegionList";
-import SeasonBar from "./SeasonTourBar";
-import NatureBar from "./NatureBar";
-import CultureBar from "./CultureBar";
+
 import { SeasonType } from "@/types/types"; // ✅ 타입 가져오기
+
+import RegionList from "../common/RegionList";
+
+import CultureBar from "./CultureBar";
+import NatureBar from "./NatureBar";
+import SeasonBar from "./SeasonTourBar";
 
 interface TourSearchBarProps {
    selectedOption?:string,

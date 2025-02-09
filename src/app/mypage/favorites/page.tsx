@@ -1,10 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { getCookie, setCookie } from "@/utils/cookie";
+import { useEffect, useState } from "react";
+
 import APIConnect from "@/utils/api";
 import catList from "@/utils/catList.json";
+import { getCookie, setCookie } from "@/utils/cookie";
 
 const getCategoryName = (cat3) => {
    return catList[cat3]?.cat3 || "카테고리 없음";

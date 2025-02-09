@@ -1,4 +1,5 @@
 import Image from "next/image";
+
 import { ListProps } from "@/types/types";
 
 const ListCard: React.FC<ListProps> = ({ imageUrl, title, area }) => {

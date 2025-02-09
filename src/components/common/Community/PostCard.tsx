@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+
 import { Post } from "../../../app/community/page"; // 부모에서 전달할 Post 타입
 
 interface PostCardProps {

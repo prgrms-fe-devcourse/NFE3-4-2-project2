@@ -1,6 +1,7 @@
 "use client";
 
 import PostCard from "@/components/common/Community/PostCard";
+
 import { Post } from "../../../app/community/page"; // 부모에서 전달할 Post 타입
 
 interface PostListProps {

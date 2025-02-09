@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useEffect, useState, useRef } from "react";
 import Image from "next/image";
-
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import DetailList from "@/components/travel/DetailList";
-import APIConnect from "@/utils/api";
-import KakaoMap from "@/components/common/KakaoMap";
-import { TourImg, TourDetailInfo, CatList } from "@/types/types";
-import catListJson from "@/utils/catList.json";
-import DetailSwiper from "@/components/common/DetailSwiper";
-
-import { getCookie, setCookie } from "@/utils/cookie";
 import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState, useRef } from "react";
+
+import DetailSwiper from "@/components/common/DetailSwiper";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import KakaoMap from "@/components/common/KakaoMap";
+import DetailList from "@/components/travel/DetailList";
+import { TourImg, TourDetailInfo, CatList } from "@/types/types";
+import APIConnect from "@/utils/api";
+import catListJson from "@/utils/catList.json";
+import { getCookie, setCookie } from "@/utils/cookie";
+
 
 const catList = catListJson as CatList;
 

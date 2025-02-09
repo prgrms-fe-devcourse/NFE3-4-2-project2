@@ -1,13 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { SelectedParam } from "@/types/types";
+import React, { useEffect, useState } from "react";
 
+import CardList from "@/components/common/CardList";
+import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import LeisureSearchBar from "@/components/Leisure/LeisureSearchBar";
-import Footer from "@/components/common/Footer";
-import CardList from "@/components/common/CardList";
+import { SelectedParam } from "@/types/types";
 
 const TravelPage: React.FC = () => {
    //라우터 세팅

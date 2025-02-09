@@ -1,11 +1,12 @@
-import { NextResponse } from "next/server";
 import { MongoClient } from "mongodb";
+import { NextResponse } from "next/server";
+
 import { Culture, ListProps, Season, Nature } from "@/types/types";
-import seasonList from "@/utils/seasonList.json";
+import accommodationList from "@/utils/accommodationList.json";
 import cultureList from "@/utils/cultureList.json";
 import natureList from "@/utils/natureList.json";
 import restaurantList from "@/utils/restaurantList.json";
-import accommodationList from "@/utils/accommodationList.json";
+import seasonList from "@/utils/seasonList.json";
 
 const MONGO_URI = "mongodb://127.0.0.1:27017/gangwonGo";
 const DB_NAME = "gangwonGo";

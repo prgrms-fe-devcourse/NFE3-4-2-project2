@@ -1,11 +1,11 @@
-import { PlaceSelectedChildParam } from "@/types/types";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 
-import restaurantList from "@/utils/restaurantList.json";
-import accommodationList from "@/utils/accommodationList.json";
 import style from "@/styles/placeDetail.module.css";
+import { PlaceSelectedChildParam } from "@/types/types";
+import accommodationList from "@/utils/accommodationList.json";
+import restaurantList from "@/utils/restaurantList.json";
 
-import Image from "next/image";
 
 interface PlaceType {
    src: string;

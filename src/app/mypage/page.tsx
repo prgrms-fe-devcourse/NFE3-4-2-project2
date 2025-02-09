@@ -1,13 +1,15 @@
 "use client";
+import axios from "axios";
 import React, { useEffect, useState } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import { checkAuthUser, updateUserInfo, uploadProfilePhoto } from "@/utils/authapi";
 import { getCookie } from "@/utils/cookie";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
+
 import FavoritePlaces from "./favorites/page";
-import VisitedPlaces from "./visited/page";
-import axios from "axios";
 import MyPost from "./mypost/page";
+import VisitedPlaces from "./visited/page";
 
 const MyPage: React.FC = () => {
    const [user, setUser] = useState<User | null>(null);

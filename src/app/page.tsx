@@ -1,30 +1,31 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
 
 //api
-import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
-import APIConnect from "@/utils/api"; // API 요청 모듈
 
 //types
-import { RestaurantDetailInfo } from "@/types/types";
 
 //swiper
 import { Swiper, SwiperSlide } from "swiper/react";
+
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
-import SwiperCard from "@/components/main/SwiperCard";
-
-//components
-import SvgMap from "@/components/main/SvgMap";
+import PostList from "@/components/common/Community/PostList";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import SearchSection from "@/components/main/SearchSection";
-import PostList from "@/components/common/Community/PostList";
+import SvgMap from "@/components/main/SvgMap";
+import SwiperCard from "@/components/main/SwiperCard";
+
+//components
+import { RestaurantDetailInfo } from "@/types/types";
+import APIConnect from "@/utils/api"; // API 요청 모듈
+import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
 
 export default function Home() {
    const router = useRouter();

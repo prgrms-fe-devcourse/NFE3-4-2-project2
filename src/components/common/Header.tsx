@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { checkAuthUser, logout } from "@/utils/authapi"; // logout 함수 import
-import style from "@/styles/header.module.css";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
+
+import style from "@/styles/header.module.css";
+import { checkAuthUser, logout } from "@/utils/authapi"; // logout 함수 import
+
 
 export default function Header() {
    const [isLoggedIn, setIsLoggedIn] = useState(false);

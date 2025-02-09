@@ -1,5 +1,6 @@
-import axios from "axios";
 import { info } from "console";
+
+import axios from "axios";
 import dotenv from "dotenv";
 
 dotenv.config();

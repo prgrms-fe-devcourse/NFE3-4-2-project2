@@ -1,7 +1,9 @@
-import { useRef, useState } from "react";
 import Image from "next/image";
-import { ListProps } from "@/types/types";
 import Link from "next/link";
+import { useRef, useState } from "react";
+
+import { ListProps } from "@/types/types";
+
 
 export default function SearchSection() {
    const [nowSearching, setNowSearching] = useState(false);

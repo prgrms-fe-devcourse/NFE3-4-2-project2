@@ -1,12 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import TourSearchBar from "@/components/travel/TourSearchBar";
-import CardList from "@/components/common/CardList";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+import CardList from "@/components/common/CardList";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import TourSearchBar from "@/components/travel/TourSearchBar";
 import { SelectedParam } from "@/types/types";
 
 const TravelPage: React.FC = () => {

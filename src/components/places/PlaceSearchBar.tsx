@@ -1,6 +1,7 @@
+import { useRef } from "react";
+
 import { SelectedParam } from "@/types/types";
 import regionList from "@/utils/regionList.json";
-import { useRef } from "react";
 
 type ExtraSearchBarProps = {
    selected: SelectedParam & ExtraType;

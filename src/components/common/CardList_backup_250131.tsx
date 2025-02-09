@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { ListProps, SeasonType } from "@/types/types";
-import ListCard from "./ListCard";
-import APIConnect from "@/utils/api";
-import Pagination from "./Pagination";
 import { useSearchParams } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+import { ListProps, SeasonType } from "@/types/types";
+import APIConnect from "@/utils/api";
+
+import ListCard from "./ListCard";
+import Pagination from "./Pagination";
 
 interface TourItem {
    title: string;

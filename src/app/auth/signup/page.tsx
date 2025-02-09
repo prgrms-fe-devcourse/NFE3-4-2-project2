@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation"; // ✅ next/navigation에서 import
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { signUp } from "@/utils/authapi";
 import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가
+import { useRouter } from "next/navigation"; // ✅ next/navigation에서 import
+import { useState } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { signUp } from "@/utils/authapi";
+
 
 export default function Signup() {
    const router = useRouter();

@@ -1,10 +1,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ListProps, PlaceParam, PlaceSelectedChildParam } from "@/types/types";
-import Pagination from "@/components/common/Pagination";
-import PlaceCard from "./PlaceCard";
-import EmptyListCard from "@/components/common/EmptyListCard";
+
 import EmptyData from "@/components/common/EmptyData";
+import EmptyListCard from "@/components/common/EmptyListCard";
+import Pagination from "@/components/common/Pagination";
+import { ListProps, PlaceParam, PlaceSelectedChildParam } from "@/types/types";
+
+import PlaceCard from "./PlaceCard";
+
 type ExtraType = {
    keyword? : string
 }

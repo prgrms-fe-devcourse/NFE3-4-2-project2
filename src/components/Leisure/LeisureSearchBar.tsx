@@ -1,8 +1,10 @@
 "use client";
 
-import RegionList from "../common/RegionList";
-import SeasonLeisureBar from "./SeasonLeisureBar";
 import { SelectedChildParam } from "@/types/types";
+
+import RegionList from "../common/RegionList";
+
+import SeasonLeisureBar from "./SeasonLeisureBar";
 
 const LeisureSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    return (

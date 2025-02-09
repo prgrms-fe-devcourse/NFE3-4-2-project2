@@ -1,11 +1,13 @@
+import axios from "axios";
+import dotenv from "dotenv";
+
 import { TourImg, TourDetailInfo, RestaurantDetailInfo, TourItemRegion } from "@/types/types";
 import { AccommodationItem, AccommodationDetailInfo } from "@/types/types";
 
-import axios from "axios";
-import dotenv from "dotenv";
+
 dotenv.config();
-import seasonList from "./seasonList.json";
 import natureList from "./natureList.json";
+import seasonList from "./seasonList.json";
 
 // 인터페이스 정의
 interface TourItem {

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { getPostsByAuthor } from "@/utils/postapi"; // getPostsByAuthor 호출
 import { AxiosResponse } from "axios";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import { getPostsByAuthor } from "@/utils/postapi"; // getPostsByAuthor 호출
+
 
 // 게시글 인터페이스
 interface Post {

@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState } from "react";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import TourSearchBar from "@/components/travel/TourSearchBar";
+
 import CardList from "@/components/common/CardList";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import TourSearchBar from "@/components/travel/TourSearchBar";
 import { SeasonType } from "@/types/types"; // ✅ 타입 가져오기
 
 const TravelPage: React.FC = () => {

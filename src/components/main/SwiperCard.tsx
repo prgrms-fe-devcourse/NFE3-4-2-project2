@@ -1,9 +1,11 @@
 "use client";
 
-import React from "react";
-import { useRouter } from "next/navigation";
-import RegionButton from "@/components/common/RegionButton";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import React from "react";
+
+import RegionButton from "@/components/common/RegionButton";
+
 
 const regionMapping: { [key: string]: { name: string; imageSrc: string } } = {
    강릉: { name: "강릉시", imageSrc: "/images/region/강릉시.png" },

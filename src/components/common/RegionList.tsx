@@ -1,8 +1,10 @@
 "use client";
 
 import React from "react";
-import RegionButton from "./RegionButton";
+
 import { SelectedChildParam } from "@/types/types";
+
+import RegionButton from "./RegionButton";
 
 const RegionList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    const handleRegionClick = (regionCode: string) => {

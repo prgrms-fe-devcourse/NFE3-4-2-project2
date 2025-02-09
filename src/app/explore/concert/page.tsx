@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
-import Header from "@/components/common/Header";
+import { useState } from "react";
+
 import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 
 export default function Festival() {
   const [selected, setSelected] = useState("전체");

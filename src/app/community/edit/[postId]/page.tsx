@@ -1,13 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useParams, useSearchParams } from "next/navigation";
-import Image from "next/image";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { getPostById, updatePost } from "@/utils/postapi";
-import { checkAuthUser } from "@/utils/authapi"; // 인증 확인 함수 임포트
 import { AxiosResponse } from "axios";
+import Image from "next/image";
+import { useRouter, useParams, useSearchParams } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { checkAuthUser } from "@/utils/authapi"; // 인증 확인 함수 임포트
+import { getPostById, updatePost } from "@/utils/postapi";
+
 
 interface Post {
    _id: string;

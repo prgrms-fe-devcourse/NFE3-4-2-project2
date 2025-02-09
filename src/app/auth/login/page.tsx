@@ -1,11 +1,12 @@
 "use client";
 
-import { useState } from "react";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import Link from "next/link";
-import { login } from "@/utils/authapi"; // authapi.ts의 login 함수를 가져옵니다.
 import { AxiosError } from "axios"; // ✅ AxiosError 타입 추가
+import Link from "next/link";
+import { useState } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { login } from "@/utils/authapi"; // authapi.ts의 login 함수를 가져옵니다.
 import { setCookie } from "@/utils/cookie";
 
 interface LoginResponse {

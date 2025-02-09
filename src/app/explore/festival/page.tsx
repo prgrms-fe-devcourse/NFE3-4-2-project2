@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import { PlaceParam } from "@/types/types";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import FestivalCardList from "@/components/fetival/FestivalCardList";
 import FestivalSearchBar from "@/components/fetival/FestivalSearchBar";
+import { PlaceParam } from "@/types/types";
 
 export default function Festival() {
    type ExtraType = {

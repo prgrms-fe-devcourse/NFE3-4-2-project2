@@ -1,4 +1,5 @@
 import axios, { AxiosResponse } from "axios";
+
 import { getCookie, setCookie } from "@/utils/cookie";
 
 const baseURL = "http://13.209.75.182:5003"; // 서버 주소

@@ -2,15 +2,15 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import PlaceSearchBar from "@/components/places/PlaceSearchBar";
+import { useEffect, useState } from "react";
 
-import { PlaceParam } from "@/types/types";
-import PlcaeDetailBar from "@/components/places/PlaceDetailBar";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
 import PlaceCardList from "@/components/places/PlaceCardList";
+import PlcaeDetailBar from "@/components/places/PlaceDetailBar";
+import PlaceSearchBar from "@/components/places/PlaceSearchBar";
+import { PlaceParam } from "@/types/types";
 
 export default function Restaurants() {
    type ExtraType = {

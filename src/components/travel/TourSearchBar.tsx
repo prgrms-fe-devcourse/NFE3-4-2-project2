@@ -1,11 +1,14 @@
 "use client";
 
 import React from "react";
-import RegionList from "../common/RegionList";
-import SeasonBar from "./SeasonTourBar";
-import NatureBar from "./NatureBar";
-import CultureBar from "./CultureBar";
+
 import { SelectedChildParam } from "@/types/types";
+
+import RegionList from "../common/RegionList";
+
+import CultureBar from "./CultureBar";
+import NatureBar from "./NatureBar";
+import SeasonBar from "./SeasonTourBar";
 
 const TourSearchBar: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    // 셀렉트 박스 값 변경 시 상태 업데이트

@@ -1,12 +1,14 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+
+import EmptyData from "@/components/common/EmptyData";
+import EmptyListCard from "@/components/common/EmptyListCard";
+import useNavigateToDetail from "@/hooks/useNavigateToDetail"; // ✅ 커스텀 Hook 가져오기
 import { ListProps, SelectedChildParam } from "@/types/types";
+
 import ListCard from "./ListCard";
 import Pagination from "./Pagination";
-import EmptyListCard from "@/components/common/EmptyListCard";
-import EmptyData from "@/components/common/EmptyData";
-import useNavigateToDetail from "@/hooks/useNavigateToDetail"; // ✅ 커스텀 Hook 가져오기
 
 const CardList: React.FC<SelectedChildParam> = ({ selected, changeUrl }) => {
    const [tourData, setTourData] = useState<ListProps[]>([]);

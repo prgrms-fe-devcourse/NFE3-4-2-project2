@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { PlaceParam, ListProps, SelectedChildParam } from "@/types/types";
 import Link from "next/link";
-import EmptyListCard from "../common/EmptyListCard";
+import React, { useEffect, useState } from "react";
+
+import { PlaceParam, ListProps, SelectedChildParam } from "@/types/types";
+
 import EmptyData from "../common/EmptyData";
+import EmptyListCard from "../common/EmptyListCard";
 import ListCard from "../common/ListCard";
 import Pagination from "../common/Pagination";
 type ExtraType = {

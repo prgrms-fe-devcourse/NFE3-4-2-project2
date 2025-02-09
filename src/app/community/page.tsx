@@ -1,12 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import Header from "@/components/common/Header";
-import Footer from "@/components/common/Footer";
-import PostList from "@/components/common/Community/PostList";
-import { getPostsByChannel } from "@/utils/postapi";
 import { AxiosResponse } from "axios";
+import { useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+
+import PostList from "@/components/common/Community/PostList";
+import Footer from "@/components/common/Footer";
+import Header from "@/components/common/Header";
+import { getPostsByChannel } from "@/utils/postapi";
+
 
 export interface Post {
    _id: string;
