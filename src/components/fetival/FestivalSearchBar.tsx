@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 
 import { SelectedParam } from "@/types/types";
 import regionList from "@/utils/regionList.json";
@@ -22,7 +23,20 @@ type ExtraType = {
 
 const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl }) => {
    const searchRef = useRef<HTMLInputElement>(null);
+   const searchParams = useSearchParams();
 
+   useEffect(() => {
+      const monthFromUrl = searchParams.get("month");
+      const filterFromUrl = searchParams.get("filter");
+
+      if (monthFromUrl || filterFromUrl) {
+         changeUrl({
+            ...selected,
+            month: monthFromUrl || selected.month,
+            filter: filterFromUrl || selected.filter,
+         });
+      }
+   }, [searchParams]);
    const handleSearch = () => {
       if (searchRef.current) {
          changeUrl({ ...selected, keyword: searchRef.current.value });
@@ -100,6 +114,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                <p className="text-neutral-500 text-lg pb-2">날짜</p>
                <select
                   className="w-full bg-transparent focus:outline-none border-b border-sky-500 text-lg pb-2 text-neutral-800"
+                  value={selected.month || ""}
                   onChange={(e) => {
                      changeUrl({ ...selected, month: e.target.value });
                   }}>
