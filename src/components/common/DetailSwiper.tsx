@@ -1,10 +1,10 @@
+import Image from "next/image";
+import { useEffect, useRef } from "react";
 import { Pagination, Navigation, Autoplay } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/pagination";
 import "swiper/css/navigation";
-import { useEffect, useRef } from "react";
-import Image from "next/image";
 
 export default function DetailSwiper({ infoList, imgList }) {
    const swiperRef = useRef<any>(null);

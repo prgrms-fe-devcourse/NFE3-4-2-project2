@@ -3,26 +3,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
-
-//api
-
-//types
-
-//swiper
+import React, { useState, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-
 import "swiper/css";
 import "swiper/css/free-mode";
 import "swiper/css/pagination";
+
 import PostList from "@/components/common/Community/PostList";
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
 import SearchSection from "@/components/main/SearchSection";
 import SvgMap from "@/components/main/SvgMap";
 import SwiperCard from "@/components/main/SwiperCard";
-
-//components
 import { RestaurantDetailInfo } from "@/types/types";
 import APIConnect from "@/utils/api"; // API 요청 모듈
 import { getPostsByChannel } from "@/utils/postapi"; // 게시글 API를 가져옴
