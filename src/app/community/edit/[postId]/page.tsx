@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 
 import Footer from "@/components/common/Footer";
 import Header from "@/components/common/Header";
-import { checkAuthUser } from "@/utils/authapi"; // 인증 확인 함수 임포트
+import { checkAuthUser } from "@/utils/authapi";
 import { getPostById, updatePost } from "@/utils/postapi";
 
 
@@ -17,7 +17,7 @@ interface Post {
    content: string;
    fee: number | string;
    people: number;
-   status: string; // 모집 상태 (모집중, 모집마감)
+   status: string;
    date: string;
    endDate: string;
    createdAt: string;
@@ -72,7 +72,7 @@ export default function EditPostPage() {
             const response: AxiosResponse<Post> = await getPostById(postId as string);
             setPost(response.data);
 
-            // title이 JSON 문자열이므로 파싱해야 함
+
             const parsedTitle = JSON.parse(response.data.title);
 
             setTitle(parsedTitle.title);
@@ -98,14 +98,12 @@ export default function EditPostPage() {
       }
    };
 
-   // 모집 상태 자동 설정 함수
    const getStatus = (endDate: string) => {
       const today = new Date();
       const end = new Date(endDate);
       return today > end ? "모집마감" : "모집중";
    };
 
-   // 수정 제출 처리
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       console.log("channelId:", channelId);
@@ -120,7 +118,6 @@ export default function EditPostPage() {
       try {
          const token = localStorage.getItem("accessToken");
 
-         // 토큰이 없으면 로그인 페이지로 리다이렉트
          if (!token) {
             alert("로그인이 필요합니다.");
             router.push("/auth/login");
@@ -140,13 +137,13 @@ export default function EditPostPage() {
             date,
             endDate,
             image,
-            imageToDeletePublicId, // 이미지 삭제할 publicId (없으면 null)
-            channelId, // 수정된 채널 ID를 전달
+            imageToDeletePublicId, 
+            channelId, 
             token,
          );
          if (response.status === 200) {
             alert("게시글이 수정되었습니다.");
-            router.push(`/community/post/${postId}`); // 수정된 게시글 상세 페이지로 이동
+            router.push(`/community/post/${postId}`); 
          } else {
             throw new Error("게시글 수정 실패");
          }

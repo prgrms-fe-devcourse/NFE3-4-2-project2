@@ -15,10 +15,10 @@ export default function WritePage() {
    const channelId = searchParams.get("channelId") || "679f3aba7cd28d7700f70f40";
    const [title, setTitle] = useState("");
    const [content, setContent] = useState("");
-   const [fee, setFee] = useState<number | "">(""); // 참여요금
-   const [people, setPeople] = useState<number>(1); // 기본 인원수 1명
-   const [date, setDate] = useState<string>(""); // 모집 날짜
-   const [endDate, setEndDate] = useState<string>(""); // 모집 마감일
+   const [fee, setFee] = useState<number | "">(""); 
+   const [people, setPeople] = useState<number>(1); 
+   const [date, setDate] = useState<string>(""); 
+   const [endDate, setEndDate] = useState<string>(""); 
    const [image, setImage] = useState<File | null>(null);
    const [preview, setPreview] = useState<string | null>(null);
    const [loading, setLoading] = useState(false);
@@ -46,7 +46,7 @@ export default function WritePage() {
       const value = e.target.value;
 
       if (/^\d*$/.test(value)) {
-         setFee(value === "" ? "" : Number(value)); // 숫자만 허용
+         setFee(value === "" ? "" : Number(value)); 
       }
    };
 
@@ -85,12 +85,11 @@ export default function WritePage() {
       }
    };
 
-   // 제출 버튼 클릭 시 처리
    const handleSubmit = async (e: React.FormEvent) => {
       e.preventDefault();
       if (!title || !content || loading || fee === "" || !date || !endDate) return;
 
-      const status = getStatus(endDate); // 모집 상태 자동 설정
+      const status = getStatus(endDate);
 
       setLoading(true);
       try {
@@ -118,11 +117,11 @@ export default function WritePage() {
             setFee("");
             setPeople(1);
             setDate("");
-            setEndDate(""); // 마감일 초기화
+            setEndDate("");
             setImage(null);
             setPreview(null);
 
-            // 작성된 게시글 상세 페이지로 이동
+
             router.push(`/community/post/${response.data._id}`);
          } else {
             throw new Error("게시글 ID를 찾을 수 없습니다.");

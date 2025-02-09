@@ -106,7 +106,7 @@ export default function PostDetail() {
 
    const parseTitle = (title: string) => {
       try {
-         return JSON.parse(title); // title을 파싱하여 JSON 객체로 변환
+         return JSON.parse(title);
       } catch (error) {
          console.error("Error parsing title:", error);
          return {
@@ -117,7 +117,7 @@ export default function PostDetail() {
             status: "정보 없음",
             date: "",
             endDate: "",
-         }; // 파싱 실패 시 기본 값 반환
+         };
       }
    };
 
@@ -174,10 +174,8 @@ export default function PostDetail() {
                return;
             }
 
-            // 댓글 내용 초기화
             setCommentContent("");
 
-            // 새로 작성된 댓글을 댓글 목록에 바로 추가
             setComments((prevComments) => [
                ...prevComments,
                {
@@ -186,10 +184,10 @@ export default function PostDetail() {
                      _id: response.data.author._id,
                      fullName: response.data.author.fullName,
                      username: response.data.author.username,
-                     image: response.data.author.image || "", // 이미지 속성 기본값 처리
+                     image: response.data.author.image || "", 
                   }, // 댓글 작성자 정보
-                  comment: response.data.comment, // 댓글 내용
-                  createdAt: response.data.createdAt, // 댓글 작성 시간
+                  comment: response.data.comment, 
+                  createdAt: response.data.createdAt, 
                },
             ]);
          } catch (error) {
@@ -225,15 +223,15 @@ export default function PostDetail() {
          return;
       }
 
-      // 삭제 전 확인 창 띄우기
+
       const confirmDelete = window.confirm("정말로 이 댓글을 삭제하시겠습니까?");
       if (!confirmDelete) return;
 
       try {
-         // 댓글 삭제 API 호출
+
          const response = await deleteComment(commentId, token);
 
-         // 댓글 삭제 성공 후 목록에서 제거
+
          if (response.status === 200) {
             setComments((prevComments) => prevComments.filter((comment) => comment._id !== commentId));
          } else {
