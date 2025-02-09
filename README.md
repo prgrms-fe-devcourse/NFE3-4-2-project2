@@ -1,31 +1,29 @@
-# 강원도 여행, 더 쉽고 편리하게! &nbsp;&nbsp; <img src="https://github.com/user-attachments/assets/f458d68f-6f18-4301-a605-3512f11ae5d8"  width="250px;"/>
+# 강원도 여행, 더 쉽고 편리하게! &nbsp;&nbsp; <img src="https://github.com/user-attachments/assets/f458d68f-6f18-4301-a605-3512f11ae5d8"  width="300px;"/>
 <br>
 <img src="https://github.com/user-attachments/assets/1bdc00c3-30d3-428c-baf2-e6cd11e37c3e"  width="800px;"/>
-<br><br><br>
 
-## 🖥️ 프로젝트 개요
-- GangwonGo는 강원도 여행을 더 쉽고, 더 편리하게 만들기 위해 탄생한 올인원 강원도 관광 웹서비스입니다.
+<br><br>
+
+## 📌 프로젝트 개요
+> GangwonGo는 강원도 여행을 더 쉽고, 더 편리하게 만들기 위해 탄생한 올인원 강원도 관광 웹서비스입니다. <br>
 - 기간 : 2025.01.17 ~ 2025.02.07
-- 
-- 
-<br><br><br>
+- 주요 기능 <br>
+  1\) 강원도 관광정보를 관심사별로 다양한 필터링 기능을 제공함주요 관광지, 축제·공연·축제, 레저·체험, 맛집, 숙소까지 한 곳에서 검색 가능! <br>
+  2\) 필터링을 활용한 맞춤형 여행 정보 제공! <br>
+  3\) 여행 동행 모집 & 후기 공유 커뮤니티 & 마이페이지 제공!
+  
+<br><br>
 
 ## 🎯 프로젝트 목표
 > **강원도 여행의 불편함을 해결하고, 더 쉽고 편리한 여행 경험을 제공합니다.**  
 
 | 🔍 Problem | 💡 Solution |
 |-----------------------------|------------------------------------------------|
-| **강원도 관광 정보를 한 번에 찾기 어려움** | ✅ **세분화된 카테고리**로 관광지 정보 제공 (여행지, 레저, 숙박, 축제 등) |
-| **여행 경험을 공유할 수 있는 공간 부족** | ✅ 여행 후기 & 정보 공유를 위한 **커뮤니티 기능 제공** |
-| **여행지에 대한 정보를 한눈에 찾기 어려움** | ✅ **여행 동행 모집 & 소셜 기능**으로 함께하는 여행 기회 제공 |
+| **강원도 관광 정보를 한 번에 찾기 어려움** | ✅ **강원도 여행 정보를 한 곳에서 통합 제공** |
+| **여행지에 대한 정보를 한눈에 찾기 어려움** | ✅ **세분화된 카테고리로 관광지 정보 제공** |
+| **여행지에 대한 정보를 한눈에 찾기 어려움** | ✅ 여행 동행 모집 **커뮤니티 기능 제공** |
 
-
-<br><br><br>
-
-## 주요기능
-관광정보 검색 : 관심사 별로 다양한 필터링 기능 제공
-커뮤니티 : 여행 동행자 모집 글 작성과 참여 기능
-마이페이지 : 찜한 장소 및 다녀온 장소 저장·확인
+<br><br>
 
 ## 👥 팀원 소개
 <center>
@@ -40,7 +38,7 @@
     <tr>
       <th align="center">김지우</th>
       <th align="center">성도형</th>
-      <th align="center">최윤서</th>
+      <th align="center">최윤서 👑</th>
       <th align="center">최지혜</th>
     </tr>
     <tr>
@@ -55,9 +53,12 @@
 <br><br><br>
 
 ## ⚙️ 주요 기능
-- 
-- 
+### 1️⃣ 관광정보 검색 : 관심사 별로 다양한 필터링 기능 제공
 <img src=""  />
+### 2️⃣ 커뮤니티 : 여행 동행자 모집 글 작성과 참여 기능
+### 3️⃣ 마이페이지 : 찜한 장소 및 다녀온 장소 저장·확인
+- 
+
 <br><br><br>
 
 - 
@@ -66,13 +67,40 @@
 
 ## 🛠️ 기술 스택
 
-<br><br><br>
+### **Frontend**
+<p>
+<img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white">
+<img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
+<img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
+<img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
+<img src="https://img.shields.io/badge/Styled--Components-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white">
+<img src="https://img.shields.io/badge/Storybook-FF4785?style=for-the-badge&logo=storybook&logoColor=white">
+</p>
 
+### **Backend**
+<img src="https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white">
 
+### **버전 관리 및 협업 도구**
+<p>
+<img src="https://img.shields.io/badge/Git-F05032?style=for-the-badge&logo=git&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub-181717?style=for-the-badge&logo=github&logoColor=white">
+<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=slack&logoColor=white">
+<img src="https://img.shields.io/badge/Notion-000000?style=for-the-badge&logo=notion&logoColor=white">
+</p>
 
-## 서버 돌리기
+### **개발 환경 및 도구**
+<p>
+<img src="https://img.shields.io/badge/VSCode-007ACC?style=for-the-badge&logo=visualstudiocode&logoColor=white">
+<img src="https://img.shields.io/badge/NPM-CB3837?style=for-the-badge&logo=npm&logoColor=white">
+<img src="https://img.shields.io/badge/dotenv-ECD53F?style=for-the-badge&logo=dotenv&logoColor=black">
+<img src="https://img.shields.io/badge/Postman-FF6C37?style=for-the-badge&logo=postman&logoColor=white">
+</p>
 
-개발 서버 돌리기:
+<br><br>
+
+## ⭐️ 서버 실행 방법
+
+개발 서버 실행:
 
 ```bash
 npm run dev
@@ -103,22 +131,27 @@ npm i pretendard
 ```bash
 npm i swiper
 ```
+<br><br>
 
-## Git 컨벤션
+## 🚀 Git 컨벤션
 
--  Feat : 새로운 기능 추가
--  Fix : 버그 수정
--  Docs : 문서 수정
--  Style : 코드 formatting, 세미콜론 누락, 코드 자체의 변경이 없는 경우
--  Refactor : 코드 리팩토링
--  Test : 테스트 코드, 리팩토링 테스트 코드 추가
--  Chore : 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore
--  Design : CSS 등 사용자 UI 디자인 변경
--  Comment : 필요한 주석 추가 및 변경
--  Rename : 파일 또는 폴더 명을 수정하거나 옮기는 작업만인 경우
--  Remove : 파일을 삭제하는 작업만 수행한 경우
--  !BREAKING CHANGE : 커다란 API 변경의 경우
--  !HOTFIX : 급하게 치명적인 버그를 고쳐야 하는 경우
+| **타입**               | **설명** |
+|---------------------|----------------------------------------|
+| **Feat**          | 새로운 기능 추가 |
+| **Fix**          | 버그 수정 |
+| **Docs**         | 문서 수정 (README, 문서 변경 등) |
+| **Style**        | 코드 포맷팅, 세미콜론 누락 등 코드 변경 없음 |
+| **Refactor**     | 코드 리팩토링 (기능 변경 없이 코드 개선) |
+| **Test**         | 테스트 코드 추가 및 리팩토링 테스트 코드 작성 |
+| **Chore**       | 패키지 매니저 수정, 기타 변경 (ex. `.gitignore`) |
+| **Design**       | CSS 등 사용자 UI 디자인 변경 |
+| **Comment**     | 필요한 주석 추가 및 변경 |
+| **Rename**       | 파일 또는 폴더명 수정 및 이동 |
+| **Remove**       | 파일 삭제 작업 |
+| **!BREAKING CHANGE**  | 커다란 API 변경 (호환성 깨지는 변경) |
+| **!HOTFIX**      | 긴급한 버그 수정 |
+
+<br><br>
 
 ## 📁 폴더 구조
 
