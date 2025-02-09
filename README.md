@@ -34,10 +34,10 @@
       <th align="center">최지혜</th>
     </tr>
     <tr>
-      <td align="center" width="170"><a href="https://github.com/Castillou">@erase0250</a></td>
+      <td align="center" width="170"><a href="https://github.com/erase0250">@erase0250</a></td>
       <td align="center" width="170"><a href="https://github.com/DohyoungSeong">@DohyoungSeong</a></td>
-      <td align="center" width="170"><a href="https://github.com/kdh990315">@cj2174</a></td>
-      <td align="center" width="170"><a href="https://github.com/jaeyo03">@jihye-c</a></td>
+      <td align="center" width="170"><a href="https://github.com/cj2174">@cj2174</a></td>
+      <td align="center" width="170"><a href="https://github.com/jihye-c">@jihye-c</a></td>
     </tr>
   </tbody>
 </table>
