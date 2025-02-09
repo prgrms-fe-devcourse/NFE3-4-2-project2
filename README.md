@@ -1,3 +1,65 @@
+# 강원도의 모든 것, Gangwon GO
+
+<img src=""  width="800px;"/>
+
+<br><br><br>
+
+## 🖥️ 프로젝트 개요
+- 기간 : 
+- .
+- 
+<br><br><br>
+
+## 🎯 프로젝트 목표
+- 
+- 
+- 
+- 
+<br><br><br>
+
+## 👥 팀원 소개
+<center>
+<table>
+  <tbody>
+    <tr>
+      <td align="center"><img src="https://avatars.githubusercontent.com/u/189778436?v=4" width="150" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/u/125351071?v=4" width="150" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/u/134395531?v=4" width="150" /></td>
+      <td align="center"><img src="https://avatars.githubusercontent.com/u/141098707?v=4" width="150" /></td>
+    </tr>
+    <tr>
+      <th align="center">김지우</th>
+      <th align="center">성도형</th>
+      <th align="center">최윤서</th>
+      <th align="center">최지혜</th>
+    </tr>
+    <tr>
+      <td align="center" width="170"><a href="https://github.com/Castillou">@erase0250</a></td>
+      <td align="center" width="170"><a href="https://github.com/DohyoungSeong">@DohyoungSeong</a></td>
+      <td align="center" width="170"><a href="https://github.com/kdh990315">@cj2174</a></td>
+      <td align="center" width="170"><a href="https://github.com/jaeyo03">@jihye-c</a></td>
+    </tr>
+  </tbody>
+</table>
+</center>
+<br><br><br>
+
+## ⚙️ 주요 기능
+- 
+- 
+<img src=""  />
+<br><br><br>
+
+- 
+<img src="" />
+<br><br><br>
+
+## 🛠️ 기술 스택
+
+<br><br><br>
+
+
+
 ## 서버 돌리기
 
 개발 서버 돌리기:
@@ -48,7 +110,7 @@ npm i swiper
 -  !BREAKING CHANGE : 커다란 API 변경의 경우
 -  !HOTFIX : 급하게 치명적인 버그를 고쳐야 하는 경우
 
-## 폴더 구조 설명
+## 📁 폴더 구조
 
 ```├─public # 정적 파일 (이미지, 아이콘, 폰트 등)
 │  ├─fonts                        # 폰트 파일
