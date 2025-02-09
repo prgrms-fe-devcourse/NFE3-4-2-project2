@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import Script from "next/script";
+// import Script from "next/script";
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
 
@@ -16,11 +16,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Script 
+        {/* <Script 
           src={`//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_KAKAO_KEY}&autoload=false`}
           type="text/javascript"
           strategy="beforeInteractive"
-        />
+        /> */}
       </head>
       <body>{children}</body>
     </html>

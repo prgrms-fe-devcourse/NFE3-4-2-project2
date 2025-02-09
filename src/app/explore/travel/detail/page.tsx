@@ -257,13 +257,14 @@ const TravelListPage: React.FC = () => {
             <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
                {infoList?.mapx && infoList?.mapy && window.kakao ? (
-                  <div className="h-[500]">
+                  <div className="h-[500px]">
                      <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
                   </div>
                ) : (
                   "지도 정보 없음"
                )}
             </section>
+
          </main>
          <Footer />
       </div>
