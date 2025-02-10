@@ -1,0 +1,10 @@
+export { default as MYPAGE_ROUTES } from './MypageRoutes';
+export { default as COMMUNITY_ROUTES } from './CommunityRoutes';
+export { default as SEARCH_ROUTES } from './SearchRoutes';
+export { default as DETAIL_ROUTES } from './DetailRoutes';
+export { default as HOME_ROUTES } from './HomeRoutes';
+export { default as AUTH_ROUTES } from './AuthRoutes';
+export { default as TRIP_ROUTES } from './TripRoutes';
+export { default as PLAN_ROUTES } from './PlanRoutes';
+export { default as PrivateRoute } from './PrivateRoute';
+export { default as PublicRoute } from './PublicRoute';
