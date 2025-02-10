@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+    font-family: 'Pretendard-Regular';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-SemiBold';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+}
+@font-face {
+    font-family: 'Pretendard-Bold';
+    src: url('https://fastly.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff') format('woff');
+    font-weight: 700;
+    font-style: normal;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .slider-range::-webkit-slider-thumb {
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      border: 2px solid #B23742;
+      background-color: white;
+      -webkit-appearance: none;
+      pointer-events: auto;
+  }
+}
+.rdp-root {
+    --rdp-accent-color: indigo; /* Change the accent color to indigo. */
+    --rdp-accent-background-color: #f0f0f0; /* Change the accent background color. */
+    /* Add more CSS variables here. */
+    thead > tr> th{
+        color: #848484;
+    }
+    thead > tr> th:first-child{
+        color: red;
+    }
+    thead > tr> th:last-child{
+        color: blue;
+    }
+    .rdp-caption_label {
+        color: #848484;
+    }
+    /*.rdp-weekdays:last-child{*/
+    /*    color: blue;*/
+    /*}*/
+    .rdp-day {
+        align-items: center;
+        box-shadow: none;
+    }
+    .rdp-day_button {
+        margin:auto;
+        color: #848484;
+        width: 80%;
+        height: 80%;
+        background-color: #EBEBEB;
+        border-radius: 50px;
+        box-shadow: none;
+    }
+    tbody > tr > td:first-child > button{
+        color: red;
+    }
+    tbody > tr > td:last-child > button{
+        color: blue;
+    }
+    
+}
