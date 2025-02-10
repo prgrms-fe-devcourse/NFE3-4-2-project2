@@ -177,7 +177,7 @@ npm i swiper
     │  │  ├─concert                # 공연 관련 페이지
     │  │  ├─festival               # 축제 관련 페이지
     │  │  ├─leisure                # 레저 활동 관련 페이지
-    │  │  ├─places                 # 음식점/숙소 페이지
+    │  │  ├─places                 # 음식점/숙소 페이지
     │  │  ├─travel                 # 관광지 페이지
     │  ├─mypage                    # 마이페이지
     │  │  ├─favorites              # 찜한여행지 페이지
