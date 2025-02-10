@@ -7,6 +7,7 @@ dotenv.config();
 
 export default class DBAPI {
     static serviceName: string = "GangwonGo";
+    private static _backDefaultURL: string = "http://13.209.75.182:5003/";    
     private static _tourDefaultURL: string = "http://apis.data.go.kr/B551011/KorService1/";
     private static _tourKey: string = process.env.NEXT_PUBLIC_TOUR_SERVICE_KEY || "";
 
@@ -91,4 +92,52 @@ export default class DBAPI {
             console.log("API 실행 중 에러 발생:", err);
         }
     }
+    /**
+     * 📌 API에서 가져온 관광지 데이터를 DB에 저장하는 함수
+     * 기존 데이터가 있다면 modifiedtime을 확인하여 업데이트
+     * @param {any[]} placeDataList - API에서 가져온 데이터 배열
+     */
+    static async savePlaceDataToDB(placeDataList: any[]) {
+        console.log(`🗂 ${placeDataList.length}개의 데이터를 저장합니다...`);
+    
+        for (const placeData of placeDataList) {
+            if (!placeData.contentid || !placeData.title || !placeData.firstimage) {
+                console.log(`⚠️ ${placeData.contentid} ( ${placeData.title} ) 필수 데이터 부족 → 저장하지 않음`);
+                continue;
+            }
+    
+            try {
+                // ✅ 기존 데이터 확인 (contentid 기준)
+                const existingDataRes = await axios.get(`/api/places/${placeData.contentid}`);
+                const existingData = existingDataRes.data;
+    
+                if (existingData && existingData.modifiedtime) {
+                    const existingModifiedTime = parseInt(existingData.modifiedtime, 10);
+                    const newModifiedTime = parseInt(placeData.modifiedtime, 10);
+    
+                    if (newModifiedTime <= existingModifiedTime) {
+                        console.log(`⏭ ${placeData.contentid} ( ${placeData.title} ) 이미 최신 데이터 → 업데이트 안함`);
+                        continue;
+                    }
+                }
+    
+                // ✅ Next.js API(`/api/places`)에 직접 저장 요청 보내기
+                const response = await axios.post(`/api/places`, placeData, {
+                    headers: { "Content-Type": "application/json" },
+                });
+    
+                if (response.data.success) {
+                    console.log(`✅ ${placeData.contentid} ( ${placeData.title} ) 저장 완료`);
+                } else {
+                    console.log(`❌ ${placeData.contentid} ( ${placeData.title} ) 저장 실패`);
+                }
+            } catch (error) {
+                console.error(`🚨 ${placeData.contentid} ( ${placeData.title} ) 저장 중 오류 발생:`, error);
+            }
+        }
+    
+        console.log("🎉 모든 데이터 저장 완료!");
+    }
+    
 }
+

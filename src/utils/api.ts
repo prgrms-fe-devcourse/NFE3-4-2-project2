@@ -30,7 +30,7 @@ export default class APIConnect {
       MobileOS: "ETC",
       MobileApp: this.serviceName,
       serviceKey: this._tourKey,
-      numOfRows: 12,
+      numOfRows: 1000,
       _type: "json",
    };
 
@@ -41,40 +41,55 @@ export default class APIConnect {
     * @param {number} page - 불러올 페이지. 기본값은 1입니다.
     * @returns {Array} 인덱스 이미지, 시군구 정보, 제목으로 구성된 12개의 정보 리스트를 반환합니다.
     */
-   static async getTourAreaList(
-      code: string | undefined,
-      page: number = 1,
-      limit: number = 12,
-   ): Promise<TourItemRegion> {
+   static async getTourAreaList(code: string | undefined): Promise<TourItem[]> {
+      let allItems: TourItem[] = [];
+      let page = 1;
+      let totalItems = 0;
+  
       try {
-         const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
-            params: {
-               ...this._tourDefaultOption,
-               pageNo: page,
-               areaCode: 32,
-               sigunguCode: code,
-               listYN: "Y",
-            },
-         });
-         if (response.status !== 200) {
-            throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
-         }
-         if (!response.data.response) {
-            const isLitimed = /limited|number|requests/i.test(response.data);
-            if (isLitimed) {
-               console.log(`⚠️ API 요청 횟수를 초과하였습니다.`);
-            }
-            return { totalLength: "0", items: [] };
-         } else {
-            return {
-               totalLength: response.data.response.body.totalCount,
-               items: response.data.response.body.items.item,
-            };
-         }
-      } catch {
-         return { totalLength: "0", items: [] };
+          while (true) {
+              const response = await axios.get(this._tourDefaultURL + "areaBasedList1", {
+                  params: {
+                      ...this._tourDefaultOption,
+                      pageNo: page,  
+                      numOfRows: 1000,  // ✅ 최대 1000개 가져오기
+                      areaCode: 32,
+                      sigunguCode: code,
+                      listYN: "Y",
+                  },
+              });
+  
+              if (response.status !== 200) {
+                  throw new Error(`HTTP Error: ${response.status} - 데이터를 불러오지 못했습니다.`);
+              }
+  
+              if (!response.data.response || !response.data.response.body.items.item) {
+                  console.log("⚠️ API에서 데이터를 가져오지 못했습니다.");
+                  break;
+              }
+  
+              const fetchedItems = response.data.response.body.items.item;
+              totalItems += fetchedItems.length;
+              allItems = [...allItems, ...fetchedItems];
+  
+              console.log(`📌 ${page}페이지 - ${fetchedItems.length}개 로드 완료 (총: ${totalItems})`);
+  
+              // ✅ 더 이상 가져올 데이터가 없으면 반복 종료
+              if (fetchedItems.length < 1000) {
+                  break;
+              }
+  
+              page++; // ✅ 다음 페이지 요청
+          }
+  
+          console.log(`✅ 모든 데이터를 가져왔습니다. 총 개수: ${allItems.length}`);
+          return allItems;
+      } catch (error) {
+          console.error("🚨 getTourAreaList 오류:", error);
+          return [];
       }
-   }
+  }
+  
    static async getTourAreaInfo(
       contentId: number | string,
       contentTypeId: number | string = 12,

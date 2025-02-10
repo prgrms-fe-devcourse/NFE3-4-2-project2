@@ -139,7 +139,7 @@ export async function GET(req: Request) {
          const places = await db.collection("places").find(params).skip(skip).toArray();
          const data = places.map((place) => ({
             contentId: place.contentid,
-            contentTypeId: place.contenttypeid
+            contentTypeId: place.contenttypeid,
          }));
          return NextResponse.json({
             success: true,
@@ -161,6 +161,7 @@ export async function GET(req: Request) {
             contentId: place.contentid,
             contentTypeId: place.contenttypeid,
             cat3: place.cat3,
+            modifiedtime: place.modifiedtime,
          }));
 
          let message = `
