@@ -69,7 +69,7 @@ const KakaoMap: React.FC<MapProps> = ({ mapx, mapy, title }) => {
   }, [retryCount, isScriptLoaded]);
 
   useEffect(() => {
-    if (!isScriptLoaded || !window.kakao?.maps || !mapRef.current) {
+    if (!isScriptLoaded || !window.kakao?.maps.LatLng  || !mapRef.current) {
       console.warn(" Kakao Maps API가 아직 로드되지 않았습니다.");
       return;
     }
