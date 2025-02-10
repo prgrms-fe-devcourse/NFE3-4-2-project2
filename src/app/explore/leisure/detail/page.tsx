@@ -230,7 +230,11 @@ const LeisureDetailPage: React.FC = () => {
 
             <section>
                <h3 className="text-2xl font-bold mb-6">위치</h3>
+<<<<<<< Updated upstream
                {(infoList?.mapx && infoList?.mapy ) ? (
+=======
+               {(infoList?.mapx && infoList?.mapy)? (
+>>>>>>> Stashed changes
                   <div className="h-[500]">
                      <KakaoMap mapx={infoList.mapx} mapy={infoList.mapy} title={infoList.title} />
                   </div>

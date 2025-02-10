@@ -2,6 +2,7 @@ import { info } from "console";
 
 import axios from "axios";
 import dotenv from "dotenv";
+import pLimit from "p-limit";
 
 dotenv.config();
 
@@ -97,46 +98,59 @@ export default class DBAPI {
      * 기존 데이터가 있다면 modifiedtime을 확인하여 업데이트
      * @param {any[]} placeDataList - API에서 가져온 데이터 배열
      */
-    static async savePlaceDataToDB(placeDataList: any[]) {
+    static async savePlacesToDB(placeDataList: any[]) {
         console.log(`🗂 ${placeDataList.length}개의 데이터를 저장합니다...`);
     
-        for (const placeData of placeDataList) {
-            if (!placeData.contentid || !placeData.title || !placeData.firstimage) {
-                console.log(`⚠️ ${placeData.contentid} ( ${placeData.title} ) 필수 데이터 부족 → 저장하지 않음`);
-                continue;
-            }
+        const limit = pLimit(5); // 🚀 한 번에 5개씩만 요청 실행
     
-            try {
-                // ✅ 기존 데이터 확인 (contentid 기준)
-                const existingDataRes = await axios.get(`/api/places/${placeData.contentid}`);
-                const existingData = existingDataRes.data;
-    
-                if (existingData && existingData.modifiedtime) {
-                    const existingModifiedTime = parseInt(existingData.modifiedtime, 10);
-                    const newModifiedTime = parseInt(placeData.modifiedtime, 10);
-    
-                    if (newModifiedTime <= existingModifiedTime) {
-                        console.log(`⏭ ${placeData.contentid} ( ${placeData.title} ) 이미 최신 데이터 → 업데이트 안함`);
-                        continue;
+        const updateResults = await Promise.all(
+            placeDataList.map((placeData) =>
+                limit(async () => {
+                    if (!placeData.contentid || !placeData.title) {
+                        console.log(`⚠️ ${placeData.contentid} ( ${placeData.title} ) 필수 데이터 부족 → 저장하지 않음`);
+                        return null;
                     }
-                }
     
-                // ✅ Next.js API(`/api/places`)에 직접 저장 요청 보내기
-                const response = await axios.post(`/api/places`, placeData, {
-                    headers: { "Content-Type": "application/json" },
-                });
+                    try {
+                        const minimalPlaceData = {
+                            contentid: placeData.contentid,
+                            title: placeData.title,
+                            addr1: placeData.addr1 || "주소 없음",
+                            firstimage: placeData.firstimage || "https://example.com/default.jpg",
+                        };
     
-                if (response.data.success) {
-                    console.log(`✅ ${placeData.contentid} ( ${placeData.title} ) 저장 완료`);
-                } else {
-                    console.log(`❌ ${placeData.contentid} ( ${placeData.title} ) 저장 실패`);
-                }
-            } catch (error) {
-                console.error(`🚨 ${placeData.contentid} ( ${placeData.title} ) 저장 중 오류 발생:`, error);
-            }
-        }
+                        console.log("🛠 저장 시도 데이터:", minimalPlaceData);
     
-        console.log("🎉 모든 데이터 저장 완료!");
+                        const response = await axios.post("http://localhost:3000/api/places", minimalPlaceData, {
+                            headers: { "Content-Type": "application/json" },
+                        });
+    
+                        if (response.data.success) {
+                            const { modifiedCount, upsertedCount } = response.data.result;
+                            if (modifiedCount > 0) {
+                                console.log(`🔄 ${placeData.contentid} ( ${placeData.title} ) 업데이트 완료`);
+                                return "updated";
+                            } else if (upsertedCount > 0) {
+                                console.log(`✅ ${placeData.contentid} ( ${placeData.title} ) 추가 완료`);
+                                return "inserted";
+                            }
+                        } else {
+                            console.log(`❌ ${placeData.contentid} ( ${placeData.title} ) 저장 실패`);
+                            return "failed";
+                        }
+                    } catch (error) {
+                        console.error(`🚨 ${placeData.contentid} ( ${placeData.title} ) 저장 중 오류 발생:`, error);
+                        return "error";
+                    }
+                })
+            )
+        );
+    
+        return {
+            updatedCount: updateResults.filter((res) => res === "updated").length,
+            insertedCount: updateResults.filter((res) => res === "inserted").length,
+            failedCount: updateResults.filter((res) => res === "failed" || res === "error").length,
+        };
     }
     
 }
