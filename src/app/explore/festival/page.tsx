@@ -62,16 +62,16 @@ export default function Festival() {
    return (
       <div>
          <Header />
-         <div className="relative h-[480px] pt-32 bg-[url(/images/festival/banner_festival.png)] bg-cover bg-center flex flex-col items-center justify-start gap-4">
+         <div className="relative pt-40 pb-8 bg-[url(/images/festival/banner_festival.png)] bg-cover bg-center flex flex-col items-center justify-start gap-10">
             {/* 제목 */}
             <div className="text-white text-center relative -translate-y-2">
-               <h2 className="text-4xl font-bold leading-loose">
+               <h2 className="text-4xl font-bold">
                   강원도에서 즐기는 <br /> 다채로운 축제와 공연/행사!
                </h2>
             </div>
 
             {/* 검색 바 */}
-            <div className="relative -translate-y-4">
+            <div className="relative -translate-y-4 w-full max-w-[860px]">
                <FestivalSearchBar selected={selected} changeUrl={handleUrlChange} />
             </div>
          </div>

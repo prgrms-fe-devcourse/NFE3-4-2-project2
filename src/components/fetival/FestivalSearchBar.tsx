@@ -44,7 +44,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
    };
 
    return (
-      <div className="mx-auto max-w-[860px] p-7 shadow-xl bg-white rounded-lg">
+      <div className="mx-auto  p-7 shadow-xl bg-white rounded-lg">
          <div className="flex flex-wrap justify-between gap-4">
             {" "}
             {/* 카테고리 선택 */}
@@ -82,7 +82,7 @@ const FestivalSearchBar: React.FC<ExtraSearchBarProps> = ({ selected, changeUrl 
                   <i className="bi bi-search text-sky-500 absolute right-3 top-1/2 transform -translate-y-1/2 text-lg"></i>
                </div>
                <button
-                  className="h-[40px] px-5 text-white bg-sky-500 text-sm font-medium rounded-lg"
+                  className="h-full px-5 text-white bg-sky-500 text-sm font-medium rounded-lg"
                   onClick={handleSearch}>
                   검색
                </button>
