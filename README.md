@@ -73,8 +73,6 @@
 <img src="https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black">
 <img src="https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=nextdotjs&logoColor=white">
 <img src="https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white">
-<img src="https://img.shields.io/badge/Styled--Components-DB7093?style=for-the-badge&logo=styledcomponents&logoColor=white">
-<img src="https://img.shields.io/badge/Storybook-FF4785?style=for-the-badge&logo=storybook&logoColor=white">
 </p>
 
 ### **Backend**
@@ -165,41 +163,36 @@ npm i swiper
     ├─app                          # 페이지 및 레이아웃 관련
     │  ├─add-data                  # 데이터 추가 페이지
     │  ├─api                       # API 라우트 (MongoDB 연동 등)
-    │  │  ├─places                 # 장소 관련 API
-    │  │  │      route.ts          # 장소 관련 API 엔드포인트
+    │  │  ├─places                 # 여행지 관련 API
     │  ├─auth                      # 인증 관련 페이지 (로그인, 회원가입)
     │  │  ├─login                  # 로그인 페이지
-    │  │  │      page.tsx          # 로그인 페이지 컴포넌트
     │  │  ├─signup                 # 회원가입 페이지
-    │  │         page.tsx          # 회원가입 페이지 컴포넌트
     │  ├─community                 # 커뮤니티 관련 페이지 (게시판, 글 작성 등)
     │  │  ├─admin                  # 커뮤니티 관리 페이지
     │  │  ├─edit                   # 게시글 수정 페이지
     │  │  ├─post                   # 게시글 상세 페이지
     │  │  ├─write                  # 게시글 작성 페이지
     │  │  └─page.tsx               # 커뮤니티 메인 페이지
-    │  ├─explore                   # 여행, 공연, 레저 관련 탐색 페이지
+    │  ├─explore                   # 여행지 관련 페이지
     │  │  ├─concert                # 공연 관련 페이지
     │  │  ├─festival               # 축제 관련 페이지
     │  │  ├─leisure                # 레저 활동 관련 페이지
-    │  │  ├─places                 # 장소 탐색 페이지
-    │  │  ├─restaurants            # 음식점 탐색 페이지
-    │  │  ├─travel                 # 여행지 탐색 페이지
-    │  ├─mypage                    # 사용자 마이페이지 관련
-    │  │  ├─favorites              # 즐겨찾기한 여행지, 숙소 등
-    │  │  ├─mypost                 # 사용자가 작성한 게시글
-    │  │  ├─visited                # 방문한 장소 기록 페이지
+    │  │  ├─places                 # 음식점/숙소 페이지
+    │  │  ├─travel                 # 관광지 페이지
+    │  ├─mypage                    # 마이페이지
+    │  │  ├─favorites              # 찜한여행지 페이지
+    │  │  ├─mypost                 # 사용자가 작성한 게시글 페이지
+    │  │  ├─visited                # 다녀온 여행지 페이지
     │  │  ├─page.tsx               # 마이페이지 메인
     │  └─layout.tsx                # 전체 페이지 레이아웃
     │
     ├─components                   # 재사용 가능한 컴포넌트
     │  ├─Leisure                    # 레저 관련 컴포넌트
     │  ├─common                     # 공통 컴포넌트 (버튼, 모달 등)
-    │  ├─festival                   # 축제 관련 컴포넌트
-    │  ├─main                        # 메인 화면 관련 컴포넌트
-    │  ├─places                      # 장소 관련 컴포넌트
-    │  ├─travel                      # 여행 관련 컴포넌트
-    │  └─page.tsx                    # 각종 컴포넌트 모음
+    │  ├─festival                   # 축제/공연/행사 관련 컴포넌트
+    │  ├─main                        # 메인 관련 컴포넌트
+    │  ├─places                      # 음식점/숙소 관련 컴포넌트
+    │  ├─travel                      # 관광지 관련 컴포넌트
     │
     ├─constants                     # 상수 값 관리
     │  ├─apiEndpoints.ts             # API 엔드포인트 상수
@@ -210,13 +203,13 @@ npm i swiper
     │  ├─useFilter.ts                # 필터링 로직 훅
     │  ├─useNavigateToDetail.ts      # 상세 페이지 이동 관련 훅
     │
-    ├─store                         # 전역 상태 관리 (예: Zustand, Redux 등)
+    ├─store                         # 전역 상태 관리
     │  ├─authStore.ts                # 사용자 인증 상태 관리
     │
     ├─styles                        # 스타일 관련
     │  ├─globals.css                 # 전역 스타일
     │  ├─header.module.css           # 헤더 스타일
-    │  ├─placeDetail.module.css      # 장소 상세 스타일
+    │  ├─placeDetail.module.css      # 음식점/숙소 상세 스타일
     │
     ├─types                         # TypeScript 타입 정의
     │  ├─types.ts                    # 공통 타입 정의
