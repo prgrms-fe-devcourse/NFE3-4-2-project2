@@ -1,9 +1,7 @@
-// next.config.js
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+import { NextConfig } from 'next';
+const nextConfig: NextConfig = {
    images: {
-      domains: ["tong.visitkorea.or.kr", "res.cloudinary.com"], // 외부 도메인 추가
+      domains: ["tong.visitkorea.or.kr", "res.cloudinary.com", "example.com"],
    },
 };
-
-module.exports = nextConfig;
+export default nextConfig;
